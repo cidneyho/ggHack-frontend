@@ -73,6 +73,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildList(BuildContext context) {
+    // TODO: search implementation
     if (_searchText.isNotEmpty) {
       _filteredServices.services = new List();
       for (int i = 0; i < _services.services.length; i++) {

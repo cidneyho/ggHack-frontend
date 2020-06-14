@@ -14,42 +14,62 @@ class DetailsPage extends StatelessWidget {
       ),
       body: new ListView(
         children: <Widget>[
+          // image
           Hero(
             tag: "avatar_" + service.name,
             child: new Image.network(service.photo),
           ),
+          // service name and address
           GestureDetector(
             onTap: () {},
             child: new Container(
-              padding: const EdgeInsets.all(32.0),
+              padding: const EdgeInsets.all(20.0),
               child: new Row(
                 children: [
-                  new Expanded(
-                    // Name and Address are in the same column
-                    child: new Column(
+                  new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      new Container(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                          child: new Text(
+                              service.name,
+                              style: new TextStyle(fontWeight: FontWeight.bold,))
+                      ),
+                      new Text(
+                        service.address,
+                        style: new TextStyle(color: colorBase,),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ),
+          // service introduction
+          GestureDetector(
+              onTap: () {},
+              child: new Container(
+                padding: const EdgeInsets.all(20.0),
+                child: new Row(
+                  children: [
+                    new Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         new Container(
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: new Text(
-                            service.name,
-                            style: new TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                            "Introduction",
+                            style: new TextStyle(fontWeight: FontWeight.bold,))
                         ),
                         new Text(
-                          service.address,
-                          style: new TextStyle(
-                            color: colorBase,
-                          ),
+                          "work to be done.",
+                          style: new TextStyle(color: colorBase,),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            )
+                  ],
+                ),
+              )
           ),
         ]
       )
