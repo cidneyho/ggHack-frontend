@@ -62,6 +62,8 @@ class _HomePageState extends State<HomePage> {
         title: _appBarTitle,
         leading: new IconButton(
             icon: _menuIcon,
+            // TODO:
+            // onPressed: open drawer,
         ),
         actions: <Widget>[
           new IconButton(
@@ -85,7 +87,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     return ListView (
-      padding: const EdgeInsets.only(top: 20.0),
+      padding: const EdgeInsets.only(top: 16.0),
       children: this._filteredServices.services.map((data) => _buildListItem(context, data)).toList(),
     );
   }
@@ -93,7 +95,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildListItem(BuildContext context, Service service) {
     return Card(
       key: ValueKey(service.name),
-      elevation: 8.0,
+      elevation: 4.0,
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
         height: 100,
@@ -109,7 +111,8 @@ class _HomePageState extends State<HomePage> {
                   tag: "avatar_" + service.name,
                   child: new Image.network(
                       service.photo,
-                      width: 96,
+                      height: 80,
+                      width: 80,
                       fit: BoxFit.cover,
                   ),
               )
@@ -121,13 +124,15 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(service.name,
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        Container(
+                          padding: const EdgeInsets.only(bottom: 6.0),
+                          child: Text(service.name,
+                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
                         ),
                         RichText(
                           text: TextSpan(
                             text: service.address,
-                            style: TextStyle(color: Colors.white, height:1.5),
+                            style: TextStyle(color: Colors.white),
                           ),
                           maxLines: 1,
                           softWrap: true,
@@ -136,7 +141,10 @@ class _HomePageState extends State<HomePage> {
                   ))
             ],),
           trailing:
-          Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+          Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0)]),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(
                 builder: (context) => new DetailsPage(service: service)));
