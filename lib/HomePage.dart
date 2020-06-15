@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold (
       appBar: _buildBar(context),
-      backgroundColor: colorDark,
+      backgroundColor: Colors.white,
       body: _buildList(context),
       resizeToAvoidBottomPadding: false,
     );
@@ -57,10 +57,21 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildBar(BuildContext context) {
     return new AppBar (
-        elevation: 0.1,
-        backgroundColor: colorDark,
+        elevation: 0.2,
         centerTitle: true,
         title: _appBarTitle,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: <Color>[
+                colorGrad1,
+                colorGrad2
+              ],
+            ),
+          ),
+        ),
         leading: new IconButton(
             icon: _menuIcon,
             // TODO:
@@ -96,7 +107,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildListItem(BuildContext context, Service service) {
     return Card(
       key: ValueKey(service.name),
-      elevation: 4.0,
+      elevation: 0.2,
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
         height: 100,
@@ -128,12 +139,12 @@ class _HomePageState extends State<HomePage> {
                         Container(
                           padding: const EdgeInsets.only(bottom: 6.0),
                           child: Text(service.name,
-                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+                              style: TextStyle(fontWeight: FontWeight.bold))
                         ),
                         RichText(
                           text: TextSpan(
                             text: service.address,
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: colorText),
                           ),
                           maxLines: 1,
                           softWrap: true,
@@ -145,7 +156,7 @@ class _HomePageState extends State<HomePage> {
           Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0)]),
+                Icon(Icons.keyboard_arrow_right, size: 30.0)]),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(
                 builder: (context) => new DetailsPage(service: service)));
@@ -180,20 +191,19 @@ class _HomePageState extends State<HomePage> {
   void _searchPressed() {
     setState(() {
       if (this._searchIcon.icon == Icons.search) {
-        this._searchIcon = new Icon(Icons.close);
+        this._searchIcon = new Icon(Icons.close, color: Colors.white);
         this._appBarTitle = new TextField(
           controller: _filter,
-          style: new TextStyle(color: Colors.white),
+          style: new TextStyle(color: Colors.white, fontSize: 18),
           autofocus: true,
           decoration: new InputDecoration(
             prefixIcon: new Icon(Icons.search, color: Colors.white),
-            fillColor: Colors.white,
             hintText: searchBarHintText,
-            hintStyle: TextStyle(color: colorLoom),
+            hintStyle: TextStyle(color: Colors.white, fontSize: 18),
           ),
         );
       } else {
-        this._searchIcon = new Icon(Icons.search);
+        this._searchIcon = new Icon(Icons.search, color: Colors.white);
         this._appBarTitle = new Text(appTitle);
         _filter.clear();
       }

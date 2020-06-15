@@ -37,7 +37,7 @@ class DetailsPage extends StatelessWidget {
                           style: new TextStyle(fontWeight: FontWeight.bold,))),
                   new Text(
                     service.address,
-                    style: new TextStyle(color: colorBase,),),
+                    style: new TextStyle(color: colorText,),),
                 ]),
             ]),)
     );
@@ -58,7 +58,7 @@ class DetailsPage extends StatelessWidget {
                           style: new TextStyle(fontWeight: FontWeight.bold,))),
                   new Text(
                     service.introduction,
-                    style: new TextStyle(color: colorBase,),),
+                    style: new TextStyle(color: colorText,),),
                 ]),
             ]),)
     );
@@ -108,7 +108,7 @@ class DetailsPage extends StatelessWidget {
 
     // "reserve" button
     final reserveButton = Padding(
-      padding: EdgeInsets.symmetric(horizontal: 100.0, vertical: 40.0),
+      padding: EdgeInsets.symmetric(horizontal: 100.0, vertical: 24.0),
       child: RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -117,14 +117,30 @@ class DetailsPage extends StatelessWidget {
           _reservePressed(context);
         },
         padding: EdgeInsets.all(12),
-        color: colorLight,
-        child: Text(reserveButtonText, style: TextStyle(color: Colors.white)),
+        color: colorDark,
+        child: Text(reserveButtonText, style: TextStyle(color: Colors.white, fontSize: 16)),
       ),
     );
 
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text(service.name),
+        elevation: 0.2,
+        title: new Text(service.name, style: TextStyle(color: Colors.white, fontSize: 18)),
+        leading: BackButton(
+            color: Colors.white
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: <Color>[
+                colorGrad1,
+                colorGrad2
+              ],
+            ),
+          ),
+        ),
       ),
       body: new ListView(
         children: <Widget>[

@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 
 // colors
-Color colorDark = Color.fromRGBO(58, 66, 86, 1.0);
-Color colorBase = Color.fromRGBO(64, 75, 96, 0.9);
-Color colorLoom = Colors.white54;
-Color colorLight = Color.fromRGBO(44,119,143, 1.0);
+Color colorBase = Color.fromRGBO(168, 195, 179, 0.2);
+Color colorDark = Color.fromRGBO(131, 174, 154, 1.0);
+Color colorDarker = Color.fromRGBO(48, 118, 113, 1.0);
+Color colorText = Colors.black54;
 
-Color colorTone1 = Colors.blue[50];
-Color colorTone2 = Colors.blue[100];
-Color colorTone3 = Colors.blue[200];
-Color colorTone4 = Colors.blue[300];
+Color colorGrad1 = Color.fromRGBO(103, 178, 111, 1.0);
+Color colorGrad2 = Color.fromRGBO(76, 162, 205, 1.0);
+
+Color colorTone1 = Color.fromRGBO(140, 187, 224, 0.25);
+Color colorTone2 = Color.fromRGBO(140, 187, 224, 0.50);
+Color colorTone3 = Color.fromRGBO(140, 187, 224, 0.75);
+Color colorTone4 = Color.fromRGBO(140, 187, 224, 1.00);
 
 // Pages
 const loginPageTag = 'Login Page';
 const homePageTag = 'Home Page';
 
 // strings
-const appTitle = "Ross";
+const appTitle = "";
 const usernameHintText = "Username";
 const passwordHintText = "Password";
 const loginButtonText = "Login";

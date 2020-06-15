@@ -13,7 +13,6 @@ class LoginPage extends StatelessWidget {
       keyboardType: TextInputType.phone,
       maxLength: 4,
       maxLines: 1,
-      autofocus: true,
       decoration: InputDecoration(
           hintText: usernameHintText,
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -21,11 +20,11 @@ class LoginPage extends StatelessWidget {
             borderRadius: BorderRadius.circular(16.0),
           ),
           hintStyle: TextStyle(
-              color: colorLoom,
+              color: colorText,
           )
       ),
       style: TextStyle(
-        color: Colors.white,
+        color: colorText,
       ),
     );
 
@@ -34,7 +33,6 @@ class LoginPage extends StatelessWidget {
       keyboardType: TextInputType.phone,
       maxLength: 4,
       maxLines: 1,
-      autofocus: true,
       decoration: InputDecoration(
           hintText: passwordHintText,
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -42,16 +40,16 @@ class LoginPage extends StatelessWidget {
             borderRadius: BorderRadius.circular(16.0),
           ),
           hintStyle: TextStyle(
-              color: colorLoom,
+              color: colorText,
           )
       ),
       style: TextStyle(
-        color: Colors.white,
+        color: colorText,
       ),
     );
 
     final loginButton = Padding(
-      padding: EdgeInsets.symmetric(vertical: 16.0),
+      padding: EdgeInsets.symmetric(horizontal: 1.0, vertical: 16.0),
       child: RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -61,8 +59,9 @@ class LoginPage extends StatelessWidget {
           Navigator.of(context).pushNamed(homePageTag);
         },
         padding: EdgeInsets.all(12),
-        color: colorBase,
-        child: Text(loginButtonText, style: TextStyle(color: Colors.white)),
+        color: colorDarker,
+        child: Text(loginButtonText,
+            style: TextStyle(color: Colors.white, fontSize: 16)),
       ),
     );
 
@@ -71,7 +70,7 @@ class LoginPage extends StatelessWidget {
       body: Center(
         child: ListView(
           shrinkWrap: true,
-          padding: EdgeInsets.only(left: 24.0, right: 24.0),
+          padding: EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
             username,
             password,
