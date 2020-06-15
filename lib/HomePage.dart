@@ -31,6 +31,7 @@ class _HomePageState extends State<HomePage> {
     _services.services = new List();
     _filteredServices.services = new List();
 
+    // TODO: get info from backend
     _getServices();
   }
 
@@ -187,7 +188,7 @@ class _HomePageState extends State<HomePage> {
           decoration: new InputDecoration(
             prefixIcon: new Icon(Icons.search, color: Colors.white),
             fillColor: Colors.white,
-            hintText: 'Search ',
+            hintText: searchBarHintText,
             hintStyle: TextStyle(color: colorLoom),
           ),
         );

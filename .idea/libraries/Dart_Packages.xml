@@ -72,6 +72,13 @@
             </list>
           </value>
         </entry>
+        <entry key="flutter_picker">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/git/flutter_picker-e95d121f54faba889fbf8a850c86dd5cf4aa5c5a/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="flutter_test">
           <value>
             <list>
@@ -194,6 +201,7 @@
       </option>
     </properties>
     <CLASSES>
+      <root url="file://$USER_HOME$/.pub-cache/git/flutter_picker-e95d121f54faba889fbf8a850c86dd5cf4aa5c5a/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/archive-2.0.13/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/args-1.6.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/async-2.4.1/lib" />

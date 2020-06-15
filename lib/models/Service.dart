@@ -1,25 +1,30 @@
+import 'package:gghack/helpers/Constants.dart';
+
 class Service {
   String name;
   String address;
-  String contact;
+  String introduction;
   String photo;
-  String url;
+  List<int> time;
+  List<List<int>> slots;
 
   Service ({
     this.name,
     this.address,
-    this.contact,
+    this.introduction,
     this.photo,
-    this.url
+    this.time,
+    this.slots,
   });
 
   factory Service.fromJson(Map<String, dynamic> json){
     return new Service (
         name: json['name'],
         address: json['address'],
-        contact: json ['contact'],
+        introduction: "to be done",
         photo: json['photo'],
-        url: json['url']
+        time: optime,
+        slots: freeslots,
     );
   }
 }

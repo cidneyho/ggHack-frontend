@@ -62,6 +62,12 @@
       "languageVersion": "2.2"
     },
     {
+      "name": "flutter_picker",
+      "rootUri": "file:///Users/cidney/.pub-cache/git/flutter_picker-e95d121f54faba889fbf8a850c86dd5cf4aa5c5a/",
+      "packageUri": "lib/",
+      "languageVersion": "2.3"
+    },
+    {
       "name": "flutter_test",
       "rootUri": "file:///Users/cidney/flutter/packages/flutter_test",
       "packageUri": "lib/",
@@ -170,7 +176,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-06-14T09:37:16.641736Z",
+  "generated": "2020-06-15T05:44:19.108210Z",
   "generator": "pub",
   "generatorVersion": "2.8.4"
 }
