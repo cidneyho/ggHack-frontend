@@ -1,0 +1,6 @@
+.idea/libraries/Dart_Packages.xml
+.idea/libraries/Flutter_Plugins.xml
+.packages
+.dart_tool/flutter_build/
+.gradle/
+build/*
