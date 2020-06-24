@@ -51,6 +51,30 @@ class _HomePageState extends State<HomePage> {
       appBar: _buildBar(context),
       backgroundColor: Colors.white,
       body: _buildList(context),
+      drawer: Drawer(
+        child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                child: Text("Menu"),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: <Color>[
+                      colorGrad1,
+                      colorGrad2
+                    ],),
+                ),
+              ),
+              ListTile(
+                title: Text("Reservations"),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ), ]
+        ),
+      ),
       resizeToAvoidBottomPadding: false,
     );
   }
@@ -72,17 +96,13 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        leading: new IconButton(
-            icon: _menuIcon,
-            // TODO:
-            // onPressed: open drawer,
-        ),
         actions: <Widget>[
           new IconButton(
             icon: _searchIcon,
             onPressed: _searchPressed,
           ),
         ],
+        iconTheme: IconThemeData(color: Colors.white),
     );
   }
 
