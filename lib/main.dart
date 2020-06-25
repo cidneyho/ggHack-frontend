@@ -3,6 +3,7 @@ import 'helpers/Constants.dart';
 import 'AppSelection.dart';
 import 'LoginPage.dart';
 import 'ProviderLoginPage.dart';
+import 'ProviderHomePage.dart';
 import 'HomePage.dart';
 
 void main() {
@@ -15,6 +16,7 @@ class RossApp extends StatelessWidget {
     loginPageTag: (context) => LoginPage(),
     ploginPageTag: (context) => ProviderLoginPage(),
     homePageTag: (context) => HomePage(),
+    phomePageTag: (context) => ProviderHomePage(),
   };
 
   @override

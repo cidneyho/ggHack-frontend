@@ -56,7 +56,7 @@ class ProviderLoginPage extends StatelessWidget {
         ),
         onPressed: () {
           // TODO: if password correct,
-          Navigator.of(context).pushNamed(homePageTag);
+          Navigator.of(context).pushNamed(phomePageTag);
         },
         padding: EdgeInsets.all(12),
         color: colorDarker,
