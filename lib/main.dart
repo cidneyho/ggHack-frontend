@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'helpers/Constants.dart';
+import 'AppSelection.dart';
 import 'LoginPage.dart';
+import 'ProviderLoginPage.dart';
+import 'ProviderHomePage.dart';
 import 'HomePage.dart';
 
 void main() {
@@ -9,8 +12,11 @@ void main() {
 
 class RossApp extends StatelessWidget {
   final routes = <String, WidgetBuilder>{
+    appSelectionTag: (context) => AppSelection(),
     loginPageTag: (context) => LoginPage(),
+    ploginPageTag: (context) => ProviderLoginPage(),
     homePageTag: (context) => HomePage(),
+    phomePageTag: (context) => ProviderHomePage(),
   };
 
   @override
@@ -21,7 +27,7 @@ class RossApp extends StatelessWidget {
       theme: new ThemeData(
         primaryColor: colorDark,
       ),
-      home: LoginPage(),
+      home: AppSelection(),
       routes: routes,
     );
   }

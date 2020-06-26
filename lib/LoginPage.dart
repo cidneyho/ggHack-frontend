@@ -49,7 +49,7 @@ class LoginPage extends StatelessWidget {
     );
 
     final loginButton = Padding(
-      padding: EdgeInsets.symmetric(horizontal: 1.0, vertical: 16.0),
+      padding: EdgeInsets.symmetric(horizontal: 64.0, vertical: 20.0),
       child: RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -65,6 +65,23 @@ class LoginPage extends StatelessWidget {
       ),
     );
 
+    final createButton = Padding(
+      padding: EdgeInsets.symmetric(horizontal: 64.0),
+      child: FlatButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        onPressed: () {
+          // Navigator.of(context).pushNamed(create Account Page Tag);
+        },
+        padding: EdgeInsets.all(12),
+        color: colorDark,
+        child: Text(createButtonText,
+            style: TextStyle(color: Colors.white, fontSize: 16, decoration: TextDecoration.underline)
+        ),
+      ),
+    );
+
     return Scaffold(
       backgroundColor: colorDark,
       body: Center(
@@ -74,7 +91,8 @@ class LoginPage extends StatelessWidget {
           children: <Widget>[
             username,
             password,
-            loginButton
+            loginButton,
+            createButton
           ],
         ),
       ),
