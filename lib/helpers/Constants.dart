@@ -16,7 +16,10 @@ Color colorTone4 = Color.fromRGBO(140, 187, 224, 1.00);
 
 // Pages
 const loginPageTag = 'Login Page';
+const ploginPageTag = 'Provider Login Page';
 const homePageTag = 'Home Page';
+const phomePageTag = 'Provider Home Page';
+const appSelectionTag = 'App Selection';
 
 // strings
 const appTitle = "";
@@ -28,6 +31,10 @@ const introductionText = "Introduction";
 const timeTableTitleText = "Available slots";
 const reserveButtonText = "Reserve";
 const reservePopupText = "Select slot";
+const userVersionText = "User";
+const providerVersionText = "Service Provider";
+const createButtonText = "Create Account";
+const checkinButtonText = "Check-in";
 
 // settings
 const days = ["", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -43,6 +50,8 @@ var freeslots = [
   [0,0,2,2,1,1,2,2,3,3,3,3],
   [1,1,0,0,0,0,1,1,2,2,2,2],
 ];
+
+const reservationInfo = "Monday 14:00";
 
 const pickerData = ''' [
 {"Mon": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]},
