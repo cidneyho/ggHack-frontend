@@ -53,3 +53,7 @@ const pickerData = ''' [
 {"Sat": [12, 13, 14, 15, 16, 17, 18, 19, 20]},
 {"Sun": [10, 11, 16, 17, 18, 19, 20]}
 ] ''';
+
+// frontend API
+// temporary. TODO modify it according to the backend api
+const serviceListUrl = "https://raw.githubusercontent.com/ktxlh/frontend-api-json-host/master/sample.json";

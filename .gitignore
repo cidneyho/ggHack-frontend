@@ -1,0 +1,6 @@
+pubspec.*
+build/*
+
+.packages
+.dart_tool/flutter_build/
+.dart_tool/package_config.json
