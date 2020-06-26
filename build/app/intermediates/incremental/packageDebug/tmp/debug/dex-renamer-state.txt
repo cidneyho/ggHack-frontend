@@ -1,4 +1,0 @@
-#Fri Jun 26 00:36:30 CST 2020
-base.0=/Users/cidney/Desktop/gg_hack/build/app/intermediates/dex/debug/mergeDexDebug/out/classes.dex
-path.0=classes.dex
-renamed.0=classes.dex
