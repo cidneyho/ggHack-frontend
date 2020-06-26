@@ -7,6 +7,7 @@ class Service {
   String photo;
   List<int> time;
   List<List<int>> slots;
+  String reservation;
 
   Service ({
     this.name,
@@ -15,6 +16,7 @@ class Service {
     this.photo,
     this.time,
     this.slots,
+    this.reservation,
   });
 
   factory Service.fromJson(Map<String, dynamic> json){
@@ -25,6 +27,7 @@ class Service {
         photo: json['photo'],
         time: optime,
         slots: freeslots,
+        reservation: reservationInfo,
     );
   }
 }
