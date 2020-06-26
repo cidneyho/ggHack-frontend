@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'helpers/Constants.dart';
 import 'LoginPage.dart';
 import 'HomePage.dart';
+import 'QrCode.dart';
 
 void main() {
   runApp(RossApp());
@@ -10,7 +11,7 @@ void main() {
 class RossApp extends StatelessWidget {
   final routes = <String, WidgetBuilder>{
     loginPageTag: (context) => LoginPage(),
-    homePageTag: (context) => HomePage(),
+    homePageTag: (context) => QrCodePage(),//HomePage(),
   };
 
   @override
