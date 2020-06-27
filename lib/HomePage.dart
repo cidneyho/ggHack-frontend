@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gghack/Requester.dart';
 import 'helpers/Constants.dart';
 import 'models/Service.dart';
 import 'models/ServiceList.dart';
-import 'models/ServiceService.dart';
+//import 'models/ServiceService.dart';
 import 'DetailsPage.dart';
 
 class HomePage extends StatefulWidget {
@@ -36,7 +37,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _getServices() async {
-    ServiceList services = await ServiceService().loadServices();
+    ServiceList services = await Requester().renderServiceList();
     setState(() {
       for (Service service in services.services) {
         this._services.services.add(service);

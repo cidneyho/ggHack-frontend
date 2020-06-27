@@ -64,5 +64,4 @@ const pickerData = ''' [
 ] ''';
 
 // frontend API
-// temporary. TODO modify it according to the backend api
-const serviceListUrl = "https://raw.githubusercontent.com/ktxlh/frontend-api-json-host/master/sample.json";
+const baseUrl = "gghack-2020.herokuapp.com";

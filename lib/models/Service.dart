@@ -23,8 +23,8 @@ class Service {
     return new Service (
         name: json['name'],
         address: json['address'],
-        introduction: "to be done",
-        photo: json['photo'],
+        introduction: json['introduction'],
+        photo: json['image'],
         time: optime,
         slots: freeslots,
         reservation: reservationInfo,
