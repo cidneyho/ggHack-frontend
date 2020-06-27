@@ -15,13 +15,9 @@ class RossApp extends StatelessWidget {
   final routes = <String, WidgetBuilder>{
     appSelectionTag: (context) => AppSelection(),
     loginPageTag: (context) => LoginPage(),
-<<<<<<< HEAD
-    homePageTag: (context) => QrCodePage(),//HomePage(),
-=======
     ploginPageTag: (context) => ProviderLoginPage(),
     homePageTag: (context) => HomePage(),
     phomePageTag: (context) => ProviderHomePage(),
->>>>>>> 04c88adbee72a54f466727c6655f6aba2e389839
   };
 
   @override

@@ -1,116 +1,131 @@
-/// This file is for networking demo from the tutorial
+/// This file is the frontend API for all networking requests
 /// Fetch data: https://flutter.dev/docs/cookbook/networking/fetch-data
 /// Send data: https://flutter.dev/docs/cookbook/networking/send-data
-import 'dart:async';
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:http/http.dart' as http;
-
+import 'package:gghack/models/ServiceList.dart';
+import 'package:gghack/models/Service.dart';
 import 'package:gghack/helpers/Constants.dart';
-import 'ServiceList.dart';
+import 'package:http/http.dart';
 
-// Suppose that we have a class called album
-class Album {
-  final int userId;
-  final int id;
-  final String title;
+class Requester {
+  // For Customer
+  // Create Account [backend not done]
+  /// Successful: returns the login token <string>
+  /// Otherwise: throws exception
+  Future<String> customerCreateAccount(
+      String username, String email, String password1, String password2) async {
 
-  Album({this.userId, this.id, this.title});
+    var uri = Uri.https(baseUrl, '/rest-auth/registration');
 
-  factory Album.fromJson(Map<String, dynamic> json) {
-    return Album(
-      userId: json['userId'],
-      id: json['id'],
-      title: json['title'],
+    final response = await http.post(
+      uri,
+      body: jsonEncode(<String, String>{
+        'username': username,
+        'email': email,
+        'password1': password1,
+        'password2': password2,
+      }),
     );
-  }
-}
-
-// Get the json and fill in an object
-// Note that I replaced ServiceService.dart with the following already
-// https://flutter.dev/docs/cookbook/networking/send-data#2-sending-data-to-server
-Future<Album> fetchAlbum() async {
-  // Fetch data like the following
-  final response =
-  // The url should be replaced
-  await http.get('https://jsonplaceholder.typicode.com/albums/1');
-
-  if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    return Album.fromJson(json.decode(response.body));
-  } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load album');
-  }
-}
-
-// Send data to cloud to create albums
-// https://flutter.dev/docs/cookbook/networking/send-data#2-sending-data-to-server
-Future<http.Response> createAlbum(String title) {
-  return http.post(
-    // The url should be replaced according to the API
-    'https://jsonplaceholder.typicode.com/albums',
-    headers: <String, String>{
-      // the header should be something Ting mentioned too
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{
-      'title': title,
-    }),
-  );
-}
-
-
-/// The following is for demo display.
-/// We won't use it, neither is it main.dart
-void main() => runApp(MyApp());
-
-class MyApp extends StatefulWidget {
-  MyApp({Key key}) : super(key: key);
-
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  Future<Album> futureAlbum;
-
-  @override
-  void initState() {
-    super.initState();
-    futureAlbum = fetchAlbum();
+    if (response.statusCode == 201) {
+      return response.body.toString();
+    } else {
+      throw Exception('Failed to createCustomerAccount: statusCode ${response.statusCode}');
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Fetch Data Example',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Fetch Data Example'),
-        ),
-        body: Center(
-          child: FutureBuilder<Album>(
-            future: futureAlbum,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(snapshot.data.title);
-              } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
-              }
+  // 等後端寫完 [backend not done]
+  //Future<ServiceList> customerLogin() async {
+  //
+  //}
 
-              // By default, show a loading spinner.
-              return CircularProgressIndicator();
-            },
-          ),
-        ),
-      ),
+  // Render all services (no authentication needed) [backend: DONE; frontend: tested-OK]
+  /// Successful: returns the <ServiceList> parsed from json
+  /// Otherwise: throws exception
+  Future<ServiceList> renderServiceList() async {
+
+    var uri = Uri.https(baseUrl, '/customer/services');
+
+    final response = await http.get(uri);
+    if (response.statusCode == 200) {
+      return ServiceList.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed to searchService: statusCode ${response.statusCode}');
+    }
+  }
+
+  // Search for services (no authentication needed) [backend: DONE]
+  // ?? 'Partial match' is not allowed, so we'd better just use the current
+  // frontend one instead of calling the following.
+  /// Successful: returns the <ServiceList> parsed from json
+  /// Otherwise: throws exception
+//  Future<ServiceList> searchService(String query) async {
+//
+//    var uri = Uri.https(baseUrl, '/customer/services', { 'q' : query });
+//
+//    final response = await http.get(uri);
+//    if (response.statusCode == 200) {
+//      return ServiceList.fromJson(json.decode(response.body));
+//    } else {
+//      throw Exception('Failed to searchService: statusCode ${response.statusCode}');
+//    }
+//  }
+
+  // Render service homepage (for customer/user) (no authentication needed) [backend: DONE]
+  /// Successful: returns a <Service> object from json
+  /// Otherwise: throws exception
+  Future<Service> customerRenderService(int serviceId) async {
+
+    var uri = Uri.https(baseUrl, '/customer/services/$serviceId');
+
+    final response = await http.get(uri);
+    if (response.statusCode == 200) {
+      return Service.fromJson(json.decode(response.body));
+    } else {
+      throw Exception(
+          'Failed to customerRenderService: statusCode ${response.statusCode}');
+    }
+  }
+
+  // Make a reservation [backend: done]
+  /// Successful: returns 0
+  /// Otherwise: throws exception
+  Future<int> makeReservation(
+      String token, int serviceId, String startTime, String endTime) async {
+
+    var uri = Uri.https(baseUrl, '/customer/reservations');
+
+    final response = await http.post(
+      uri,
+      headers: <String, String>{
+        'Authorization' : 'Token $token'
+      },
+      body: jsonEncode(<String, String>{
+        'provider': serviceId.toString(),
+        'startTime': startTime,
+        'endTime': endTime,
+      }),
     );
+    if (response.statusCode == 201) {
+      return 0;
+    } else {
+      throw Exception('Failed to makeReservation: statusCode ${response.statusCode}');
+    }
+  }
+
+  // Cancel reservation [backend: DONE]
+  Future<Response> cancelReservation(String token, int reservationId) async {
+
+    var uri = Uri.https(baseUrl, '/customer/reservations/$reservationId');
+
+    final http.Response response = await http.delete(
+      uri,
+      headers: <String, String>{
+        'Authorization' : 'Token $token'
+      },
+    );
+
+    return response;
   }
 }
