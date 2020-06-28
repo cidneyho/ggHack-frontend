@@ -14,11 +14,11 @@ class Requester {
   //////////////////////////////////////////////////////////////////////////////
   //                               For Customer                               //
   //////////////////////////////////////////////////////////////////////////////
-  // Create Account [backend not done]
+  // Create Account [backend: done]
   /// Successful: returns the login token <string>
   /// Otherwise: throws exception
   Future<String> customerCreateAccount(
-      String username, String email, String password1, String password2) async {
+      String email, String username, String password1, String password2) async {
 
     var uri = Uri.https(baseUrl, '/rest-auth/registration');
 
@@ -38,10 +38,28 @@ class Requester {
     }
   }
 
-  // 等後端寫完 [backend not done]
-  //Future<ServiceList> customerLogin() async {
-  //
-  //}
+  // Customer Login [backend: done]
+  /// Successful: returns the login token <string>
+  /// Otherwise: throws exception
+  Future<String> customerLogin(
+      String email, String username, String password) async {
+
+    var uri = Uri.https(baseUrl, '/rest-auth/login');
+
+    final response = await http.post(
+      uri,
+      body: jsonEncode(<String, String>{
+        'username': username,
+        'password': password,
+        'email': email,
+      }),
+    );
+    if (response.statusCode == 200) {
+      return response.body.toString();
+    } else {
+      throw Exception('Failed to customerLogin: statusCode ${response.statusCode}');
+    }
+  }
 
   // Render all services (no authentication needed) [backend: DONE; frontend: tested-OK]
   /// Successful: returns the <ServiceList> parsed from json
@@ -54,13 +72,13 @@ class Requester {
     if (response.statusCode == 200) {
       return ServiceList.fromJson(json.decode(response.body));
     } else {
-      throw Exception('Failed to searchService: statusCode ${response.statusCode}');
+      throw Exception('Failed to renderServiceList: statusCode ${response.statusCode}');
     }
   }
 
   // Search for services (no authentication needed) [backend: DONE]
   // ?? 'Partial match' is not allowed, so we'd better just use the current
-  // frontend one instead of calling the following.
+  // frontend one instead of calling the API / using the following.
   /// Successful: returns the <ServiceList> parsed from json
   /// Otherwise: throws exception
 //  Future<ServiceList> searchService(String query) async {
@@ -137,7 +155,7 @@ class Requester {
     }
   }
 
-  // Customer render reservation list [backend: not done]
+  // Customer render reservation list [backend: done]
   /// Successful: returns <ReservationList> containing all reservations of the user
   /// Otherwise: throws exception
   Future<ReservationList> customerRenderReservationList(String token) async {
@@ -153,11 +171,11 @@ class Requester {
       return ReservationList.fromJson(json.decode(response.body));
     } else {
       throw Exception(
-          'Failed to renderReservationList: statusCode ${response.statusCode}');
+          'Failed to customerRenderReservationList: statusCode ${response.statusCode}');
     }
   }
 
-  // Render a reservation [backend: not done]
+  // Render a reservation [backend: done]
   /// Successful: returns the corresponding <Reservation>
   /// Otherwise: throws exception
   Future<Reservation> renderSpecificReservation(String token, int reservationId) async {
@@ -181,28 +199,43 @@ class Requester {
   //////////////////////////////////////////////////////////////////////////////
   //                               For Provider                               //
   //////////////////////////////////////////////////////////////////////////////
-  // Wait for backend
-//  Future<int> createService(String token) async {
-//
-//    var uri = Uri.https(baseUrl, '/provider/services');
-//
-//    final response = await http.post(
-//      uri,
-//      headers: <String, String>{
-//        'Authorization' : 'Token $token'
-//      },
-//      body: jsonEncode(<String, String>{
-//        'provider': serviceId.toString(),
-//        'startTime': startTime,
-//        'endTime': endTime,
-//      }),
-//    );
-//    if (response.statusCode == 201) {
-//      return 0;
-//    } else {
-//      throw Exception('Failed to makeReservation: statusCode ${response.statusCode}');
-//    }
-//  }
+  // Create services  [DONE]
+  /// Successful: returns 0
+  /// Otherwise: throws exception
+  Future<int> createService(
+      String token,
+      String serviceName, int ownerId, String address, String introduction,
+      String type, double longitude, double latitude, double rating,
+      String imageUrl, int maxCapacity) async {
+    // TODO how about changing it to "receive an service object" directly? (maybe create user's models too, so we keep a user object to render the side bar
+
+    var uri = Uri.https(baseUrl, '/provider/services');
+
+    final response = await http.post(
+      uri,
+      headers: <String, String>{
+        'Authorization' : 'Token $token'
+      },
+      body: jsonEncode({
+        //"id": 2, // It doesn't make sense to know the service ID in advance.
+        "name": serviceName,
+        "owner": ownerId,
+        "address": address,
+        "introduction": introduction,
+        "type": type,
+        "longitude": longitude,
+        "latitude": latitude,
+        "rating": rating,
+        "image": imageUrl,
+        "maxCapacity": maxCapacity,
+      }),
+    );
+    if (response.statusCode == 201) {
+      return 0;
+    } else {
+      throw Exception('Failed to makeReservation: statusCode ${response.statusCode}');
+    }
+  }
 
 
   // Render detail created service [backend: DONE]
@@ -213,7 +246,7 @@ class Requester {
     return customerRenderService(serviceId);
   }
 
-  // Provider render reservation list [backend: not done]
+  // Provider render reservation list [backend: done]
   /// Successful: returns <ReservationList> containing all reservations of the user
   /// Otherwise: throws exception
   Future<ReservationList> providerRenderReservationList(String token) async {
@@ -233,5 +266,55 @@ class Requester {
     }
   }
 
-  // The others: wait for backend
+  // Generate the content for QR code
+  /// Note that the QR code contains just the reservationId
+  /// because the check-in API requires log-in and PUT method
+  /// So we can't simply scan it with camera, and have to do it with
+  String generateQrCodeString(int reservationId) {
+    String qrCodeString = reservationId.toString();
+    return qrCodeString;
+  }
+
+  // Check in for user with QR code scanning [backend: Done]
+  Future<int> checkInQrCode(String token, String qrCodeString) async {
+    return checkInReservation(token, int.parse(qrCodeString));
+  }
+
+  Future<int> checkInReservation(String token, int reservationId) async {
+    var uri = Uri.https(baseUrl, '/provider/reservations/$reservationId');
+
+    final response = await http.post(
+      uri,
+      headers: <String, String>{
+        'Authorization' : 'Token $token'
+      },
+      body: jsonEncode({
+        "status": "CP",
+      }),
+    );
+    if (response.statusCode == 200) {
+      return 0;
+    } else {
+      throw Exception('Failed to checkInReservation: statusCode ${response.statusCode}');
+    }
+  }
+
+  Future<int> noShowReservation(String token, int reservationId) async {
+    var uri = Uri.https(baseUrl, '/provider/reservations/$reservationId');
+
+    final response = await http.post(
+      uri,
+      headers: <String, String>{
+        'Authorization' : 'Token $token'
+      },
+      body: jsonEncode({
+        "status": "MS",
+      }),
+    );
+    if (response.statusCode == 200) {
+      return 0;
+    } else {
+      throw Exception('Failed to checkInReservation: statusCode ${response.statusCode}');
+    }
+  }
 }
