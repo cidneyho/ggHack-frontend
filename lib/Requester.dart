@@ -12,12 +12,12 @@ import 'package:gghack/helpers/Constants.dart';
 
 class Requester {
   //////////////////////////////////////////////////////////////////////////////
-  //                               For Customer                               //
+  //                    Shared among Customer and Provider                    //
   //////////////////////////////////////////////////////////////////////////////
-  // Create Account [backend: done]
+  // Create Account [backend: DONE]
   /// Successful: returns the login token <string>
   /// Otherwise: throws exception
-  Future<String> customerCreateAccount(
+  Future<String> createAccount(
       String email, String username, String password1, String password2) async {
 
     var uri = Uri.https(baseUrl, '/rest-auth/registration');
@@ -38,10 +38,11 @@ class Requester {
     }
   }
 
-  // Customer Login [backend: done]
+
+  // Login [backend: DONE]
   /// Successful: returns the login token <string>
   /// Otherwise: throws exception
-  Future<String> customerLogin(
+  Future<String> login(
       String email, String username, String password) async {
 
     var uri = Uri.https(baseUrl, '/rest-auth/login');
@@ -61,6 +62,7 @@ class Requester {
     }
   }
 
+
   // Render all services (no authentication needed) [backend: DONE; frontend: tested-OK]
   /// Successful: returns the <ServiceList> parsed from json
   /// Otherwise: throws exception
@@ -75,6 +77,7 @@ class Requester {
       throw Exception('Failed to renderServiceList: statusCode ${response.statusCode}');
     }
   }
+
 
   // Search for services (no authentication needed) [backend: DONE]
   // ?? 'Partial match' is not allowed, so we'd better just use the current
@@ -93,6 +96,11 @@ class Requester {
 //    }
 //  }
 
+
+
+  //////////////////////////////////////////////////////////////////////////////
+  //                               For Customer                               //
+  //////////////////////////////////////////////////////////////////////////////
   // Render service homepage (for customer/user) (no authentication needed) [backend: DONE]
   /// Successful: returns a <Service> object from json
   /// Otherwise: throws exception
@@ -109,7 +117,8 @@ class Requester {
     }
   }
 
-  // Make a reservation [backend: done]
+
+  // Make a reservation [backend: DONE]
   /// Successful: returns 0
   /// Otherwise: throws exception
   Future<int> makeReservation(
@@ -135,6 +144,7 @@ class Requester {
     }
   }
 
+
   // Cancel reservation [backend: DONE]
   /// Successful: returns 0
   /// Otherwise: throws exception
@@ -155,7 +165,8 @@ class Requester {
     }
   }
 
-  // Customer render reservation list [backend: done]
+
+  // Customer render reservation list [backend: DONE]
   /// Successful: returns <ReservationList> containing all reservations of the user
   /// Otherwise: throws exception
   Future<ReservationList> customerRenderReservationList(String token) async {
@@ -175,7 +186,8 @@ class Requester {
     }
   }
 
-  // Render a reservation [backend: done]
+
+  // Render a reservation [backend: DONE]
   /// Successful: returns the corresponding <Reservation>
   /// Otherwise: throws exception
   Future<Reservation> renderSpecificReservation(String token, int reservationId) async {
@@ -196,18 +208,19 @@ class Requester {
   }
 
 
+
   //////////////////////////////////////////////////////////////////////////////
   //                               For Provider                               //
   //////////////////////////////////////////////////////////////////////////////
-  // Create services  [DONE]
+  // Create services [backend: DONE]
   /// Successful: returns 0
   /// Otherwise: throws exception
+  // TODO change the signature to "receive a service object" directly? (maybe create user's models too, so we keep a user object to render sth in the side bar)
   Future<int> createService(
       String token,
       String serviceName, int ownerId, String address, String introduction,
       String type, double longitude, double latitude, double rating,
       String imageUrl, int maxCapacity) async {
-    // TODO how about changing it to "receive an service object" directly? (maybe create user's models too, so we keep a user object to render the side bar
 
     var uri = Uri.https(baseUrl, '/provider/services');
 
@@ -246,7 +259,7 @@ class Requester {
     return customerRenderService(serviceId);
   }
 
-  // Provider render reservation list [backend: done]
+  // Provider render reservation list [backend: DONE]
   /// Successful: returns <ReservationList> containing all reservations of the user
   /// Otherwise: throws exception
   Future<ReservationList> providerRenderReservationList(String token) async {
@@ -266,7 +279,9 @@ class Requester {
     }
   }
 
-  // Generate the content for QR code
+
+  // Generate the content for QR code [frontend-only]
+  /// *Not related to backend*
   /// Note that the QR code contains just the reservationId
   /// because the check-in API requires log-in and PUT method
   /// So we can't simply scan it with camera, and have to do it with
@@ -275,15 +290,22 @@ class Requester {
     return qrCodeString;
   }
 
+
   // Check in for user with QR code scanning [backend: Done]
+  /// Successful: returns 0
+  /// Otherwise: throws exception
   Future<int> checkInQrCode(String token, String qrCodeString) async {
     return checkInReservation(token, int.parse(qrCodeString));
   }
 
+
+  // Check in for user after scanning the QR code [backend: Done]
+  /// Successful: returns 0
+  /// Otherwise: throws exception
   Future<int> checkInReservation(String token, int reservationId) async {
     var uri = Uri.https(baseUrl, '/provider/reservations/$reservationId');
 
-    final response = await http.post(
+    final response = await http.put(
       uri,
       headers: <String, String>{
         'Authorization' : 'Token $token'
@@ -299,10 +321,14 @@ class Requester {
     }
   }
 
+
+  // Customer no-show
+  /// Successful: returns 0
+  /// Otherwise: throws exception
   Future<int> noShowReservation(String token, int reservationId) async {
     var uri = Uri.https(baseUrl, '/provider/reservations/$reservationId');
 
-    final response = await http.post(
+    final response = await http.put(
       uri,
       headers: <String, String>{
         'Authorization' : 'Token $token'
@@ -314,7 +340,7 @@ class Requester {
     if (response.statusCode == 200) {
       return 0;
     } else {
-      throw Exception('Failed to checkInReservation: statusCode ${response.statusCode}');
+      throw Exception('Failed to noShowReservation: statusCode ${response.statusCode}');
     }
   }
 }
