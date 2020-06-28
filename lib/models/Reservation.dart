@@ -1,24 +1,33 @@
-import 'package:gghack/helpers/Constants.dart';
+import 'Service.dart';
 
 class Reservation {
-  String name;
-  String qrCode;
-  List<int> startTime;
-  List<int> endTime;
+  int reservationId;
+  String customerEmail;
+  Service service;
+  String providerEmail;
+  String startTime;
+  String endTime;
+  String status;
 
   Reservation ({
-    this.name,
-    this.qrCode,
+    this.reservationId,
+    this.customerEmail,
+    this.service,
+    this.providerEmail,
     this.startTime,
     this.endTime,
+    this.status,
   });
 
   factory Reservation.fromJson(Map<String, dynamic> json){
     return new Reservation (
-      name: json['name'],
-      qrCode: json['qr-code'],
-      startTime: json['start-time'],
-      endTime: json['end-time'],
+      reservationId: json['id'],
+      customerEmail: json['customer'],
+      service: Service.fromJson(json['service']),
+      providerEmail: json['serviceOwner'],
+      startTime: json['startTime'],
+      endTime: json['endTime'],
+      status: json['status'],
     );
   }
 }
