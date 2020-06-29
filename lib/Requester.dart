@@ -20,10 +20,13 @@ class Requester {
   Future<String> createAccount(
       String email, String username, String password1, String password2) async {
 
-    var uri = Uri.https(baseUrl, '/rest-auth/registration');
+    var uri = Uri.https(baseUrl, '/rest-auth/registration/');
 
     final response = await http.post(
       uri,
+      headers: {
+        "content-type": "application/json",
+      },
       body: jsonEncode(<String, String>{
         'username': username,
         'email': email,
@@ -49,6 +52,9 @@ class Requester {
 
     final response = await http.post(
       uri,
+      headers: {
+        "content-type": "application/json",
+      },
       body: jsonEncode(<String, String>{
         'username': username,
         'password': password,
@@ -129,7 +135,8 @@ class Requester {
     final response = await http.post(
       uri,
       headers: <String, String>{
-        'Authorization' : 'Token $token'
+        'Authorization' : 'Token $token',
+        "content-type": "application/json",
       },
       body: jsonEncode(<String, String>{
         'provider': serviceId.toString(),
@@ -227,7 +234,8 @@ class Requester {
     final response = await http.post(
       uri,
       headers: <String, String>{
-        'Authorization' : 'Token $token'
+        'Authorization' : 'Token $token',
+        "content-type": "application/json",
       },
       body: jsonEncode({
         //"id": 2, // It doesn't make sense to know the service ID in advance.
