@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gghack/helpers/Constants.dart';
-import 'package:gghack/helpers/GradientColors.dart';
+import 'package:gghack/helpers/Style.dart';
 import 'models/Service.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'dart:convert';
@@ -35,9 +35,14 @@ class DetailsPage extends StatelessWidget {
                       child: new Text(
                           service.name,
                           style: new TextStyle(fontWeight: FontWeight.bold,))),
-                  new Text(
-                    service.address,
-                    style: new TextStyle(color: colorText,),),
+                  new Container(
+                    width: max_width,
+                    child: Text(
+                      service.address,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                      style: new TextStyle(color: colorText,),)
+                  ),
                 ]),
             ]),)
     );
@@ -56,9 +61,14 @@ class DetailsPage extends StatelessWidget {
                       child: new Text(
                           introductionText,
                           style: new TextStyle(fontWeight: FontWeight.bold,))),
-                  new Text(
-                    service.introduction,
-                    style: new TextStyle(color: colorText,),),
+                  new Container(
+                    width: max_width,
+                    child: Text(
+                      service.introduction,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                      style: new TextStyle(color: colorText,),)
+                  ),
                 ]),
             ]),)
     );
@@ -130,16 +140,7 @@ class DetailsPage extends StatelessWidget {
             color: Colors.white
         ),
         flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: <Color>[
-                colorGrad1,
-                colorGrad2
-              ],
-            ),
-          ),
+          decoration: getGradientBox(),
         ),
       ),
       body: new ListView(
