@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'helpers/Constants.dart';
 import 'models/Service.dart';
 import 'models/ServiceList.dart';
-import 'models/ServiceService.dart';
+import 'Requester.dart';
 import 'DetailsPage.dart';
 
 class ProviderHomePage extends StatefulWidget {
@@ -31,7 +31,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
   }
 
   void _getServices() async {
-    ServiceList services = await ServiceService().loadServices();
+    ServiceList services = await Requester().renderServiceList(); // TODO change it to it's real API
     setState(() {
       for (Service service in services.services) {
         this._services.services.add(service);
