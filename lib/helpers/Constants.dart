@@ -20,11 +20,14 @@ const ploginPageTag = 'Provider Login Page';
 const homePageTag = 'Home Page';
 const phomePageTag = 'Provider Home Page';
 const appSelectionTag = 'App Selection';
+const createAccountPageTag = 'Create Account Page';
 
 // strings
 const appTitle = "";
 const usernameHintText = "Username";
+const emailaddHintText = "Email Address";
 const passwordHintText = "Password";
+const pconfirmHintText = "Confirm Password";
 const loginButtonText = "Login";
 const searchBarHintText = "Search";
 const introductionText = "Introduction";
@@ -37,6 +40,7 @@ const createButtonText = "Create Account";
 const checkinButtonText = "Check-in";
 
 // settings
+const max_width = 320.0;
 const days = ["", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 // temp storage - for testing purposes only
