@@ -2,31 +2,31 @@ import 'Service.dart';
 
 class Reservation {
   int reservationId;
-  String customerEmail;
+  String customer;
   Service service;
-  String providerEmail;
-  String startTime;
-  String endTime;
+  String provider;
+  String bookDate;  //'2020-07-11'
+  String bookTime;  //'18:00'
   String status;
 
   Reservation ({
     this.reservationId,
-    this.customerEmail,
+    this.customer,
     this.service,
-    this.providerEmail,
-    this.startTime,
-    this.endTime,
+    this.provider,
+    this.bookDate,
+    this.bookTime,
     this.status,
   });
 
   factory Reservation.fromJson(Map<String, dynamic> json){
     return new Reservation (
       reservationId: json['id'],
-      customerEmail: json['customer'],
+      customer: json['customer'],
       service: Service.fromJson(json['service']),
-      providerEmail: json['serviceOwner'],
-      startTime: json['startTime'],
-      endTime: json['endTime'],
+      provider: json['serviceOwner'],
+      bookDate: json['bookDate'],
+      bookTime: json['bookTime'],
       status: json['status'],
     );
   }

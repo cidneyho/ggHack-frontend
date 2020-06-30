@@ -1,6 +1,10 @@
 /// This file is the frontend API for all networking requests
 /// Fetch data: https://flutter.dev/docs/cookbook/networking/fetch-data
 /// Send data: https://flutter.dev/docs/cookbook/networking/send-data
+///
+/// Notes ("Kengs" in Mandarin) for developer: If you encounter
+/// "type '(HttpException) => Null' is not a subtype of type '(dynamic) => dynamic'",
+/// there may be a url mismatch. Check the slashes at the end of each API function...
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
@@ -26,6 +30,7 @@ class Requester {
       uri,
       headers: {
         "content-type": "application/json",
+        "Accept": "application/json",
       },
       body: jsonEncode(<String, String>{
         'username': username,
@@ -35,7 +40,7 @@ class Requester {
       }),
     );
     if (response.statusCode == 201) {
-      return response.body.toString();
+      return json.decode(response.body)['key'];
     } else {
       throw Exception('Failed to createCustomerAccount: statusCode ${response.statusCode}');
     }
@@ -48,12 +53,13 @@ class Requester {
   Future<String> login(
       String email, String username, String password) async {
 
-    var uri = Uri.https(baseUrl, '/rest-auth/login');
+    var uri = Uri.https(baseUrl, '/rest-auth/login/');
 
     final response = await http.post(
       uri,
       headers: {
         "content-type": "application/json",
+        "Accept": "application/json",
       },
       body: jsonEncode(<String, String>{
         'username': username,
@@ -62,7 +68,7 @@ class Requester {
       }),
     );
     if (response.statusCode == 200) {
-      return response.body.toString();
+      return json.decode(response.body)['key'];
     } else {
       throw Exception('Failed to customerLogin: statusCode ${response.statusCode}');
     }
@@ -124,11 +130,11 @@ class Requester {
   }
 
 
-  // Make a reservation [backend: DONE]
+  // Make a reservation
   /// Successful: returns 0
   /// Otherwise: throws exception
   Future<int> makeReservation(
-      String token, int serviceId, String startTime, String endTime) async {
+      String token, String serviceName, String bookDate, String bookTime) async {
 
     var uri = Uri.https(baseUrl, '/customer/reservations');
 
@@ -137,11 +143,13 @@ class Requester {
       headers: <String, String>{
         'Authorization' : 'Token $token',
         "content-type": "application/json",
+        "Accept": "application/json",
       },
       body: jsonEncode(<String, String>{
-        'provider': serviceId.toString(),
-        'startTime': startTime,
-        'endTime': endTime,
+        'service': serviceName,
+        'bookDate': bookDate,
+        'bookTime': bookTime,
+        'numPeople': '1',
       }),
     );
     if (response.statusCode == 201) {
@@ -152,7 +160,7 @@ class Requester {
   }
 
 
-  // Cancel reservation [backend: DONE]
+  // Cancel reservation [WAITING]
   /// Successful: returns 0
   /// Otherwise: throws exception
   Future<int> cancelReservation(String token, int reservationId) async {
@@ -177,12 +185,13 @@ class Requester {
   /// Successful: returns <ReservationList> containing all reservations of the user
   /// Otherwise: throws exception
   Future<ReservationList> customerRenderReservationList(String token) async {
-    var uri = Uri.https(baseUrl, '/customer/reservations/');
+    var uri = Uri.https(baseUrl, '/customer/reservations');
 
     final response = await http.get(
         uri,
       headers: <String, String>{
-        'Authorization' : 'Token $token'
+        'Authorization' : 'Token $token',
+        "Accept": "application/json",
       },
     );
     if (response.statusCode == 200) {
@@ -203,7 +212,8 @@ class Requester {
     final response = await http.get(
       uri,
       headers: <String, String>{
-        'Authorization' : 'Token $token'
+        'Authorization' : 'Token $token',
+        "Accept": "application/json",
       },
     );
     if (response.statusCode == 200) {
@@ -222,12 +232,7 @@ class Requester {
   // Create services [backend: DONE]
   /// Successful: returns 0
   /// Otherwise: throws exception
-  // TODO change the signature to "receive a service object" directly? (maybe create user's models too, so we keep a user object to render sth in the side bar)
-  Future<int> createService(
-      String token,
-      String serviceName, int ownerId, String address, String introduction,
-      String type, double longitude, double latitude, double rating,
-      String imageUrl, int maxCapacity) async {
+  Future<Service> createService(String token, Service service) async {
 
     var uri = Uri.https(baseUrl, '/provider/services');
 
@@ -236,25 +241,25 @@ class Requester {
       headers: <String, String>{
         'Authorization' : 'Token $token',
         "content-type": "application/json",
+        "Accept": "application/json",
       },
       body: jsonEncode({
-        //"id": 2, // It doesn't make sense to know the service ID in advance.
-        "name": serviceName,
-        "owner": ownerId,
-        "address": address,
-        "introduction": introduction,
-        "type": type,
-        "longitude": longitude,
-        "latitude": latitude,
-        "rating": rating,
-        "image": imageUrl,
-        "maxCapacity": maxCapacity,
+        "name": service.name,
+        "address": service.address,
+        "introduction": service.introduction,
+        "type": service.type,
+        "longitude": service.longitude,
+        "latitude": service.latitude,
+        "rating": service.rating,
+        "image": service.photo,
+        "maxCapacity": service.maxCapacity,
       }),
     );
     if (response.statusCode == 201) {
-      return 0;
+      service = Service.fromJson(json.decode(response.body));
+      return service;
     } else {
-      throw Exception('Failed to makeReservation: statusCode ${response.statusCode}');
+      throw Exception('Failed to createService: statusCode ${response.statusCode}');
     }
   }
 
@@ -267,16 +272,18 @@ class Requester {
     return customerRenderService(serviceId);
   }
 
+
   // Provider render reservation list [backend: DONE]
   /// Successful: returns <ReservationList> containing all reservations of the user
   /// Otherwise: throws exception
   Future<ReservationList> providerRenderReservationList(String token) async {
-    var uri = Uri.https(baseUrl, '/provider/reservations/');
+    var uri = Uri.https(baseUrl, '/provider/reservations');
 
     final response = await http.get(
       uri,
       headers: <String, String>{
-        'Authorization' : 'Token $token'
+        'Authorization' : 'Token $token',
+        "Accept": "application/json",
       },
     );
     if (response.statusCode == 200) {
@@ -285,25 +292,6 @@ class Requester {
       throw Exception(
           'Failed to providerRenderReservationList: statusCode ${response.statusCode}');
     }
-  }
-
-
-  // Generate the content for QR code [frontend-only]
-  /// *Not related to backend*
-  /// Note that the QR code contains just the reservationId
-  /// because the check-in API requires log-in and PUT method
-  /// So we can't simply scan it with camera, and have to do it with
-  String generateQrCodeString(int reservationId) {
-    String qrCodeString = reservationId.toString();
-    return qrCodeString;
-  }
-
-
-  // Check in for user with QR code scanning [backend: Done]
-  /// Successful: returns 0
-  /// Otherwise: throws exception
-  Future<int> checkInQrCode(String token, String qrCodeString) async {
-    return checkInReservation(token, int.parse(qrCodeString));
   }
 
 
@@ -327,6 +315,17 @@ class Requester {
     } else {
       throw Exception('Failed to checkInReservation: statusCode ${response.statusCode}');
     }
+  }
+
+
+  // Generate the content for QR code [frontend-only]
+  /// *Not related to backend*
+  /// Note that the QR code contains just the reservationId
+  /// because the check-in API requires log-in and PUT method
+  /// So we can't simply scan it with camera, and have to do it with
+  String generateQrCodeString(int reservationId) {
+    String qrCodeString = reservationId.toString();
+    return qrCodeString;
   }
 
 
