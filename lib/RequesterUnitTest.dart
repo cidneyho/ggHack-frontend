@@ -9,12 +9,12 @@ import 'package:gghack/models/Reservation.dart';
 import 'package:gghack/helpers/Constants.dart';
 
 class UnitTest {
-  static String t = "";  // Change this if you
+  static String t = "5";  // Change this if you
   static String email = "email$t@gmail.com";
   static String username = "admin$t";
   static String password1 = "mimahaomafan";
   static String password2 = password1;
-  static String token = "a6fbd9b31598748cb38063de23062d208cfbb1ec";
+  static String token;
   static String bookDate = "2020-07-12";
   static String bookTime = "18:00";
   static ServiceList serviceList;
@@ -22,7 +22,7 @@ class UnitTest {
   static ReservationList reservationList;
   static Reservation reservation;
 
-  static String serviceName = "Kate's Boba Shop 2";
+  static String serviceName = "Kate's Boba Shop 3";
   static String address = "In your heart <3";
   static String introduction = "Kate enjoys making boba so much that she decided to quit UST and start her own business, but this is her own business. ^^";
   static String type = "CL";
@@ -52,6 +52,9 @@ class UnitTest {
     serviceList = await Requester().renderServiceList();
     print("[P] testRenderServiceList len="
         + serviceList.services.length.toString());
+    if (serviceList.services.length > 0) {
+      service = serviceList.services[0];
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -69,9 +72,9 @@ class UnitTest {
     print("   Token $token");
     print("   date $bookDate");
     print("   time $bookTime");
-    int code = await Requester().makeReservation(
+    reservation = await Requester().makeReservation(
         token, service.name, bookDate, bookTime);
-    print("[P] testMakeReservation code=" + code.toString());
+    print("[P] testMakeReservation id=${reservation.reservationId}");
   }
 
   static Future<void> testCancelReservation() async {
@@ -84,6 +87,9 @@ class UnitTest {
     reservationList = await Requester().customerRenderReservationList(token);
     print("[P] testRenderReservationList len="
         + reservationList.reservations.length.toString());
+    if (reservationList.reservations.length > 0) {
+      reservation = reservationList.reservations[0];
+    }
   }
 
   static Future<void> testRenderSpecificReservation() async {
@@ -149,52 +155,75 @@ class UnitTest {
   //////////////////////////////////////////////////////////////////////////////
   //                           Aggregated Functions                           //
   //////////////////////////////////////////////////////////////////////////////
+  // Helper for all error log on Console
   static bool _onError(Object error) {
     print("[F] " + error.toString());
     return false;
   }
 
 
+  // Passed
   static Future<void> testCustomer() async {
-//    await testCreateAccount().catchError(onError); // P
+    print("=== Start unit test: testCustomer ===");
+
+    await testCreateAccount().catchError(_onError); // P
     await testLogin().catchError(_onError); // P
     await testRenderServiceList().catchError(_onError); // P
     await testCustomerRenderService().catchError(_onError); // P
+
+    print("=== End unit test: testCustomer ===");
   }
 
 
+  // Passed
   static Future<void> testProvider() async {
+    print("=== Start unit test: testProvider ===");
+
     await testLogin().catchError(_onError);  // P
-//    await testCreateService().catchError(_onError);  // P
+
+    await testCreateService().catchError(_onError);  // P
     await testProviderRenderService().catchError(_onError);  // P
+
+    print("=== End unit test: testProvider ===");
   }
 
 
+  // Passed
   static Future<void> testMakeAndCancelReservation() async {
+    print("=== Start unit test: testMakeAndCancelReservation ===");
+
     await testLogin().catchError(_onError);  // P
-    // TODO Solve the following 'F's
 
     // Make a reservation and cancel it
-    await testMakeReservation().catchError(_onError);  // F
+    await testMakeReservation().catchError(_onError);  // P
     await testCustomerRenderReservationList().catchError(_onError);  // P
     await testProviderRenderReservationList().catchError(_onError);  // P
 
-    await testRenderSpecificReservation().catchError(_onError);  // F
+    await testRenderSpecificReservation().catchError(_onError);  // P
 
-    await testCancelReservation().catchError(_onError);  // F
+    await testCancelReservation().catchError(_onError);  // P
     await testCustomerRenderReservationList().catchError(_onError);  // P
     await testProviderRenderReservationList().catchError(_onError);  // P
+
+    print("=== End unit test: testMakeAndCancelReservation ===");
   }
 
 
+  // Passed
   static Future<void> testCheckInNoShowReservation() async {
+    print("=== Start unit test: testCheckInNoShowReservation ===");
+
+    await testLogin().catchError(_onError);  // P
+
     // Make a reservation and check in it
-    await testMakeReservation().catchError(_onError);
-    await testCheckInReservation().catchError(_onError);
+    await testMakeReservation().catchError(_onError);  // P
+    await testCheckInReservation().catchError(_onError);  // P
 
     // Make a reservation and no-show it
-    await testMakeReservation().catchError(_onError);
-    await testNoShowReservation().catchError(_onError);
+    await testMakeReservation().catchError(_onError);  // P
+    await testNoShowReservation().catchError(_onError);  // P
+
+    print("=== End unit test: testCheckInNoShowReservation ===");
   }
 
 }

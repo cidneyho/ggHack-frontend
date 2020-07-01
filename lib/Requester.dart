@@ -131,29 +131,29 @@ class Requester {
 
 
   // Make a reservation
-  /// Successful: returns 0
+  /// Successful: returns the <Reservation>
   /// Otherwise: throws exception
-  Future<int> makeReservation(
+  /// Note: backend accepts form data only (and only for this function).
+  Future<Reservation> makeReservation(
       String token, String serviceName, String bookDate, String bookTime) async {
 
     var uri = Uri.https(baseUrl, '/customer/reservations');
+    var map = new Map<String, dynamic>();
+    map['service'] = serviceName;
+    map['bookDate'] = bookDate;
+    map['bookTime'] = bookTime;
+    map['numPeople'] = '1';
 
     final response = await http.post(
       uri,
       headers: <String, String>{
         'Authorization' : 'Token $token',
-        "content-type": "application/json",
         "Accept": "application/json",
       },
-      body: jsonEncode(<String, String>{
-        'service': serviceName,
-        'bookDate': bookDate,
-        'bookTime': bookTime,
-        'numPeople': '1',
-      }),
+      body: map,
     );
     if (response.statusCode == 201) {
-      return 0;
+      return new Reservation.fromJson(json.decode(response.body));
     } else {
       throw Exception('Failed to makeReservation: statusCode ${response.statusCode}');
     }
@@ -173,7 +173,7 @@ class Requester {
         'Authorization' : 'Token $token'
       },
     );
-    if (response.statusCode == 201) {
+    if (response.statusCode == 204) {
       return 0;
     } else {
       throw Exception('Failed to cancelReservation: statusCode ${response.statusCode}');
@@ -299,16 +299,17 @@ class Requester {
   /// Successful: returns 0
   /// Otherwise: throws exception
   Future<int> checkInReservation(String token, int reservationId) async {
+
     var uri = Uri.https(baseUrl, '/provider/reservations/$reservationId');
+    var map = new Map<String, dynamic>();
+    map['status'] = "CP";
 
     final response = await http.put(
       uri,
       headers: <String, String>{
-        'Authorization' : 'Token $token'
+        'Authorization' : 'Token $token',
       },
-      body: jsonEncode({
-        "status": "CP",
-      }),
+      body: map,
     );
     if (response.statusCode == 200) {
       return 0;
@@ -334,15 +335,15 @@ class Requester {
   /// Otherwise: throws exception
   Future<int> noShowReservation(String token, int reservationId) async {
     var uri = Uri.https(baseUrl, '/provider/reservations/$reservationId');
+    var map = new Map<String, dynamic>();
+    map['status'] = "MS";
 
     final response = await http.put(
       uri,
       headers: <String, String>{
-        'Authorization' : 'Token $token'
+        'Authorization' : 'Token $token',
       },
-      body: jsonEncode({
-        "status": "MS",
-      }),
+      body: map,
     );
     if (response.statusCode == 200) {
       return 0;
