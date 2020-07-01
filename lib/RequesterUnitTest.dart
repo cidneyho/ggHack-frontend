@@ -44,7 +44,7 @@ class UnitTest {
   }
 
   static Future<void> testLogin() async {
-    token = await Requester().login(email, username, password1);
+    token = await Requester().login(username, password1);
     print("[P] testLogin " + token);
   }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gghack/helpers/Style.dart';
+import 'helpers/Style.dart';
 import 'helpers/Constants.dart';
+import 'models/User.dart';
+import 'Requester.dart';
 
 class ProviderLoginPage extends StatelessWidget {
   final _usernameController = TextEditingController();
@@ -38,8 +40,11 @@ class ProviderLoginPage extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        onPressed: () {
-          // TODO: if password correct,
+        onPressed: () async {
+          User.name = _usernameController.text;
+          User.token = await Requester().login(
+              _usernameController.text, _passwordController.text).catchError(
+                  (exp) => print("Error occurred in loginButton: $exp"));
           Navigator.of(context).pushNamed(phomePageTag);
         },
         padding: EdgeInsets.all(12),

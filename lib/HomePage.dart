@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gghack/Requester.dart';
 import 'helpers/Constants.dart';
 import 'helpers/Style.dart';
 import 'models/Service.dart';
 import 'models/ServiceList.dart';
 import 'DetailsPage.dart';
+import 'Requester.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -31,7 +31,6 @@ class _HomePageState extends State<HomePage> {
     _services.services = new List();
     _filteredServices.services = new List();
 
-    // TODO: get info from backend
     _getServices();
   }
 

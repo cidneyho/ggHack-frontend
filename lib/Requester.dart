@@ -18,7 +18,7 @@ class Requester {
   //////////////////////////////////////////////////////////////////////////////
   //                    Shared among Customer and Provider                    //
   //////////////////////////////////////////////////////////////////////////////
-  // Create Account [backend: DONE]
+  // Create Account
   /// Successful: returns the login token <string>
   /// Otherwise: throws exception
   Future<String> createAccount(
@@ -40,6 +40,7 @@ class Requester {
       }),
     );
     if (response.statusCode == 201) {
+      print("createCustomerAccount succeeded: username=$username");
       return json.decode(response.body)['key'];
     } else {
       throw Exception('Failed to createCustomerAccount: statusCode ${response.statusCode}');
@@ -47,11 +48,10 @@ class Requester {
   }
 
 
-  // Login [backend: DONE]
+  // Login
   /// Successful: returns the login token <string>
   /// Otherwise: throws exception
-  Future<String> login(
-      String email, String username, String password) async {
+  Future<String> login(String username, String password) async {
 
     var uri = Uri.https(baseUrl, '/rest-auth/login/');
 
@@ -64,10 +64,10 @@ class Requester {
       body: jsonEncode(<String, String>{
         'username': username,
         'password': password,
-        'email': email,
       }),
     );
     if (response.statusCode == 200) {
+      print("login succeeded: username=$username");
       return json.decode(response.body)['key'];
     } else {
       throw Exception('Failed to customerLogin: statusCode ${response.statusCode}');
@@ -75,7 +75,7 @@ class Requester {
   }
 
 
-  // Render all services (no authentication needed) [backend: DONE; frontend: tested-OK]
+  // Render all services (no authentication needed)
   /// Successful: returns the <ServiceList> parsed from json
   /// Otherwise: throws exception
   Future<ServiceList> renderServiceList() async {
@@ -84,6 +84,7 @@ class Requester {
 
     final response = await http.get(uri);
     if (response.statusCode == 200) {
+      print("renderServiceList succeeded");
       return ServiceList.fromJson(json.decode(response.body));
     } else {
       throw Exception('Failed to renderServiceList: statusCode ${response.statusCode}');
@@ -91,7 +92,7 @@ class Requester {
   }
 
 
-  // Search for services (no authentication needed) [backend: DONE]
+  // Search for services (no authentication needed)
   // ?? 'Partial match' is not allowed, so we'd better just use the current
   // frontend one instead of calling the API / using the following.
   /// Successful: returns the <ServiceList> parsed from json
@@ -113,7 +114,7 @@ class Requester {
   //////////////////////////////////////////////////////////////////////////////
   //                               For Customer                               //
   //////////////////////////////////////////////////////////////////////////////
-  // Render service homepage (for customer/user) (no authentication needed) [backend: DONE]
+  // Render service homepage (for customer/user) (no authentication needed)
   /// Successful: returns a <Service> object from json
   /// Otherwise: throws exception
   Future<Service> customerRenderService(int serviceId) async {
@@ -122,6 +123,7 @@ class Requester {
 
     final response = await http.get(uri);
     if (response.statusCode == 200) {
+      print("customerRenderService succeeded: id=$serviceId");
       return Service.fromJson(json.decode(response.body));
     } else {
       throw Exception(
@@ -153,6 +155,7 @@ class Requester {
       body: map,
     );
     if (response.statusCode == 201) {
+      print("makeReservation succeeded: serviceName=$serviceName");
       return new Reservation.fromJson(json.decode(response.body));
     } else {
       throw Exception('Failed to makeReservation: statusCode ${response.statusCode}');
@@ -160,7 +163,7 @@ class Requester {
   }
 
 
-  // Cancel reservation [WAITING]
+  // Cancel reservation
   /// Successful: returns 0
   /// Otherwise: throws exception
   Future<int> cancelReservation(String token, int reservationId) async {
@@ -174,6 +177,7 @@ class Requester {
       },
     );
     if (response.statusCode == 204) {
+      print("cancelReservation succeeded: reservationId=$reservationId");
       return 0;
     } else {
       throw Exception('Failed to cancelReservation: statusCode ${response.statusCode}');
@@ -181,7 +185,7 @@ class Requester {
   }
 
 
-  // Customer render reservation list [backend: DONE]
+  // Customer render reservation list
   /// Successful: returns <ReservationList> containing all reservations of the user
   /// Otherwise: throws exception
   Future<ReservationList> customerRenderReservationList(String token) async {
@@ -195,6 +199,7 @@ class Requester {
       },
     );
     if (response.statusCode == 200) {
+      print("customerRenderReservationList succeeded");
       return ReservationList.fromJson(json.decode(response.body));
     } else {
       throw Exception(
@@ -203,7 +208,7 @@ class Requester {
   }
 
 
-  // Render a reservation [backend: DONE]
+  // Render a reservation
   /// Successful: returns the corresponding <Reservation>
   /// Otherwise: throws exception
   Future<Reservation> renderSpecificReservation(String token, int reservationId) async {
@@ -217,6 +222,7 @@ class Requester {
       },
     );
     if (response.statusCode == 200) {
+      print("renderSpecificReservation succeeded: reservationId=$reservationId");
       return Reservation.fromJson(json.decode(response.body));
     } else {
       throw Exception(
@@ -229,7 +235,7 @@ class Requester {
   //////////////////////////////////////////////////////////////////////////////
   //                               For Provider                               //
   //////////////////////////////////////////////////////////////////////////////
-  // Create services [backend: DONE]
+  // Create services
   /// Successful: returns 0
   /// Otherwise: throws exception
   Future<Service> createService(String token, Service service) async {
@@ -256,6 +262,7 @@ class Requester {
       }),
     );
     if (response.statusCode == 201) {
+      print("createService succeeded: name=${service.name}");
       service = Service.fromJson(json.decode(response.body));
       return service;
     } else {
@@ -264,16 +271,17 @@ class Requester {
   }
 
 
-  // Render detail created service [backend: DONE]
+  // Render detail created service
   /// Same as customerRenderService
   /// Successful: returns a <Service> object from json
   /// Otherwise: throws exception
   Future<Service> providerRenderService(int serviceId) async {
+    print("(providerRenderService leads to customerRenderService)");
     return customerRenderService(serviceId);
   }
 
 
-  // Provider render reservation list [backend: DONE]
+  // Provider render reservation list
   /// Successful: returns <ReservationList> containing all reservations of the user
   /// Otherwise: throws exception
   Future<ReservationList> providerRenderReservationList(String token) async {
@@ -287,6 +295,7 @@ class Requester {
       },
     );
     if (response.statusCode == 200) {
+      print("providerRenderReservationList succeeded");
       return ReservationList.fromJson(json.decode(response.body));
     } else {
       throw Exception(
@@ -295,7 +304,7 @@ class Requester {
   }
 
 
-  // Check in for user after scanning the QR code [backend: Done]
+  // Check in for user after scanning the QR code
   /// Successful: returns 0
   /// Otherwise: throws exception
   Future<int> checkInReservation(String token, int reservationId) async {
@@ -312,6 +321,7 @@ class Requester {
       body: map,
     );
     if (response.statusCode == 200) {
+      print("checkInReservation succeeded: reservationId=$reservationId");
       return 0;
     } else {
       throw Exception('Failed to checkInReservation: statusCode ${response.statusCode}');
@@ -319,7 +329,7 @@ class Requester {
   }
 
 
-  // Generate the content for QR code [frontend-only]
+  // Generate the content for QR code
   /// *Not related to backend*
   /// Note that the QR code contains just the reservationId
   /// because the check-in API requires log-in and PUT method
@@ -346,6 +356,7 @@ class Requester {
       body: map,
     );
     if (response.statusCode == 200) {
+      print("noShowReservation succeeded: reservationId=$reservationId");
       return 0;
     } else {
       throw Exception('Failed to noShowReservation: statusCode ${response.statusCode}');
