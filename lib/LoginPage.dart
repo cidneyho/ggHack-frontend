@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gghack/helpers/Style.dart';
 import 'helpers/Constants.dart';
 
 class LoginPage extends StatelessWidget {
@@ -11,45 +12,28 @@ class LoginPage extends StatelessWidget {
     final username = TextFormField(
       controller: _usernameController,
       keyboardType: TextInputType.phone,
-      maxLength: 4,
       maxLines: 1,
-      decoration: InputDecoration(
-          hintText: usernameHintText,
-          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          hintStyle: TextStyle(
-              color: colorText,
-          )
-      ),
+      decoration: getInputDecoration(emailaddHintText),
       style: TextStyle(
         color: colorText,
       ),
     );
 
-    final password = TextFormField(
-      controller: _passwordController,
-      keyboardType: TextInputType.phone,
-      maxLength: 4,
-      maxLines: 1,
-      decoration: InputDecoration(
-          hintText: passwordHintText,
-          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          hintStyle: TextStyle(
-              color: colorText,
-          )
-      ),
-      style: TextStyle(
-        color: colorText,
-      ),
+    final password = Padding(
+      padding: EdgeInsets.only(top: 24.0),
+      child: TextFormField(
+        controller: _passwordController,
+        keyboardType: TextInputType.phone,
+        maxLines: 1,
+        decoration: getInputDecoration(passwordHintText),
+        style: TextStyle(
+          color: colorText,
+        ),
+      )
     );
 
     final loginButton = Padding(
-      padding: EdgeInsets.symmetric(horizontal: 64.0, vertical: 20.0),
+      padding: EdgeInsets.fromLTRB(64, 32, 64, 16),
       child: RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -72,7 +56,7 @@ class LoginPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
         ),
         onPressed: () {
-          // Navigator.of(context).pushNamed(create Account Page Tag);
+          Navigator.of(context).pushNamed(createAccountPageTag);
         },
         padding: EdgeInsets.all(12),
         color: colorDark,

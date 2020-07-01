@@ -3,7 +3,6 @@ import 'helpers/Constants.dart';
 import 'models/Service.dart';
 import 'models/ServiceList.dart';
 import 'Requester.dart';
-import 'DetailsPage.dart';
 
 class ProviderHomePage extends StatefulWidget {
   @override
