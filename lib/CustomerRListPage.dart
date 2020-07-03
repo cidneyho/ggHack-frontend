@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:gghack/QrCode.dart';
 import 'helpers/Constants.dart';
+import 'helpers/Style.dart';
 import 'helpers/Requester.dart';
 import 'models/Reservation.dart';
 import 'models/ReservationList.dart';
 import 'models/User.dart';
 
-
-class ProviderHomePage extends StatefulWidget {
+class CustomerRListPage extends StatefulWidget {
   @override
-  _ProviderHomePageState createState() {
-    return _ProviderHomePageState();
+  _CustomerRListPageState createState() {
+    return _CustomerRListPageState();
   }
 
 }
 
-class _ProviderHomePageState extends State<ProviderHomePage> {
+class _CustomerRListPageState extends State<CustomerRListPage> {
   final TextEditingController _filter = new TextEditingController();
 
   ReservationList _reservations = new ReservationList();
+  ReservationList _filteredReservations = new ReservationList();
 
+  String _searchText = "";
+  Icon _searchIcon = new Icon(Icons.search, color: Colors.white);
   Widget _appBarTitle = new Text(appTitle);
 
   @override
@@ -26,22 +30,24 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
     super.initState();
 
     _reservations.reservations = new List();
+    _filteredReservations.reservations = new List();
 
     _getReservations();
   }
 
   void _getReservations() async {
-    ReservationList reservations = await Requester().providerRenderReservationList(User.token);
+    ReservationList reservations = await Requester().customerRenderReservationList(User.token);
     setState(() {
       for (Reservation reservation in reservations.reservations) {
         this._reservations.reservations.add(reservation);
+        this._filteredReservations.reservations.add(reservation);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold (
+    return Scaffold(
       appBar: _buildBar(context),
       backgroundColor: Colors.white,
       body: _buildList(context),
@@ -51,22 +57,15 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
             children: <Widget>[
               DrawerHeader(
                 child: Text("Menu"),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: <Color>[
-                      colorGrad1,
-                      colorGrad2
-                    ],),
-                ),
+                decoration: getGradientBox(),
               ),
               ListTile(
-                title: Text("Edit Business"),
+                title: Text("Reservations"),
                 onTap: () {
                   Navigator.pop(context);
                 },
-              ), ]
+              ),
+            ]
         ),
       ),
       resizeToAvoidBottomPadding: false,
@@ -78,46 +77,59 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
       elevation: 0.2,
       centerTitle: true,
       title: _appBarTitle,
-      iconTheme: IconThemeData(color: Colors.white),
       flexibleSpace: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: <Color>[
-              colorGrad1,
-              colorGrad2
-            ],
-          ),
-        ),
+        decoration: getGradientBox(),
       ),
+      actions: <Widget>[
+        new IconButton(
+          icon: _searchIcon,
+          onPressed: _searchPressed,
+        ),
+      ],
+      iconTheme: IconThemeData(color: Colors.white),
     );
   }
 
   Widget _buildList(BuildContext context) {
-    return ListView (
+    // TODO: search implementation
+    if (_searchText.isNotEmpty) {
+      _filteredReservations.reservations = new List();
+      for (int i = 0; i < _reservations.reservations.length; i++) {
+        if (_reservations.reservations[i].service.name.toLowerCase().contains(
+            _searchText.toLowerCase())
+            || _reservations.reservations[i].service.address.toLowerCase().contains(
+                _searchText.toLowerCase())) {
+          _filteredReservations.reservations.add(_reservations.reservations[i]);
+        }
+      }
+    }
+
+    return ListView(
       padding: const EdgeInsets.only(top: 16.0),
-      children: this._reservations.reservations.map((data) => _buildListItem(context, data)).toList(),
+      children: this._filteredReservations.reservations.map((data) =>
+          _buildListItem(context, data)).toList(),
     );
   }
 
   Widget _buildListItem(BuildContext context, Reservation reservation) {
     return Card(
-      key: ValueKey(reservation.customer),
+      key: ValueKey(reservation.service.name),
       elevation: 0.2,
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
         height: 100,
         decoration: BoxDecoration(color: colorBase),
         child: ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          contentPadding: EdgeInsets.symmetric(
+              horizontal: 20.0, vertical: 10.0),
           leading: Container(
               padding: EdgeInsets.only(right: 12.0),
               decoration: new BoxDecoration(
                   border: new Border(
-                      right: new BorderSide(width: 1.0, color: Colors.white24))),
+                      right: new BorderSide(
+                          width: 1.0, color: Colors.white24))),
               child: Hero(
-                tag: "avatar_" + reservation.customer,
+                tag: "avatar_" + reservation.service.name,
                 child: new Image.network(
                   reservation.service.image,
                   height: 80,
@@ -135,12 +147,12 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                       children: <Widget>[
                         Container(
                             padding: const EdgeInsets.only(bottom: 6.0),
-                            child: Text(reservation.customer,
+                            child: Text(reservation.service.name,
                                 style: TextStyle(fontWeight: FontWeight.bold))
                         ),
                         RichText(
                           text: TextSpan(
-                            text: "What is this TextSpan for?",  // TODO What is it? Do we need it?
+                            text: '${reservation.bookTime}:00 on July ${reservation.bookDate}',
                             style: TextStyle(color: colorText),
                           ),
                           maxLines: 1,
@@ -149,51 +161,62 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                       ]
                   ))
             ],),
-          trailing: FlatButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            onPressed: () {
-              // confirm confirm
-              _showAlertDialog(context);
-            },
-            padding: EdgeInsets.all(8),
-            color: colorDark,
-            child: Text(checkinButtonText, style: TextStyle(color: Colors.white, fontSize: 14)),
-          ),
+          trailing:
+          Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.keyboard_arrow_right, size: 30.0)]),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context) => new QrCodePage(reservation: reservation)));
+          },
         ),
       ),
     );
   }
 
-  _showAlertDialog(BuildContext context) {
+  _CustomerRListPageState() {
+    _filter.addListener(() {
+      if (_filter.text.isEmpty) {
+        setState(() {
+          _searchText = "";
+          _resetReservations();
+        });
+      } else {
+        setState(() {
+          _searchText = _filter.text;
+        });
+      }
+    });
+  }
 
-    // set up the buttons
-    Widget cancelButton = FlatButton(
-      child: Text("Cancel"),
-      onPressed:  () { Navigator.pop(context); },
-    );
-    Widget continueButton = FlatButton(
-      child: Text("Confirm"),
-      onPressed:  () {},
-    );
+  void _resetReservations() {
+    this._filteredReservations.reservations = new List();
+    for (Reservation reservation in _reservations.reservations) {
+      this._filteredReservations.reservations.add(reservation);
+    }
+  }
 
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Confirm " + checkinButtonText),
-      // content: Text(""),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+  void _searchPressed() {
+    setState(() {
+      if (this._searchIcon.icon == Icons.search) {
+        this._searchIcon = new Icon(Icons.close, color: Colors.white);
+        this._appBarTitle = new TextField(
+          controller: _filter,
+          style: new TextStyle(color: Colors.white, fontSize: 18),
+          autofocus: true,
+          decoration: new InputDecoration(
+            prefixIcon: new Icon(Icons.search, color: Colors.white),
+            border: InputBorder.none,
+            hintText: searchBarHintText,
+            hintStyle: TextStyle(color: Colors.white, fontSize: 18),
+          ),
+        );
+      } else {
+        this._searchIcon = new Icon(Icons.search, color: Colors.white);
+        this._appBarTitle = new Text(appTitle);
+        _filter.clear();
+      }
+    });
   }
 }
