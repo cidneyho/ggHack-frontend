@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gghack/CustomerRListPage.dart';
 import 'helpers/Constants.dart';
 import 'helpers/Style.dart';
 import 'helpers/Requester.dart';
@@ -62,6 +63,9 @@ class _HomePageState extends State<HomePage> {
                 title: Text("Reservations"),
                 onTap: () {
                   Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => new CustomerRListPage()));
+                  // TODO but how do I pop this page (customerRListPage) out afterwards?
                 },
               ), ]
         ),
