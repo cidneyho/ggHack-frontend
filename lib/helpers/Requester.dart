@@ -282,6 +282,29 @@ class Requester {
   }
 
 
+  // Provider render self service list
+  /// Successful: returns <ServiceList> containing all services of the user
+  /// Otherwise: throws exception
+  Future<ServiceList> providerRenderServiceList(String token) async {
+    var uri = Uri.https(baseUrl, '/provider/reservations');
+
+    final response = await http.get(
+      uri,
+      headers: <String, String>{
+        'Authorization' : 'Token $token',
+        "Accept": "application/json",
+      },
+    );
+    if (response.statusCode == 200) {
+      print("providerRenderServiceList returned ok");
+      return ServiceList.fromJson(json.decode(response.body));
+    } else {
+      throw Exception(
+          'Failed to providerRenderServiceList: statusCode ${response.statusCode}');
+    }
+  }
+
+
   // Provider render reservation list
   /// Successful: returns <ReservationList> containing all reservations of the user
   /// Otherwise: throws exception

@@ -1,6 +1,8 @@
+/// This page is replaced by the pop-up dialog for now.
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter/material.dart';
 import 'helpers/Constants.dart';
+import 'helpers/Style.dart';
 import 'models/Reservation.dart';
 
 
@@ -14,7 +16,7 @@ class QrCodePage extends StatelessWidget {
     // box containing date, time, provider, service, and qr code
     final infoBox = Container(
         padding: const EdgeInsets.all(16),
-        color: Colors.green,
+        decoration: getGradientBox(),
         height: 330,
         width: 280,
         child: Column (
@@ -23,7 +25,7 @@ class QrCodePage extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                '07-${reservation.bookDate} ${reservation.bookTime}:00',
+                '07-0${reservation.bookDate} ${reservation.bookTime}:00',
                 style: TextStyle(fontSize: 25),
               ),
             ),
@@ -31,7 +33,7 @@ class QrCodePage extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Provider ${reservation.provider}", // TODO make it a more natural title after backend confirm the API
+                reservation.service.address,
                 style: TextStyle(fontSize: 25),
               ),
             ),
@@ -50,7 +52,12 @@ class QrCodePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Provider ${reservation.provider}"), // TODO make it a more natural title after backend confirm the API
+        elevation: 0.2,
+        centerTitle: true,
+        title: Text(reservation.service.name),
+        flexibleSpace: Container(
+          decoration: getGradientBox(),
+        ),
       ),
       body: Center(
         child: infoBox,
