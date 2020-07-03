@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'helpers/Style.dart';
 import 'helpers/Constants.dart';
+import 'helpers/Requester.dart';
 import 'models/User.dart';
-import 'Requester.dart';
 
 class ProviderLoginPage extends StatelessWidget {
   final _usernameController = TextEditingController();

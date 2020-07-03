@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'helpers/Constants.dart';
 import 'helpers/Style.dart';
+import 'helpers/Requester.dart';
 import 'models/Service.dart';
 import 'models/ServiceList.dart';
 import 'DetailsPage.dart';
-import 'Requester.dart';
 
 class HomePage extends StatefulWidget {
   @override

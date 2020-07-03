@@ -75,22 +75,22 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
 
   Widget _buildBar(BuildContext context) {
     return new AppBar (
-        elevation: 0.2,
-        centerTitle: true,
-        title: _appBarTitle,
-        iconTheme: IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: <Color>[
-                colorGrad1,
-                colorGrad2
-              ],
-            ),
+      elevation: 0.2,
+      centerTitle: true,
+      title: _appBarTitle,
+      iconTheme: IconThemeData(color: Colors.white),
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: <Color>[
+              colorGrad1,
+              colorGrad2
+            ],
           ),
         ),
+      ),
     );
   }
 
@@ -117,13 +117,13 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                   border: new Border(
                       right: new BorderSide(width: 1.0, color: Colors.white24))),
               child: Hero(
-                  tag: "avatar_" + reservation.customer,
-                  child: new Image.network(
-                      reservation.service.image,
-                      height: 80,
-                      width: 80,
-                      fit: BoxFit.cover,
-                  ),
+                tag: "avatar_" + reservation.customer,
+                child: new Image.network(
+                  reservation.service.image,
+                  height: 80,
+                  width: 80,
+                  fit: BoxFit.cover,
+                ),
               )
           ),
           title: Row(
@@ -134,9 +134,9 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Container(
-                          padding: const EdgeInsets.only(bottom: 6.0),
-                          child: Text(reservation.customer,
-                              style: TextStyle(fontWeight: FontWeight.bold))
+                            padding: const EdgeInsets.only(bottom: 6.0),
+                            child: Text(reservation.customer,
+                                style: TextStyle(fontWeight: FontWeight.bold))
                         ),
                         RichText(
                           text: TextSpan(
