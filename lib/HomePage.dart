@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
               child: Hero(
                   tag: "avatar_" + service.name,
                   child: new Image.network(
-                      service.photo,
+                      service.image,
                       height: 80,
                       width: 80,
                       fit: BoxFit.cover,

@@ -6,7 +6,7 @@ import 'package:gghack/models/ServiceList.dart';
 import 'package:gghack/models/Service.dart';
 import 'package:gghack/models/ReservationList.dart';
 import 'package:gghack/models/Reservation.dart';
-import 'package:gghack/helpers/Constants.dart';
+import 'package:gghack/helpers/Constants.dart' as Constant;
 
 class UnitTest {
   static String t = "5";  // Change this if you
@@ -15,23 +15,28 @@ class UnitTest {
   static String password1 = "mimahaomafan";
   static String password2 = password1;
   static String token;
-  static String bookDate = "2020-07-12";
-  static String bookTime = "18:00";
+  static int bookDate = 5;
+  static int bookTime = 13;
   static ServiceList serviceList;
   static Service service;
   static ReservationList reservationList;
   static Reservation reservation;
 
-  static String serviceName = "Kate's Boba Shop 3";
+  static String owner = email;
+  static String serviceName = "Kate's Boba Shop 4";
   static String address = "In your heart <3";
   static String introduction = "Kate enjoys making boba so much that she decided to quit UST and start her own business, but this is her own business. ^^";
   static String type = "CL";
   static double longitude = 25.001741;
   static double latitude = 121.463034;
   static double rating = 5.0;
-  static String imageUrl = "https://www.moshimoshi-nippon.jp/wp/wp-content/uploads/2019/03/TP-TEA.png";
+  static String image = "https://www.moshimoshi-nippon.jp/wp/wp-content/uploads/2019/03/TP-TEA.png";
   static int maxCapacity = 3;
-
+  static int startTime = 10;
+  static int closeTime = 22;
+  static String placeId = "ChIJb22yusWrQjQRFj_ymKyFTk0";
+  static List<List<int>> freeSlots = Constant.freeslots;
+  static List<List<int>> popularTimes = Constant.freeslots;
 
   //////////////////////////////////////////////////////////////////////////////
   //                    Shared among Customer and Provider                    //
@@ -62,24 +67,21 @@ class UnitTest {
   //////////////////////////////////////////////////////////////////////////////
   static Future<void> testCustomerRenderService() async {
     service = await Requester().customerRenderService(
-        service.serviceId);
+        service.id);
     print("[P] testCustomerRenderService " + service.name);
   }
 
   static Future<void> testMakeReservation() async {
     fillService();
-    print("Try making reservation to ${service.name}");
-    print("   Token $token");
-    print("   date $bookDate");
-    print("   time $bookTime");
+    print("Try making reservation to ${service.name} with Token $token");
     reservation = await Requester().makeReservation(
         token, service.name, bookDate, bookTime);
-    print("[P] testMakeReservation id=${reservation.reservationId}");
+    print("[P] testMakeReservation id=${reservation.id}");
   }
 
   static Future<void> testCancelReservation() async {
     int code = await Requester().cancelReservation(
-        token, reservation.reservationId);
+        token, reservation.id);
     print("[P] testCancelReservation code=" + code.toString());
   }
 
@@ -94,8 +96,8 @@ class UnitTest {
 
   static Future<void> testRenderSpecificReservation() async {
     reservation = await Requester().renderSpecificReservation(
-        token, reservation.reservationId);
-    print("[P] testRenderSpecificReservation: " + reservation.reservationId.toString());
+        token, reservation.id);
+    print("[P] testRenderSpecificReservation: " + reservation.id.toString());
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -103,19 +105,22 @@ class UnitTest {
   //////////////////////////////////////////////////////////////////////////////
   static fillService() async {
     service = new Service (
-      serviceId: -1,
+      id: -1,
+//      owner: owner,
       name: serviceName,
       address: address,
       introduction: introduction,
-      photo: imageUrl,
-      time: optime,
-      slots: freeslots,
-      reservation: reservationInfo,
       type: type,
       longitude: longitude,
       latitude: latitude,
       rating: rating,
+      image: image,
       maxCapacity: maxCapacity,
+      startTime: startTime,
+      closeTime: closeTime,
+      placeId: placeId,
+//      freeSlots: freeSlots,
+//      popularTimes: popularTimes,
     );
   }
   static Future<void> testCreateService() async {
@@ -128,7 +133,7 @@ class UnitTest {
 
   static Future<void> testProviderRenderService() async {
     service = await Requester().providerRenderService(
-        service.serviceId);
+        service.id);
     print("[P] testProviderRenderService service=" + service.name);
   }
 
@@ -139,14 +144,14 @@ class UnitTest {
 
   static Future<void> testCheckInReservation() async {
     int code = await Requester().checkInReservation(
-        token, reservation.reservationId
+        token, reservation.id
     );
     print("[P] testCheckInReservation code=$code");
   }
 
   static Future<void> testNoShowReservation() async {
     int code = await Requester().noShowReservation(
-        token, reservation.reservationId
+        token, reservation.id
     );
     print("[P] testNoShowReservation code=$code");
   }
@@ -162,20 +167,22 @@ class UnitTest {
   }
 
 
-  // Passed
+  // Passed (latest test at 14:20 on Jul 3, 2020)
   static Future<void> testCustomer() async {
     print("=== Start unit test: testCustomer ===");
 
-    await testCreateAccount().catchError(_onError); // P
+    //await testCreateAccount().catchError(_onError); // P
     await testLogin().catchError(_onError); // P
     await testRenderServiceList().catchError(_onError); // P
     await testCustomerRenderService().catchError(_onError); // P
+
+    await testCustomerRenderReservationList().catchError(_onError);  // P
 
     print("=== End unit test: testCustomer ===");
   }
 
 
-  // Passed
+  // Passed (latest test at 14:20 on Jul 3, 2020)
   static Future<void> testProvider() async {
     print("=== Start unit test: testProvider ===");
 
@@ -184,23 +191,27 @@ class UnitTest {
     await testCreateService().catchError(_onError);  // P
     await testProviderRenderService().catchError(_onError);  // P
 
+    await testProviderRenderReservationList().catchError(_onError);  // P
+
     print("=== End unit test: testProvider ===");
   }
 
 
-  // Passed
+  // Passed (latest test at 14:20 on Jul 3, 2020)
   static Future<void> testMakeAndCancelReservation() async {
     print("=== Start unit test: testMakeAndCancelReservation ===");
 
     await testLogin().catchError(_onError);  // P
 
-    // Make a reservation and cancel it
+    // Make a reservation
     await testMakeReservation().catchError(_onError);  // P
     await testCustomerRenderReservationList().catchError(_onError);  // P
     await testProviderRenderReservationList().catchError(_onError);  // P
 
+    // Render the reservation
     await testRenderSpecificReservation().catchError(_onError);  // P
 
+    // Cancel the reservation
     await testCancelReservation().catchError(_onError);  // P
     await testCustomerRenderReservationList().catchError(_onError);  // P
     await testProviderRenderReservationList().catchError(_onError);  // P
@@ -209,7 +220,7 @@ class UnitTest {
   }
 
 
-  // Passed
+  // Passed (latest test at 14:20 on Jul 3, 2020)
   static Future<void> testCheckInNoShowReservation() async {
     print("=== Start unit test: testCheckInNoShowReservation ===");
 

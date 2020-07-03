@@ -119,7 +119,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
               child: Hero(
                   tag: "avatar_" + reservation.customer,
                   child: new Image.network(
-                      reservation.service.photo,
+                      reservation.service.image,
                       height: 80,
                       width: 80,
                       fit: BoxFit.cover,
@@ -140,7 +140,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                         ),
                         RichText(
                           text: TextSpan(
-                            text: reservation.service.reservation,  // TODO What is it? Do we need it?
+                            text: "What is this TextSpan for?",  // TODO What is it? Do we need it?
                             style: TextStyle(color: colorText),
                           ),
                           maxLines: 1,

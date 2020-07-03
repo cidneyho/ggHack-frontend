@@ -40,7 +40,7 @@ class Requester {
       }),
     );
     if (response.statusCode == 201) {
-      print("createCustomerAccount succeeded: username=$username");
+      print("createCustomerAccount returned ok: username=$username");
       return json.decode(response.body)['key'];
     } else {
       throw Exception('Failed to createCustomerAccount: statusCode ${response.statusCode}');
@@ -67,7 +67,7 @@ class Requester {
       }),
     );
     if (response.statusCode == 200) {
-      print("login succeeded: username=$username");
+      print("login returned ok: username=$username");
       return json.decode(response.body)['key'];
     } else {
       throw Exception('Failed to customerLogin: statusCode ${response.statusCode}');
@@ -84,7 +84,7 @@ class Requester {
 
     final response = await http.get(uri);
     if (response.statusCode == 200) {
-      print("renderServiceList succeeded");
+      print("renderServiceList returned ok");
       return ServiceList.fromJson(json.decode(response.body));
     } else {
       throw Exception('Failed to renderServiceList: statusCode ${response.statusCode}');
@@ -123,7 +123,7 @@ class Requester {
 
     final response = await http.get(uri);
     if (response.statusCode == 200) {
-      print("customerRenderService succeeded: id=$serviceId");
+      print("customerRenderService returned ok: id=$serviceId");
       return Service.fromJson(json.decode(response.body));
     } else {
       throw Exception(
@@ -137,13 +137,12 @@ class Requester {
   /// Otherwise: throws exception
   /// Note: backend accepts form data only (and only for this function).
   Future<Reservation> makeReservation(
-      String token, String serviceName, String bookDate, String bookTime) async {
-
+      String token, String serviceName, int bookDate, int bookTime) async {
     var uri = Uri.https(baseUrl, '/customer/reservations');
-    var map = new Map<String, dynamic>();
+    var map = new Map<String, String>();
     map['service'] = serviceName;
-    map['bookDate'] = bookDate;
-    map['bookTime'] = bookTime;
+    map['bookDate'] = bookDate.toString();
+    map['bookTime'] = bookTime.toString();
     map['numPeople'] = '1';
 
     final response = await http.post(
@@ -155,7 +154,7 @@ class Requester {
       body: map,
     );
     if (response.statusCode == 201) {
-      print("makeReservation succeeded: serviceName=$serviceName");
+      print("makeReservation returned ok: serviceName=$serviceName");
       return new Reservation.fromJson(json.decode(response.body));
     } else {
       throw Exception('Failed to makeReservation: statusCode ${response.statusCode}');
@@ -177,7 +176,7 @@ class Requester {
       },
     );
     if (response.statusCode == 204) {
-      print("cancelReservation succeeded: reservationId=$reservationId");
+      print("cancelReservation returned ok: reservationId=$reservationId");
       return 0;
     } else {
       throw Exception('Failed to cancelReservation: statusCode ${response.statusCode}');
@@ -199,7 +198,7 @@ class Requester {
       },
     );
     if (response.statusCode == 200) {
-      print("customerRenderReservationList succeeded");
+      print("customerRenderReservationList returned ok");
       return ReservationList.fromJson(json.decode(response.body));
     } else {
       throw Exception(
@@ -222,7 +221,7 @@ class Requester {
       },
     );
     if (response.statusCode == 200) {
-      print("renderSpecificReservation succeeded: reservationId=$reservationId");
+      print("renderSpecificReservation returned ok: reservationId=$reservationId");
       return Reservation.fromJson(json.decode(response.body));
     } else {
       throw Exception(
@@ -241,28 +240,30 @@ class Requester {
   Future<Service> createService(String token, Service service) async {
 
     var uri = Uri.https(baseUrl, '/provider/services');
+    var map = new Map<String, dynamic>();
+    map['name'] = service.name;
+    map['address'] = service.address;
+    map['introduction'] = service.introduction;
+    map['type'] = service.type;
+    map['longitude'] = service.longitude.toString();
+    map['latitude'] = service.latitude.toString();
+    map['rating'] = service.rating.toString();
+    map['image'] = service.image;
+    map['maxCapacity'] = service.maxCapacity.toString();
+    map['startTime'] = service.startTime.toString();
+    map['closeTime'] = service.closeTime.toString();
+    map['placeId'] = service.placeId;
 
     final response = await http.post(
       uri,
       headers: <String, String>{
         'Authorization' : 'Token $token',
-        "content-type": "application/json",
         "Accept": "application/json",
       },
-      body: jsonEncode({
-        "name": service.name,
-        "address": service.address,
-        "introduction": service.introduction,
-        "type": service.type,
-        "longitude": service.longitude,
-        "latitude": service.latitude,
-        "rating": service.rating,
-        "image": service.photo,
-        "maxCapacity": service.maxCapacity,
-      }),
+      body: map,
     );
     if (response.statusCode == 201) {
-      print("createService succeeded: name=${service.name}");
+      print("createService returned ok: name=${service.name}");
       service = Service.fromJson(json.decode(response.body));
       return service;
     } else {
@@ -295,7 +296,7 @@ class Requester {
       },
     );
     if (response.statusCode == 200) {
-      print("providerRenderReservationList succeeded");
+      print("providerRenderReservationList returned ok");
       return ReservationList.fromJson(json.decode(response.body));
     } else {
       throw Exception(
@@ -321,7 +322,7 @@ class Requester {
       body: map,
     );
     if (response.statusCode == 200) {
-      print("checkInReservation succeeded: reservationId=$reservationId");
+      print("checkInReservation returned ok: reservationId=$reservationId");
       return 0;
     } else {
       throw Exception('Failed to checkInReservation: statusCode ${response.statusCode}');
@@ -356,7 +357,7 @@ class Requester {
       body: map,
     );
     if (response.statusCode == 200) {
-      print("noShowReservation succeeded: reservationId=$reservationId");
+      print("noShowReservation returned ok: reservationId=$reservationId");
       return 0;
     } else {
       throw Exception('Failed to noShowReservation: statusCode ${response.statusCode}');
