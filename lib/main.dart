@@ -6,7 +6,6 @@ import 'CreateAccountPage.dart';
 import 'ProviderLoginPage.dart';
 import 'ProviderHomePage.dart';
 import 'HomePage.dart';
-import 'QrCode.dart';
 
 void main() {
   runApp(RossApp());

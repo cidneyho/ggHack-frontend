@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'helpers/Constants.dart';
-import 'models/Service.dart';
-import 'models/ServiceList.dart';
-import 'Requester.dart';
+import 'helpers/Requester.dart';
+import 'models/Reservation.dart';
+import 'models/ReservationList.dart';
+import 'models/User.dart';
+
 
 class ProviderHomePage extends StatefulWidget {
   @override
@@ -15,7 +17,7 @@ class ProviderHomePage extends StatefulWidget {
 class _ProviderHomePageState extends State<ProviderHomePage> {
   final TextEditingController _filter = new TextEditingController();
 
-  ServiceList _services = new ServiceList();
+  ReservationList _reservations = new ReservationList();
 
   Widget _appBarTitle = new Text(appTitle);
 
@@ -23,17 +25,16 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
   void initState() {
     super.initState();
 
-    _services.services = new List();
+    _reservations.reservations = new List();
 
-    // TODO: get info from backend
-    _getServices();
+    _getReservations();
   }
 
-  void _getServices() async {
-    ServiceList services = await Requester().renderServiceList(); // TODO change it to it's real API
+  void _getReservations() async {
+    ReservationList reservations = await Requester().providerRenderReservationList(User.token);
     setState(() {
-      for (Service service in services.services) {
-        this._services.services.add(service);
+      for (Reservation reservation in reservations.reservations) {
+        this._reservations.reservations.add(reservation);
       }
     });
   }
@@ -96,13 +97,13 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
   Widget _buildList(BuildContext context) {
     return ListView (
       padding: const EdgeInsets.only(top: 16.0),
-      children: this._services.services.map((data) => _buildListItem(context, data)).toList(),
+      children: this._reservations.reservations.map((data) => _buildListItem(context, data)).toList(),
     );
   }
 
-  Widget _buildListItem(BuildContext context, Service service) {
+  Widget _buildListItem(BuildContext context, Reservation reservation) {
     return Card(
-      key: ValueKey(service.name),
+      key: ValueKey(reservation.customer),
       elevation: 0.2,
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
@@ -116,9 +117,9 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                   border: new Border(
                       right: new BorderSide(width: 1.0, color: Colors.white24))),
               child: Hero(
-                  tag: "avatar_" + service.name,
+                  tag: "avatar_" + reservation.customer,
                   child: new Image.network(
-                      service.photo,
+                      reservation.service.image,
                       height: 80,
                       width: 80,
                       fit: BoxFit.cover,
@@ -134,12 +135,12 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                       children: <Widget>[
                         Container(
                           padding: const EdgeInsets.only(bottom: 6.0),
-                          child: Text(service.name,
+                          child: Text(reservation.customer,
                               style: TextStyle(fontWeight: FontWeight.bold))
                         ),
                         RichText(
                           text: TextSpan(
-                            text: service.reservation,
+                            text: "What is this TextSpan for?",  // TODO What is it? Do we need it?
                             style: TextStyle(color: colorText),
                           ),
                           maxLines: 1,
