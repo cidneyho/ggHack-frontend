@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gghack/Requester.dart';
 import 'helpers/Constants.dart';
+import 'helpers/Style.dart';
 import 'models/Service.dart';
 import 'models/ServiceList.dart';
-//import 'models/ServiceService.dart';
 import 'DetailsPage.dart';
+import 'Requester.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -22,7 +22,6 @@ class _HomePageState extends State<HomePage> {
 
   String _searchText = "";
   Icon _searchIcon = new Icon(Icons.search, color: Colors.white);
-  Icon _menuIcon = new Icon(Icons.menu, color: Colors.white);
   Widget _appBarTitle = new Text(appTitle);
 
   @override
@@ -32,7 +31,6 @@ class _HomePageState extends State<HomePage> {
     _services.services = new List();
     _filteredServices.services = new List();
 
-    // TODO: get info from backend
     _getServices();
   }
 
@@ -58,15 +56,7 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               DrawerHeader(
                 child: Text("Menu"),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: <Color>[
-                      colorGrad1,
-                      colorGrad2
-                    ],),
-                ),
+                decoration: getGradientBox(),
               ),
               ListTile(
                 title: Text("Reservations"),
@@ -86,16 +76,7 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         title: _appBarTitle,
         flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: <Color>[
-                colorGrad1,
-                colorGrad2
-              ],
-            ),
-          ),
+          decoration: getGradientBox(),
         ),
         actions: <Widget>[
           new IconButton(
@@ -143,7 +124,7 @@ class _HomePageState extends State<HomePage> {
               child: Hero(
                   tag: "avatar_" + service.name,
                   child: new Image.network(
-                      service.photo,
+                      service.image,
                       height: 80,
                       width: 80,
                       fit: BoxFit.cover,
@@ -219,6 +200,7 @@ class _HomePageState extends State<HomePage> {
           autofocus: true,
           decoration: new InputDecoration(
             prefixIcon: new Icon(Icons.search, color: Colors.white),
+            border: InputBorder.none,
             hintText: searchBarHintText,
             hintStyle: TextStyle(color: Colors.white, fontSize: 18),
           ),
