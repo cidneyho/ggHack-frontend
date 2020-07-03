@@ -169,7 +169,7 @@ class DetailsPage extends StatelessWidget {
           dayList.add(t);
         }
       }
-      pickerData.add({weekdays[d] : dayList});
+      pickerData.add({days[d+1] : dayList});
     }
     return pickerData;
   }
@@ -214,7 +214,7 @@ class DetailsPage extends StatelessWidget {
         hideHeader: true,
         title: new Text(reservePopupText),
         onConfirm: (Picker picker, List value) async {
-          int bookDate = value[0] + 1;
+          int bookDate = value[0];
           int bookTime = int.parse(picker.getSelectedValues()[1]);
           await Requester().makeReservation(
             User.token, service.name, bookDate, bookTime).then((_) {

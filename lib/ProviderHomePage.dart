@@ -118,7 +118,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
 
   Widget _buildListItem(BuildContext context, Reservation reservation) {
     return Card(
-      key: ValueKey(reservation.customer),
+      key: ValueKey(reservation.id),
       elevation: 0.2,
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:gghack/QrCode.dart';
-import 'HomePage.dart';
 import 'helpers/Constants.dart';
 import 'helpers/Style.dart';
 import 'helpers/Requester.dart';
@@ -79,7 +77,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
     return new AppBar (
       elevation: 0.2,
       centerTitle: true,
-      title: Text("Reservations"),//_appBarTitle,
+      title: _appBarTitle,
       flexibleSpace: Container(
         decoration: getGradientBox(),
       ),
@@ -116,7 +114,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
 
   Widget _buildListItem(BuildContext context, Reservation reservation) {
     return Card(
-      key: ValueKey(reservation.service.name),
+      key: ValueKey(reservation.service.id),
       elevation: 0.2,
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
