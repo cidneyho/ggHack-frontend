@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:gghack/QrCode.dart';
+import 'HomePage.dart';
 import 'helpers/Constants.dart';
 import 'helpers/Style.dart';
 import 'helpers/Requester.dart';
@@ -61,8 +62,9 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                 decoration: getGradientBox(),
               ),
               ListTile(
-                title: Text("Reservations"),
+                title: Text("Services"),
                 onTap: () {
+                  Navigator.pop(context);
                   Navigator.pop(context);
                 },
               ),
@@ -77,7 +79,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
     return new AppBar (
       elevation: 0.2,
       centerTitle: true,
-      title: _appBarTitle,
+      title: Text("Reservations"),//_appBarTitle,
       flexibleSpace: Container(
         decoration: getGradientBox(),
       ),
