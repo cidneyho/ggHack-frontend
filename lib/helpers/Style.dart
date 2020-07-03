@@ -38,6 +38,8 @@ BoxDecoration getGradientBox() {
 
 InputDecoration getInputDecoration(String hintText) {
   return InputDecoration(
+    filled: true,
+    fillColor: Colors.white,
     hintText: hintText,
     contentPadding: EdgeInsets.symmetric(horizontal: 20),
     border: OutlineInputBorder(

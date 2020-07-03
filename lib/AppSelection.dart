@@ -14,7 +14,7 @@ class AppSelection extends StatelessWidget {
         Navigator.of(context).pushNamed(loginPageTag);
       },
       padding: EdgeInsets.all(20.0),
-      color: colorDarker,
+      color: colorDark,
       child: Text(userVersionText, style: TextStyle(color: Colors.white, fontSize: 20)),
     );
 
@@ -28,13 +28,13 @@ class AppSelection extends StatelessWidget {
           Navigator.of(context).pushNamed(ploginPageTag);
         },
         padding: EdgeInsets.all(20.0),
-        color: colorDarker,
+        color: colorDark,
         child: Text(providerVersionText, style: TextStyle(color: Colors.white, fontSize: 20)),
       )
     );
 
     return Scaffold(
-      backgroundColor: colorDark,
+      backgroundColor: colorBackground,
       body: Center(
         child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

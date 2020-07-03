@@ -51,7 +51,7 @@ class ProviderLoginPage extends StatelessWidget {
           }
         },
         padding: EdgeInsets.all(12),
-        color: colorDarker,
+        color: colorDark,
         child: Text(loginButtonText,
             style: TextStyle(color: Colors.white, fontSize: 16)),
       ),
@@ -67,15 +67,15 @@ class ProviderLoginPage extends StatelessWidget {
           Navigator.of(context).pushNamed(pcreateAccountPageTag);
         },
         padding: EdgeInsets.all(12),
-        color: colorDark,
+        color: Colors.transparent,
         child: Text(createButtonText,
-            style: TextStyle(color: Colors.white, fontSize: 16, decoration: TextDecoration.underline)
+            style: TextStyle(color: colorText, fontSize: 16, decoration: TextDecoration.underline)
         ),
       ),
     );
 
     return Scaffold(
-      backgroundColor: colorDark,
+      backgroundColor: colorBackground,
       body: Center(
         child: ListView(
           shrinkWrap: true,

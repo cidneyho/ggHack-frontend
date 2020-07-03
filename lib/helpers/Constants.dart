@@ -5,6 +5,7 @@ Color colorBase = Color.fromRGBO(168, 195, 179, 0.2);
 Color colorDark = Color.fromRGBO(131, 174, 154, 1.0);
 Color colorDarker = Color.fromRGBO(48, 118, 113, 1.0);
 Color colorText = Colors.black54;
+Color colorBackground = Colors.lightGreen[50]; // Colors.white;
 
 Color colorGrad1 = Color.fromRGBO(103, 178, 111, 1.0);
 Color colorGrad2 = Color.fromRGBO(76, 162, 205, 1.0);
