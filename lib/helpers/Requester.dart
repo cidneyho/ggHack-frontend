@@ -40,10 +40,10 @@ class Requester {
       }),
     );
     if (response.statusCode == 201) {
-      print("createCustomerAccount returned ok: username=$username");
+      print("createAccount returned ok: username=$username");
       return json.decode(response.body)['key'];
     } else {
-      throw Exception('Failed to createCustomerAccount: statusCode ${response.statusCode}');
+      throw Exception('Failed to createAccount: statusCode ${response.statusCode}');
     }
   }
 
