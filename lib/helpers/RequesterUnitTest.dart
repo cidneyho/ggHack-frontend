@@ -1,5 +1,5 @@
 /// Usage:
-///   import 'package:gghack/RequesterUnitTest.dart';
+///   import 'package:gghack/helpers/RequesterUnitTest.dart';
 ///   UnitTest.testCustomer();
 import 'Requester.dart';
 import 'package:gghack/models/ServiceList.dart';
@@ -9,9 +9,9 @@ import 'package:gghack/models/Reservation.dart';
 import 'package:gghack/helpers/Constants.dart' as Constant;
 
 class UnitTest {
-  static String t = "5";  // Change this if you
+  static String t = "";  // Change this if you
   static String email = "email$t@gmail.com";
-  static String username = "admin$t";
+  static String username = "Kate$t";
   static String password1 = "mimahaomafan";
   static String password2 = password1;
   static String token;
@@ -23,7 +23,7 @@ class UnitTest {
   static Reservation reservation;
 
   static String owner = email;
-  static String serviceName = "Kate's Boba Shop 4";
+  static String serviceName = "Kate's Boba Shop #2";
   static String address = "In your heart <3";
   static String introduction = "Kate enjoys making boba so much that she decided to quit UST and start her own business, but this is her own business. ^^";
   static String type = "CL";
@@ -167,11 +167,11 @@ class UnitTest {
   }
 
 
-  // Passed (latest test at 14:20 on Jul 3, 2020)
+  // Passed (latest test: 2020-07-03 16:15)
   static Future<void> testCustomer() async {
     print("=== Start unit test: testCustomer ===");
 
-    //await testCreateAccount().catchError(_onError); // P
+//    await testCreateAccount().catchError(_onError); // P
     await testLogin().catchError(_onError); // P
     await testRenderServiceList().catchError(_onError); // P
     await testCustomerRenderService().catchError(_onError); // P
@@ -182,14 +182,14 @@ class UnitTest {
   }
 
 
-  // Passed (latest test at 14:20 on Jul 3, 2020)
+  // Passed (latest test: 2020-07-03 16:28)
   static Future<void> testProvider() async {
     print("=== Start unit test: testProvider ===");
 
     await testLogin().catchError(_onError);  // P
 
-    await testCreateService().catchError(_onError);  // P
-    await testProviderRenderService().catchError(_onError);  // P
+//    await testCreateService().catchError(_onError);  // P
+//    await testProviderRenderService().catchError(_onError);  // P
 
     await testProviderRenderReservationList().catchError(_onError);  // P
 
@@ -197,7 +197,7 @@ class UnitTest {
   }
 
 
-  // Passed (latest test at 14:20 on Jul 3, 2020)
+  // Passed (latest test: 2020-07-03 16:29)
   static Future<void> testMakeAndCancelReservation() async {
     print("=== Start unit test: testMakeAndCancelReservation ===");
 
@@ -220,7 +220,7 @@ class UnitTest {
   }
 
 
-  // Passed (latest test at 14:20 on Jul 3, 2020)
+  // Server error 500 (latest test: 2020-07-03 16:39)
   static Future<void> testCheckInNoShowReservation() async {
     print("=== Start unit test: testCheckInNoShowReservation ===");
 

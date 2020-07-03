@@ -27,7 +27,7 @@ class Reservation {
       customer: json['customer'],
       service: Service.fromJson(json['service']),
       provider: json['serviceOwner'],
-      bookDate: int.parse(json['bookDate']), // TODO it will be just int
+      bookDate: json['bookDate'],
       bookTime: json['bookTime'],
       numPeople: json['numPeople'],
       status: json['status'],

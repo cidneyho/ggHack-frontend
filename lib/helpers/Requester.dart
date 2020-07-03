@@ -353,7 +353,8 @@ class Requester {
       uri,
       headers: <String, String>{
         'Authorization' : 'Token $token',
-      },
+//        "content-type": "application/json",
+        },
       body: map,
     );
     if (response.statusCode == 200) {
