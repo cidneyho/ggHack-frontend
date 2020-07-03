@@ -15,7 +15,7 @@ class ProviderLoginPage extends StatelessWidget {
       controller: _usernameController,
       keyboardType: TextInputType.phone,
       maxLines: 1,
-      decoration: getInputDecoration(emailaddHintText),
+      decoration: getInputDecoration(usernameHintText),
       style: TextStyle(
         color: colorText,
       ),
@@ -45,7 +45,10 @@ class ProviderLoginPage extends StatelessWidget {
           User.token = await Requester().login(
               _usernameController.text, _passwordController.text).catchError(
                   (exp) => print("Error occurred in loginButton: $exp"));
-          Navigator.of(context).pushNamed(phomePageTag);
+          
+          if (User.token != null) {
+              Navigator.of(context).pushNamed(phomePageTag);
+          }
         },
         padding: EdgeInsets.all(12),
         color: colorDarker,
@@ -61,7 +64,7 @@ class ProviderLoginPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
         ),
         onPressed: () {
-          // Navigator.of(context).pushNamed(create Business Account Page Tag);
+          Navigator.of(context).pushNamed(pcreateAccountPageTag);
         },
         padding: EdgeInsets.all(12),
         color: colorDark,

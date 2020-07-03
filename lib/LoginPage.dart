@@ -15,7 +15,7 @@ class LoginPage extends StatelessWidget {
       controller: _usernameController,
       keyboardType: TextInputType.phone,
       maxLines: 1,
-      decoration: getInputDecoration(emailaddHintText),
+      decoration: getInputDecoration(usernameHintText),
       style: TextStyle(
         color: colorText,
       ),
@@ -45,7 +45,10 @@ class LoginPage extends StatelessWidget {
           User.token = await Requester().login(
               _usernameController.text, _passwordController.text).catchError(
                   (exp) => print("Error occurred in loginButton: $exp"));
-          Navigator.of(context).pushNamed(homePageTag);
+          
+          if (User.token != null) {
+              Navigator.of(context).pushNamed(homePageTag);
+          }
         },
         padding: EdgeInsets.all(12),
         color: colorDarker,

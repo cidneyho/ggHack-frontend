@@ -21,6 +21,7 @@ const homePageTag = 'Home Page';
 const phomePageTag = 'Provider Home Page';
 const appSelectionTag = 'App Selection';
 const createAccountPageTag = 'Create Account Page';
+const pcreateAccountPageTag = 'Provider Create Account Page';
 
 // strings
 const appTitle = "";
