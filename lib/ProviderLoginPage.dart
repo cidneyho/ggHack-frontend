@@ -15,7 +15,7 @@ class ProviderLoginPage extends StatelessWidget {
       controller: _usernameController,
       keyboardType: TextInputType.phone,
       maxLines: 1,
-      decoration: getInputDecoration(emailaddHintText),
+      decoration: getInputDecoration(usernameHintText),
       style: TextStyle(
         color: colorText,
       ),
@@ -27,6 +27,7 @@ class ProviderLoginPage extends StatelessWidget {
         controller: _passwordController,
         keyboardType: TextInputType.phone,
         maxLines: 1,
+        obscureText: true,
         decoration: getInputDecoration(passwordHintText),
         style: TextStyle(
           color: colorText,
@@ -45,10 +46,13 @@ class ProviderLoginPage extends StatelessWidget {
           User.token = await Requester().login(
               _usernameController.text, _passwordController.text).catchError(
                   (exp) => print("Error occurred in loginButton: $exp"));
-          Navigator.of(context).pushNamed(phomePageTag);
+          
+          if (User.token != null) {
+              Navigator.of(context).pushNamed(phomePageTag);
+          }
         },
         padding: EdgeInsets.all(12),
-        color: colorDarker,
+        color: colorDark,
         child: Text(loginButtonText,
             style: TextStyle(color: Colors.white, fontSize: 16)),
       ),
@@ -61,18 +65,18 @@ class ProviderLoginPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
         ),
         onPressed: () {
-          // Navigator.of(context).pushNamed(create Business Account Page Tag);
+          Navigator.of(context).pushNamed(pcreateAccountPageTag);
         },
         padding: EdgeInsets.all(12),
-        color: colorDark,
+        color: Colors.transparent,
         child: Text(createButtonText,
-            style: TextStyle(color: Colors.white, fontSize: 16, decoration: TextDecoration.underline)
+            style: TextStyle(color: colorText, fontSize: 16, decoration: TextDecoration.underline)
         ),
       ),
     );
 
     return Scaffold(
-      backgroundColor: colorDark,
+      backgroundColor: colorBackground,
       body: Center(
         child: ListView(
           shrinkWrap: true,

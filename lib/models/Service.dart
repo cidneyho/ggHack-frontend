@@ -7,10 +7,10 @@ class Service {
   String name;
   String address;
   String introduction;
-  String type;
-  double longitude;
-  double latitude;
-  double rating;
+  String type = "";
+  double longitude = 0;
+  double latitude = 0;
+  double rating = 0;
   String image;
   int maxCapacity;
   int startTime;

@@ -41,6 +41,25 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    
+    Widget listitem;
+
+    if (true) { // service exists
+      listitem = ListTile(
+        title: Text("Edit Service"),
+        onTap: () {
+          Navigator.pop(context);
+        },
+      );
+    } else {
+      listitem = ListTile(
+        title: Text("Create Service"),
+        onTap: () {
+          Navigator.pop(context);
+        },
+      );
+    }
+    
     return Scaffold (
       appBar: _buildBar(context),
       backgroundColor: Colors.white,
@@ -61,12 +80,8 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                     ],),
                 ),
               ),
-              ListTile(
-                title: Text("Edit Business"),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ), ]
+              listitem,
+            ]
         ),
       ),
       resizeToAvoidBottomPadding: false,

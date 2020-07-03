@@ -40,10 +40,10 @@ class Requester {
       }),
     );
     if (response.statusCode == 201) {
-      print("createCustomerAccount returned ok: username=$username");
+      print("createAccount returned ok: username=$username");
       return json.decode(response.body)['key'];
     } else {
-      throw Exception('Failed to createCustomerAccount: statusCode ${response.statusCode}');
+      throw Exception('Failed to createAccount: statusCode ${response.statusCode}');
     }
   }
 
@@ -280,6 +280,29 @@ class Requester {
   Future<Service> providerRenderService(int serviceId) async {
     print("(providerRenderService leads to customerRenderService)");
     return customerRenderService(serviceId);
+  }
+
+
+  // Provider render self service list
+  /// Successful: returns <ServiceList> containing all services of the user
+  /// Otherwise: throws exception
+  Future<ServiceList> providerRenderServiceList(String token) async {
+    var uri = Uri.https(baseUrl, '/provider/services');
+
+    final response = await http.get(
+      uri,
+      headers: <String, String>{
+        'Authorization' : 'Token $token',
+        "Accept": "application/json",
+      },
+    );
+    if (response.statusCode == 200) {
+      print("providerRenderServiceList returned ok");
+      return ServiceList.fromJson(json.decode(response.body));
+    } else {
+      throw Exception(
+          'Failed to providerRenderServiceList: statusCode ${response.statusCode}');
+    }
   }
 
 

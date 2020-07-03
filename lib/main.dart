@@ -3,6 +3,7 @@ import 'helpers/Constants.dart';
 import 'AppSelection.dart';
 import 'LoginPage.dart';
 import 'CreateAccountPage.dart';
+import 'PCreateAccountPage.dart';
 import 'ProviderLoginPage.dart';
 import 'ProviderHomePage.dart';
 import 'HomePage.dart';
@@ -19,6 +20,7 @@ class RossApp extends StatelessWidget {
     homePageTag: (context) => HomePage(),
     phomePageTag: (context) => ProviderHomePage(),
     createAccountPageTag: (context) => CreateAccountPage(),
+    pcreateAccountPageTag: (context) => PCreateAccountPage(),
   };
 
   @override

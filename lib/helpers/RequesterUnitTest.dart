@@ -137,6 +137,11 @@ class UnitTest {
     print("[P] testProviderRenderService service=" + service.name);
   }
 
+  static Future<void> testProviderRenderServiceList() async {
+    serviceList = await Requester().providerRenderServiceList(token);
+    print("[P] testProviderRenderReservationList len=" + serviceList.services.length.toString());
+  }
+
   static Future<void> testProviderRenderReservationList() async {
     reservationList = await Requester().providerRenderReservationList(token);
     print("[P] testProviderRenderReservationList len=" + reservationList.reservations.length.toString());
@@ -182,7 +187,7 @@ class UnitTest {
   }
 
 
-  // Passed (latest test: 2020-07-03 16:28)
+  // Passed (latest test: 2020-07-04 02:02)
   static Future<void> testProvider() async {
     print("=== Start unit test: testProvider ===");
 
@@ -190,6 +195,8 @@ class UnitTest {
 
 //    await testCreateService().catchError(_onError);  // P
 //    await testProviderRenderService().catchError(_onError);  // P
+
+    await testProviderRenderServiceList().catchError(_onError);  // P
 
     await testProviderRenderReservationList().catchError(_onError);  // P
 
