@@ -35,8 +35,8 @@ class UnitTest {
   static int startTime = 10;
   static int closeTime = 22;
   static String placeId = "ChIJb22yusWrQjQRFj_ymKyFTk0";
-  static List<List<int>> freeSlots = Constant.freeslots;
-  static List<List<int>> popularTimes = Constant.freeslots;
+  static List<List<int>> freeSlots;
+  static List<List<int>> popularTimes;
 
   //////////////////////////////////////////////////////////////////////////////
   //                    Shared among Customer and Provider                    //

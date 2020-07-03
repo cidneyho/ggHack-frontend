@@ -140,7 +140,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                         ),
                         RichText(
                           text: TextSpan(
-                            text: "What is this TextSpan for?",  // TODO What is it? Do we need it?
+                            text: "2020-07-0${reservation.bookDate} ${reservation.bookTime}:00",
                             style: TextStyle(color: colorText),
                           ),
                           maxLines: 1,
