@@ -286,7 +286,7 @@ class Requester {
   /// Successful: returns <ServiceList> containing all services of the user
   /// Otherwise: throws exception
   Future<ServiceList> providerRenderServiceList(String token) async {
-    var uri = Uri.https(baseUrl, '/provider/reservations');
+    var uri = Uri.https(baseUrl, '/provider/services');
 
     final response = await http.get(
       uri,
