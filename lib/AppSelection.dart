@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'helpers/Constants.dart';
-import 'package:gghack/RequesterUnitTest.dart';
 
 class AppSelection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UnitTest.testMakeAndCancelReservation();
     final userButton = RaisedButton (
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
