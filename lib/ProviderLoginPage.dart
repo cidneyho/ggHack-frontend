@@ -27,6 +27,7 @@ class ProviderLoginPage extends StatelessWidget {
         controller: _passwordController,
         keyboardType: TextInputType.phone,
         maxLines: 1,
+        obscureText: true,
         decoration: getInputDecoration(passwordHintText),
         style: TextStyle(
           color: colorText,
