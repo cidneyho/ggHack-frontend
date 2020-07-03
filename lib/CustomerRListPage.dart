@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:gghack/QrCode.dart';
 import 'helpers/Constants.dart';
 import 'helpers/Style.dart';
@@ -152,7 +153,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                         ),
                         RichText(
                           text: TextSpan(
-                            text: '${reservation.bookTime}:00 on July ${reservation.bookDate}',
+                            text: '07-0${reservation.bookDate} ${reservation.bookTime}:00 @ ${reservation.service.address}',
                             style: TextStyle(color: colorText),
                           ),
                           maxLines: 1,
@@ -165,10 +166,13 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
           Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Icon(Icons.keyboard_arrow_right, size: 30.0)]),
+                Icon(Icons.confirmation_number, size: 30.0)]
+                ),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => new QrCodePage(reservation: reservation)));
+            showDialog(
+              context: context,
+              builder: (_) => QrCodeDialog(reservation: reservation),
+            );
           },
         ),
       ),
@@ -219,4 +223,86 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
       }
     });
   }
+}
+
+class QrCodeDialogState extends State<QrCodeDialog>
+    with SingleTickerProviderStateMixin {
+
+  Widget _buildQrCodeBox(BuildContext context, Reservation reservation) {
+    return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: getGradientBox(),
+        height: 330,
+        width: 280,
+        child: Column (
+          children: <Widget>[
+            SizedBox(height: 10),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                reservation.service.name,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)
+              ),
+            ),
+            SizedBox(height: 5),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                '07-0${reservation.bookDate} ${reservation.bookTime}:00',
+                style: TextStyle(color: colorText, fontSize: 14),
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                reservation.service.address,
+                style: TextStyle(color: colorText, fontSize: 14),
+              ),
+            ),
+            SizedBox(height: 20),
+            Container(
+              color: Colors.white,
+              child: QrImage(
+                data: reservation.id.toString(),
+                version: QrVersions.auto,
+                size: 200,
+              ),
+            ),
+          ],
+        )
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Material(
+      color: Colors.transparent,
+        child: Container(
+          decoration: ShapeDecoration(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(2.0))),
+          child: Padding(
+            padding: const EdgeInsets.all(3.0),
+            child: _buildQrCodeBox(context, widget.reservation)
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class QrCodeDialog extends StatefulWidget {
+  final Reservation reservation;
+
+  QrCodeDialog({Key key, @required this.reservation}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => QrCodeDialogState();
 }
