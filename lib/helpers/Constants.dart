@@ -10,10 +10,8 @@ Color colorBackground = Colors.lightGreen[50]; // Colors.white;
 Color colorGrad1 = Color.fromRGBO(103, 178, 111, 1.0);
 Color colorGrad2 = Color.fromRGBO(76, 162, 205, 1.0);
 
-Color colorTone1 = Color.fromRGBO(140, 187, 224, 0.25);
-Color colorTone2 = Color.fromRGBO(140, 187, 224, 0.50);
-Color colorTone3 = Color.fromRGBO(140, 187, 224, 0.75);
-Color colorTone4 = Color.fromRGBO(140, 187, 224, 1.00);
+Color colorPopTime = Colors.teal;
+Color colorFreeSlot = Colors.blue;
 
 // Pages
 const loginPageTag = 'Login Page';
