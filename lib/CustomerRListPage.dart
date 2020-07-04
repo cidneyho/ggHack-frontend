@@ -130,7 +130,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text("Cancel reservation?"),
-              content: Text("${reservation.service.name} on 7/${(reservation.bookDate+2)%7+4}"),
+              content: Text("${reservation.service.name} on 7/${(reservation.bookDate+2)%7+4} at ${reservation.bookTime}:00"),
               actions: <Widget>[
                 FlatButton(
                   onPressed: () => Navigator.of(context).pop(false),

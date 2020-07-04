@@ -272,6 +272,9 @@ class _DetailsPageState extends State<DetailsPage> {
               'Successful Reservation',
               'You may find it in "Reservations".',
             );
+            setState(() {
+              widget.service.freeSlots[bookDate][bookTime - widget.service.startTime] -= 1;
+            });
           }
           ).catchError((error) {
             Dialogue.showConfirm(
