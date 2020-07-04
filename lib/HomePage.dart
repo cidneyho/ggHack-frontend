@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildListItem(BuildContext context, Service service) {
     return Card(
-      key: ValueKey(service.name),
+      key: ValueKey(service.id),
       elevation: 0.2,
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(

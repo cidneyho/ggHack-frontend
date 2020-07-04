@@ -7,10 +7,10 @@ class Service {
   String name;
   String address;
   String introduction;
-  String type;
-  double longitude;
-  double latitude;
-  double rating;
+  String type = "";
+  double longitude = 0;
+  double latitude = 0;
+  double rating = 0;
   String image;
   int maxCapacity;
   int startTime;
@@ -19,13 +19,12 @@ class Service {
   List<List<int>> freeSlots;
   List<List<int>> popularTimes;
 
-  // TODO obsolete this when backend unify the owner type
   static String _convert(dynamic input) {
     if(input is int) {
-//      print("Type conversion: this owner is int");
+      // print("Type conversion: this owner is int");
       return input.toString();
     } else {
-//      print("Type conversion: this owner is String");
+      // print("Type conversion: this owner is String");
       return input;
     }
   }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gghack/helpers/Requester.dart';
-import 'package:gghack/helpers/Style.dart';
 import 'helpers/Constants.dart';
+import 'helpers/Requester.dart';
+import 'helpers/Style.dart';
 
-class CreateAccountPage extends StatelessWidget {
+class PCreateAccountPage extends StatelessWidget {
   // text edit controllers
   final _usernameController = TextEditingController();
   final _emailaddController = TextEditingController();
@@ -106,7 +106,7 @@ class CreateAccountPage extends StatelessWidget {
     );
 
     if (response != null) {
-        Navigator.of(context).pushNamed(loginPageTag);
+        Navigator.of(context).pushNamed(ploginPageTag);
     }
   }
 }

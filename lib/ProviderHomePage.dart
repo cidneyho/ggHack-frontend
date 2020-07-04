@@ -41,6 +41,25 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    
+    Widget listitem;
+
+    if (true) { // service exists
+      listitem = ListTile(
+        title: Text("Edit Service"),
+        onTap: () {
+          Navigator.pop(context);
+        },
+      );
+    } else {
+      listitem = ListTile(
+        title: Text("Create Service"),
+        onTap: () {
+          Navigator.pop(context);
+        },
+      );
+    }
+    
     return Scaffold (
       appBar: _buildBar(context),
       backgroundColor: Colors.white,
@@ -61,12 +80,8 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                     ],),
                 ),
               ),
-              ListTile(
-                title: Text("Edit Business"),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ), ]
+              listitem,
+            ]
         ),
       ),
       resizeToAvoidBottomPadding: false,
@@ -103,7 +118,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
 
   Widget _buildListItem(BuildContext context, Reservation reservation) {
     return Card(
-      key: ValueKey(reservation.customer),
+      key: ValueKey(reservation.id),
       elevation: 0.2,
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
@@ -140,7 +155,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                         ),
                         RichText(
                           text: TextSpan(
-                            text: "What is this TextSpan for?",  // TODO What is it? Do we need it?
+                            text: "2020-07-0${reservation.bookDate} ${reservation.bookTime}:00",
                             style: TextStyle(color: colorText),
                           ),
                           maxLines: 1,
