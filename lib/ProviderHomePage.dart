@@ -4,7 +4,7 @@ import 'helpers/Requester.dart';
 import 'models/Reservation.dart';
 import 'models/ReservationList.dart';
 import 'models/User.dart';
-
+import 'CreateServicePage.dart';
 
 class ProviderHomePage extends StatefulWidget {
   @override
@@ -19,7 +19,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
 
   ReservationList _reservations = new ReservationList();
 
-  Widget _appBarTitle = new Text(appTitle);
+  Widget _appBarTitle = new Text(pappTitle, style: TextStyle(color: Colors.white));
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
     
     Widget listitem;
 
-    if (true) { // service exists
+    if (false) { // service exists
       listitem = ListTile(
         title: Text("Edit Service"),
         onTap: () {
@@ -56,6 +56,8 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
         title: Text("Create Service"),
         onTap: () {
           Navigator.pop(context);
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) => CreateServicePage()));
         },
       );
     }
@@ -69,7 +71,18 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
             padding: EdgeInsets.zero,
             children: <Widget>[
               DrawerHeader(
-                child: Text("Menu"),
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(text: "Menu\n", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      TextSpan(text: " \n", style: TextStyle(fontSize: 4.0)),
+                      TextSpan(text: "Hi, " + User.name, style: TextStyle(fontSize: 14.0)),
+                    ],
+                  ),
+                ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,

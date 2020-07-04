@@ -69,7 +69,7 @@ class ProviderLoginPage extends StatelessWidget {
         },
         padding: EdgeInsets.all(12),
         color: Colors.transparent,
-        child: Text(createButtonText,
+        child: Text(createAccountButtonText,
             style: TextStyle(color: colorText, fontSize: 16, decoration: TextDecoration.underline)
         ),
       ),

@@ -73,7 +73,7 @@ class CreateAccountPage extends StatelessWidget {
         },
         padding: EdgeInsets.all(12),
         color: colorDarker,
-        child: Text(createButtonText,
+        child: Text(createAccountButtonText,
             style: TextStyle(color: Colors.white, fontSize: 16)
         ),
       ),

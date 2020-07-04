@@ -7,10 +7,10 @@ class Service {
   String name;
   String address;
   String introduction;
-  String type = "";
-  double longitude = 0;
-  double latitude = 0;
-  double rating = 0;
+  String type;
+  double longitude;
+  double latitude;
+  double rating;
   String image;
   int maxCapacity;
   int startTime;
@@ -36,10 +36,10 @@ class Service {
     this.name,
     this.address,
     this.introduction,
-    this.type,
-    this.longitude,
-    this.latitude,
-    this.rating,
+    this.type = "RE",
+    this.longitude = 0.0,
+    this.latitude = 0.0,
+    this.rating = 0.0,
     this.image,
     this.maxCapacity,
     this.startTime,

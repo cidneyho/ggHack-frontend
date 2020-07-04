@@ -6,6 +6,7 @@ import 'helpers/Requester.dart';
 import 'models/Service.dart';
 import 'models/ServiceList.dart';
 import 'DetailsPage.dart';
+import 'models/User.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -23,7 +24,7 @@ class _HomePageState extends State<HomePage> {
 
   String _searchText = "";
   Icon _searchIcon = new Icon(Icons.search, color: Colors.white);
-  Widget _appBarTitle = new Text(appTitle);
+  Widget _appBarTitle = new Text(appTitle, style: TextStyle(color: Colors.white));
 
   @override
   void initState() {
@@ -56,7 +57,18 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.zero,
             children: <Widget>[
               DrawerHeader(
-                child: Text("Menu"),
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(text: "Menu\n", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      TextSpan(text: " \n", style: TextStyle(fontSize: 4.0)),
+                      TextSpan(text: "Hi, " + User.name, style: TextStyle(fontSize: 14.0)),
+                    ],
+                  ),
+                ),
                 decoration: getGradientBox(),
               ),
               ListTile(
