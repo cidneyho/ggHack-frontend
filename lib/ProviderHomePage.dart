@@ -118,7 +118,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
 
   Widget _buildListItem(BuildContext context, Reservation reservation) {
     return Card(
-      key: ValueKey(reservation.customer),
+      key: ValueKey(reservation.id),
       elevation: 0.2,
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
@@ -155,7 +155,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                         ),
                         RichText(
                           text: TextSpan(
-                            text: "What is this TextSpan for?",  // TODO What is it? Do we need it?
+                            text: "2020-07-0${reservation.bookDate} ${reservation.bookTime}:00",
                             style: TextStyle(color: colorText),
                           ),
                           maxLines: 1,

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gghack/helpers/Constants.dart';
 import 'package:gghack/helpers/Style.dart';
+import 'package:gghack/helpers/Requester.dart';
+import 'package:gghack/helpers/Dialogue.dart';
+import 'package:gghack/models/User.dart';
 import 'models/Service.dart';
 import 'package:flutter_picker/flutter_picker.dart';
-import 'dart:convert';
 
 class DetailsPage extends StatelessWidget {
   final Service service;
@@ -157,14 +159,44 @@ class DetailsPage extends StatelessWidget {
     );
   }
 
+  List<Map<String, List<int>>> _fillPickerData() {
+    var pickerData = new List<Map<String, List<int>>>();
+    for(var d = 0; d < service.freeSlots.length; ++d) {
+      var dayList = new List<int>();
+      for(var t = service.startTime; t < service.closeTime; ++t) {
+        if(service.freeSlots[d][t - service.startTime] > 0) {
+          dayList.add(t);
+        }
+      }
+      pickerData.add({days[d+1] : dayList});
+    }
+    return pickerData;
+  }
+
   void _reservePressed(BuildContext context) {
     new Picker(
-        adapter: PickerDataAdapter<String>(pickerdata: new JsonDecoder().convert(pickerData)),
+        adapter: PickerDataAdapter<String>(pickerdata: _fillPickerData()), // new JsonDecoder().convert(pickerData)),
         hideHeader: true,
         title: new Text(reservePopupText),
-        onConfirm: (Picker picker, List value) {
-          print(value.toString());
-          print(picker.getSelectedValues());
+        onConfirm: (Picker picker, List value) async {
+          int bookDate = value[0];
+          int bookTime = int.parse(picker.getSelectedValues()[1]);
+          await Requester().makeReservation(
+            User.token, service.name, bookDate, bookTime).then((_) {
+            Dialogue.showBarrierDismissible(
+              context,
+              'Successful Reservation',
+              'You may find it in "Reservations".',
+            );
+          }
+          ).catchError((error) {
+            Dialogue.showConfirm(
+              context,
+              'Reservation failed.',
+              'Error message ${error.toString()}',
+              'Got it',
+            );
+          });
         }
     ).showDialog(context);
   }
