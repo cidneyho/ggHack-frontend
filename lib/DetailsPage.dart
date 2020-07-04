@@ -109,6 +109,8 @@ class _DetailsPageState extends State<DetailsPage> {
     );
 
     // freeSlots table
+    List<List<Color>> freeSlotsColors = getGradientColors(freeSlots, colorFreeSlot, 4, true);
+
     final freeSlotsTable = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Table(
@@ -125,7 +127,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     padding: const EdgeInsets.all(3.0),
                     child: Center(child: Text(t.toString())))),
                 for (int d = 0; d < 7; d++) TableCell(child: Container(
-                    color: getGradient(freeSlots[d][t-startTime]),
+                    color: freeSlotsColors[d][t-startTime],
                     padding: const EdgeInsets.all(3.0),
                     child: Center(child: Text(freeSlots[d][t-startTime].toString()))))
               ])
@@ -148,8 +150,7 @@ class _DetailsPageState extends State<DetailsPage> {
             ]),
     );
 
-    List<List<Color>> popularTimeColors = getPopularTimesColors(widget.service);
-
+    List<List<Color>> popularTimeColors = getGradientColors(popularTimes, colorPopTime, 4);
     // popularTimes table
     final popularTimesTable = Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
