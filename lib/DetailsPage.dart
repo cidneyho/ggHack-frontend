@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:gghack/helpers/Constants.dart';
 import 'package:gghack/helpers/Style.dart';
 import 'package:gghack/helpers/Requester.dart';
-import 'package:gghack/models/Reservation.dart';
+import 'package:gghack/helpers/Dialogue.dart';
 import 'package:gghack/models/User.dart';
 import 'models/Service.dart';
 import 'package:flutter_picker/flutter_picker.dart';
-import 'dart:convert';
 
 class DetailsPage extends StatelessWidget {
   final Service service;
@@ -174,40 +173,6 @@ class DetailsPage extends StatelessWidget {
     return pickerData;
   }
 
-  void _showReservationResultDialogue(
-      BuildContext context, String titleText, String contentText, String okText) {
-    showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext context) {
-          // TODO: debug when backend finishes
-          Future.delayed(Duration(seconds: 2), () {
-            Navigator.of(context, rootNavigator: true).pop(true);
-          });
-          return AlertDialog(
-            title: Text(
-                titleText,
-                style: TextStyle(fontWeight: FontWeight.bold)
-            ),
-            content: SingleChildScrollView(
-                child: Text(
-                  contentText,
-                  style: TextStyle(color: colorText),
-                )
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text(okText),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        }
-    );
-  }
-
   void _reservePressed(BuildContext context) {
     new Picker(
         adapter: PickerDataAdapter<String>(pickerdata: _fillPickerData()), // new JsonDecoder().convert(pickerData)),
@@ -218,15 +183,14 @@ class DetailsPage extends StatelessWidget {
           int bookTime = int.parse(picker.getSelectedValues()[1]);
           await Requester().makeReservation(
             User.token, service.name, bookDate, bookTime).then((_) {
-            _showReservationResultDialogue(
+            Dialogue.showBarrierDismissible(
               context,
               'Successful Reservation',
               'You may find it in "Reservations".',
-              'Got it',
             );
           }
           ).catchError((error) {
-            _showReservationResultDialogue(
+            Dialogue.showConfirm(
               context,
               'Reservation failed.',
               'Error message ${error.toString()}',

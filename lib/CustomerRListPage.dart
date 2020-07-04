@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'helpers/Constants.dart';
+import 'helpers/Dialogue.dart';
 import 'helpers/Style.dart';
 import 'helpers/Requester.dart';
 import 'models/Reservation.dart';
@@ -113,67 +114,109 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
   }
 
   Widget _buildListItem(BuildContext context, Reservation reservation) {
-    return Card(
-      key: ValueKey(reservation.service.id),
-      elevation: 0.2,
-      margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-      child: Container(
-        height: 100,
-        decoration: BoxDecoration(color: colorBase),
-        child: ListTile(
-          contentPadding: EdgeInsets.symmetric(
-              horizontal: 20.0, vertical: 10.0),
-          leading: Container(
-              padding: EdgeInsets.only(right: 12.0),
-              decoration: new BoxDecoration(
-                  border: new Border(
-                      right: new BorderSide(
-                          width: 1.0, color: Colors.white24))),
-              child: Hero(
-                tag: "avatar_" + reservation.service.name,
-                child: new Image.network(
-                  reservation.service.image,
-                  height: 80,
-                  width: 80,
-                  fit: BoxFit.cover,
+    return Dismissible(
+      key: ValueKey(reservation.id),
+      onDismissed: (direction) {
+        setState(() {
+          this._filteredReservations.reservations.removeWhere(
+                  (element) => element.id == reservation.id
+          );
+        });
+        Dialogue.showBarrierDismissible(context, "Reservation canceled.", "${reservation.service.name} on 7/${(reservation.bookDate+2)%7+4}");
+      },
+      confirmDismiss: (DismissDirection direction) async {
+        return await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Cancel reservation?"),
+              content: Text("${reservation.service.name} on 7/${(reservation.bookDate+2)%7+4}"),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text("Not now"),
                 ),
-              )
-          ),
-          title: Row(
-            children: <Widget>[
-              new Flexible(
-                  child: new Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                            padding: const EdgeInsets.only(bottom: 6.0),
-                            child: Text(reservation.service.name,
-                                style: TextStyle(fontWeight: FontWeight.bold))
-                        ),
-                        RichText(
-                          text: TextSpan(
-                            text: '07-0${reservation.bookDate} ${reservation.bookTime}:00 @ ${reservation.service.address}',
-                            style: TextStyle(color: colorText),
-                          ),
-                          maxLines: 1,
-                          softWrap: true,
-                        )
-                      ]
-                  ))
-            ],),
-          trailing:
-          Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.confirmation_number, size: 30.0)]
+                FlatButton(
+                    onPressed: () async {
+                      await Requester().cancelReservation(User.token, reservation.id)
+                          .then((value) {
+                            if(value == 0) {
+                              Navigator.of(context).pop(true);
+                            }
+                      }).catchError((onError) {
+                        Navigator.of(context).pop(false);
+                        Dialogue.showConfirm(context, "Cancellation failed", "Error: ${onError.toString()}", "Got it.");
+                      });
+                    },
+                    child: const Text("Confirm")
                 ),
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (_) => QrCodeDialog(reservation: reservation),
+              ],
             );
           },
+        );
+      },
+      background: Container(color: Colors.red),
+      child: Card(
+        elevation: 0.2,
+        margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+        child: Container(
+          height: 100,
+          decoration: BoxDecoration(color: colorBase),
+          child: ListTile(
+            contentPadding: EdgeInsets.symmetric(
+                horizontal: 20.0, vertical: 10.0),
+            leading: Container(
+                padding: EdgeInsets.only(right: 12.0),
+                decoration: new BoxDecoration(
+                    border: new Border(
+                        right: new BorderSide(
+                            width: 1.0, color: Colors.white24))),
+                child: Hero(
+                  tag: "avatar_" + reservation.service.name,
+                  child: new Image.network(
+                    reservation.service.image,
+                    height: 80,
+                    width: 80,
+                    fit: BoxFit.cover,
+                  ),
+                )
+            ),
+            title: Row(
+              children: <Widget>[
+                new Flexible(
+                    child: new Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                              padding: const EdgeInsets.only(bottom: 6.0),
+                              child: Text(reservation.service.name,
+                                  style: TextStyle(fontWeight: FontWeight.bold))
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              text: '07-0${(reservation.bookDate+2)%7+4} ${reservation.bookTime}:00 @ ${reservation.service.address}',
+                              style: TextStyle(color: colorText),
+                            ),
+                            maxLines: 1,
+                            softWrap: true,
+                          )
+                        ]
+                    ))
+              ],),
+            trailing:
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(Icons.confirmation_number, size: 30.0)]
+                  ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (_) => QrCodeDialog(reservation: reservation),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -248,7 +291,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                '07-0${reservation.bookDate} ${reservation.bookTime}:00',
+                '07-0${(reservation.bookDate+2)%7+4} ${reservation.bookTime}:00',
                 style: TextStyle(color: colorText, fontSize: 14),
               ),
             ),
