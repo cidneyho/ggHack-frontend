@@ -32,6 +32,7 @@ const loginButtonText = "Login";
 const searchBarHintText = "Search";
 const introductionText = "Introduction";
 const timeTableTitleText = "Available slots";
+const popularTimesTitleText = "Popular times";
 const reserveButtonText = "Reserve";
 const reservePopupText = "Select slot";
 const userVersionText = "User";

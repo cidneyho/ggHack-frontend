@@ -1,4 +1,6 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:gghack/models/Service.dart';
 import 'Constants.dart';
 
 Color getGradient(int value) {
@@ -21,6 +23,18 @@ Color getGradient(int value) {
       break;
   }
   return color;
+}
+
+List<List<Color>> getPopularTimesColors(Service service) {
+  Color baseColor = colorTone4;
+  int minVal = 0;
+  int maxVal = service.popularTimes.map(
+          (e) => e.reduce(max)).toList().reduce(max);
+  for(int i=0; i<7; ++i) {
+    for(int j=service.startTime; j<service.closeTime; ++j) {
+      service.popularTimes[i][j];
+    }
+  }
 }
 
 BoxDecoration getGradientBox() {
