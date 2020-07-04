@@ -24,8 +24,6 @@ List<List<Color>> getGradientColors(
       // percentage, [0, 1]
       double popularity = (table[i][j].toDouble() - minVal) / (maxVal - minVal);
       int darkness = (popularity * darknessLevel.toDouble()).toInt() * 100;
-      print(maxVal.toString() + " " + minVal.toString());
-      print(popularity.toString() + " " + darknessLevel.toString());
       if (darkness > 0) {
         colors[i][j] = baseColor[darkness];
       } else {
