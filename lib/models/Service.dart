@@ -19,13 +19,12 @@ class Service {
   List<List<int>> freeSlots;
   List<List<int>> popularTimes;
 
-  // TODO obsolete this when backend unify the owner type
   static String _convert(dynamic input) {
     if(input is int) {
-      print("Type conversion: this owner is int");
+      // print("Type conversion: this owner is int");
       return input.toString();
     } else {
-      print("Type conversion: this owner is String");
+      // print("Type conversion: this owner is String");
       return input;
     }
   }

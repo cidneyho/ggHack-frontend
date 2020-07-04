@@ -49,29 +49,5 @@ const createServiceButtonText = "Create Service";
 const max_width = 320.0;
 const days = ["", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-// temp storage - for testing purposes only
-var optime = [10, 22];
-var freeslots = [
-  [2,2,1,1,3,3,3,3,2,2,1,1], // Mon
-  [2,2,1,1,2,2,2,2,1,1,0,0], // Tue
-  [0,1,2,2,4,4,3,3,2,2,1,1],
-  [1,1,0,0,1,1,2,2,2,2,1,1],
-  [0,0,1,1,3,3,3,3,0,0,0,0],
-  [0,0,2,2,1,1,2,2,3,3,3,3],
-  [1,1,0,0,0,0,1,1,2,2,2,2],
-];
-
-const reservationInfo = "Monday 14:00";
-
-const pickerData = ''' [
-{"Mon": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]},
-{"Tue": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]},
-{"Wed": [11, 12, 13, 14, 15, 16, 17, 18, 19, 20]},
-{"Thu": [10, 11, 14, 15, 16, 17, 18, 19, 20]},
-{"Fri": [12, 13, 14, 15, 16]},
-{"Sat": [12, 13, 14, 15, 16, 17, 18, 19, 20]},
-{"Sun": [10, 11, 16, 17, 18, 19, 20]}
-] ''';
-
 // frontend API
 const baseUrl = "gghack-2020.herokuapp.com";

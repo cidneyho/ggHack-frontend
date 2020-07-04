@@ -138,6 +138,7 @@ class Requester {
   /// Note: backend accepts form data only (and only for this function).
   Future<Reservation> makeReservation(
       String token, String serviceName, int bookDate, int bookTime) async {
+    print("try making reservation: date=$bookDate, time=$bookTime");
     var uri = Uri.https(baseUrl, '/customer/reservations');
     var map = new Map<String, String>();
     map['service'] = serviceName;
