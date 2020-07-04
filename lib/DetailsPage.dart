@@ -267,20 +267,18 @@ class _DetailsPageState extends State<DetailsPage> {
           int bookTime = int.parse(picker.getSelectedValues()[1]);
           await Requester().makeReservation(
           User.token, widget.service.name, bookDate, bookTime).then((_) {
-            Dialogue.showBarrierDismissible(
+            Dialogue.showBarrierDismissibleNoContent(
               context,
-              'Successful Reservation',
-              'You may find it in "Reservations".',
+              'Reservation succeeded.',
             );
             setState(() {
               widget.service.freeSlots[bookDate][bookTime - widget.service.startTime] -= 1;
             });
           }
           ).catchError((error) {
-            Dialogue.showConfirm(
+            Dialogue.showConfirmNoContent(
               context,
-              'Reservation failed.',
-              'Error message ${error.toString()}',
+              'Reservation failed:  ${error.toString()}',
               'Got it',
             );
           });
