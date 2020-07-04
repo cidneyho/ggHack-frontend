@@ -140,7 +140,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                         right: new BorderSide(
                             width: 1.0, color: Colors.white24))),
                 child: Hero(
-                  tag: "avatar_" + reservation.service.name,
+                  tag: "avatar_" + reservation.id.toString(),
                   child: new Image.network(
                     reservation.service.image,
                     height: 80,

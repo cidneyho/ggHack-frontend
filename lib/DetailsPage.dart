@@ -36,7 +36,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
     // image
     final coverPhoto = Hero(
-      tag: "avatar_" + widget.service.name,
+      tag: "avatar_" + widget.service.id.toString(),
       child: new Image.network(widget.service.image),
     );
 

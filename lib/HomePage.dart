@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> {
                   border: new Border(
                       right: new BorderSide(width: 1.0, color: Colors.white24))),
               child: Hero(
-                  tag: "avatar_" + service.name,
+                  tag: "avatar_" + service.id.toString(),
                   child: new Image.network(
                       service.image,
                       height: 80,
