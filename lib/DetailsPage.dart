@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gghack/helpers/Constants.dart';
 import 'package:gghack/helpers/Style.dart';
+import 'helpers/Requester.dart';
 import 'models/Service.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'dart:convert';
+
+import 'models/User.dart';
 
 class DetailsPage extends StatefulWidget {
 
@@ -144,6 +147,8 @@ class _DetailsPageState extends State<DetailsPage> {
             ]),
     );
 
+    List<List<Color>> popularTimeColors = getPopularTimesColors(widget.service);
+
     // popularTimes table
     final popularTimesTable = Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -161,7 +166,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       padding: const EdgeInsets.all(3.0),
                       child: Center(child: Text(t.toString())))),
                   for (int d = 0; d < 7; d++) TableCell(child: Container(
-                      color: getGradient(popularTimes[d][t]),
+                      color: popularTimeColors[d][t],
                       padding: const EdgeInsets.all(3.0),
                       child: Center(child: Text(popularTimes[d][t].toString()))))
                 ])
@@ -242,9 +247,25 @@ class _DetailsPageState extends State<DetailsPage> {
         adapter: PickerDataAdapter<String>(pickerdata: new JsonDecoder().convert(pickerData)),
         hideHeader: true,
         title: new Text(reservePopupText),
-        onConfirm: (Picker picker, List value) {
-          print(value.toString());
-          print(picker.getSelectedValues());
+        onConfirm: (Picker picker, List value) async {
+          int bookDate = value[0];
+          int bookTime = int.parse(picker.getSelectedValues()[1]);
+          await Requester().makeReservation(
+              User.token, service.name, bookDate, bookTime).then((_) {
+            Dialogue.showBarrierDismissible(
+              context,
+              'Successful Reservation',
+              'You may find it in "Reservations".',
+            );
+          }
+          ).catchError((error) {
+            Dialogue.showConfirm(
+              context,
+              'Reservation failed.',
+              'Error message ${error.toString()}',
+              'Got it',
+            );
+          });
         }
     ).showDialog(context);
   }

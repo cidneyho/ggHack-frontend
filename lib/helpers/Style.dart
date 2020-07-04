@@ -26,15 +26,30 @@ Color getGradient(int value) {
 }
 
 List<List<Color>> getPopularTimesColors(Service service) {
-  Color baseColor = colorTone4;
-  int minVal = 0;
-  int maxVal = service.popularTimes.map(
-          (e) => e.reduce(max)).toList().reduce(max);
+  // return 7x24 colors matching the value in service's popularTimes
+  // Using https://api.flutter.dev/flutter/material/Colors-class.html
+  MaterialColor baseColor = Colors.teal;
+  int maxDarkness = 6;
+  double minVal = 0.0;
+  double maxVal = service.popularTimes.map(
+          (e) => e.reduce(max)).toList().reduce(max).toDouble();
+
+  List<List<Color>> colors = List<List<Color>>.generate(7, (index) {
+    return List<Color>.generate(24, (index) => baseColor[0]);
+  });
+
   for(int i=0; i<7; ++i) {
-    for(int j=service.startTime; j<service.closeTime; ++j) {
-      service.popularTimes[i][j];
+    for(int j=0; j<24; ++j) {
+      double popularity = (service.popularTimes[i][j].toDouble() - minVal) / (maxVal - minVal);
+      int darkness = (popularity * maxDarkness.toDouble()).toInt() * 100;
+      if(darkness > 0) {
+        colors[i][j] = baseColor[darkness];
+      } else {
+        colors[i][j] = Colors.white;
+      }
     }
   }
+  return colors;
 }
 
 BoxDecoration getGradientBox() {
