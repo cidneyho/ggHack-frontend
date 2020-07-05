@@ -120,16 +120,17 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
           padding: const EdgeInsets.only(right: 10.0),
           icon: const Icon(MdiIcons.qrcodeScan),
           onPressed: () async {
-            print("Scan QR code");
             var result = await BarcodeScanner.scan();
-            print(result.type);
-            print(result.rawContent);
-            int reservationId = int.parse(result.rawContent);
-            await Requester().checkInReservation(User.token, reservationId).catchError((error) {
-              Dialogue.showConfirmNoContent(context, "Failed to scan QR code: ${error.toString()}", "Got it");
-            }).then((_) {
-              Dialogue.showBarrierDismissibleNoContent(context, "Reservation checked in.");
-            });
+            if(result.type == ResultType.Barcode) {
+              int reservationId = int.parse(result.rawContent);
+              await Requester().checkInReservation(User.token, reservationId).catchError((error) {
+                Dialogue.showConfirmNoContent(context, "Failed to scan QR code: ${error.toString()}", "Got it");
+              }).then((_) {
+                Dialogue.showBarrierDismissibleNoContent(context, "Reservation checked in.");
+              });
+            } else if (result.type == ResultType.Error) {
+              Dialogue.showConfirmNoContent(context, "Failed to scan QR code: ${result.toString()}", "Got it");
+            }
           },
         ),
       ],
