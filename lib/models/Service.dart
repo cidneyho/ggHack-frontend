@@ -59,7 +59,7 @@ class Service {
       longitude: json['longitude'],
       latitude: json['latitude'],
       rating: json['rating'],
-      image: json['image'] != null ? json['image'] : dummyServiceImage,
+      image: json['image'] != "" ? json['image'] : dummyServiceImage,
       maxCapacity: json['maxCapacity'],
       startTime: json['startTime'],
       closeTime: json['closeTime'],
