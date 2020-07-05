@@ -46,7 +46,7 @@ const createServiceButtonText = "Create Service";
 
 // settings
 const max_width = 320.0;
-const days = ["", "Jul 6 Mon", "Jul 7 Tue", "Jul 8 Wed", "Jul 9 Thu", "Jul 3 Fri", "Jul 4 Sat", "Jul 5 Sun"];
+const days = ["", "Jul 6 Mon", "Jul 7 Tue", "Jul 8 Wed", "Jul 9 Thu", "Jul 10 Fri", "Jul 11 Sat", "Jul 12 Sun"];
 
 // URLs
 const baseUrl = "gghack-2020.herokuapp.com";
@@ -67,8 +67,8 @@ Icon noShowIcon = Icon(
   semanticLabel: 'No show',
 );
 Icon pendingIcon = Icon(
-  Icons.hourglass_empty,
-  color: Colors.amber,
+  Icons.hourglass_full,
+  color: Colors.amber[400],
   size: 24.0,
   semanticLabel: 'Pending',
 );

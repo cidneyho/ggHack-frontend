@@ -218,7 +218,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
             child: IconSlideAction(
                 caption: 'Cancel',
                 color: Colors.red[400],
-                icon: Icons.cancel,
+                icon: Icons.close,
                 onTap: () async {
                   bool response = await showDialog(
                       context: context,
