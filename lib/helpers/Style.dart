@@ -66,7 +66,7 @@ InputDecoration getInputDecoration(String hintText) {
   );
 }
 
-InputDecoration getBlankDecoration([IconButton suffixIcon]) {
+InputDecoration getBlankDecoration([Widget suffixIcon]) {
   return InputDecoration(
     contentPadding: EdgeInsets.symmetric(horizontal: 4),
     // border: InputBorder.none,
