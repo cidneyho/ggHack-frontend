@@ -14,7 +14,7 @@ class ProviderLoginPage extends StatelessWidget {
 
     final username = TextFormField(
       controller: _usernameController,
-      keyboardType: TextInputType.phone,
+      keyboardType: TextInputType.text,
       maxLines: 1,
       decoration: getInputDecoration(usernameHintText),
       style: TextStyle(
@@ -26,7 +26,7 @@ class ProviderLoginPage extends StatelessWidget {
       padding: EdgeInsets.only(top: 24.0),
       child: TextFormField(
         controller: _passwordController,
-        keyboardType: TextInputType.phone,
+        keyboardType: TextInputType.text,
         maxLines: 1,
         obscureText: true,
         decoration: getInputDecoration(passwordHintText),
