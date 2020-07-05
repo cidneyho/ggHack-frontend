@@ -1,5 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path/path.dart';
+import 'package:imgur/imgur.dart' as imgur;
+import 'package:image_picker/image_picker.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'DetailsPage.dart';
 import 'helpers/Constants.dart';
@@ -64,14 +70,58 @@ class _CreateServiceState extends State<CreateServicePage> {
           style: TextStyle(color: colorText),
         ));
 
-    final imageTitle = getFormTitle("Image URL");
+    PickedFile _image;
+    final picker = ImagePicker();
+    final imageTitle = getFormTitle("Photo");
+    final imagePickerButton = IconButton(
+      onPressed: () async {
+        var _pickedImage = await picker.getImage(source: ImageSource.gallery);
+        if (_pickedImage == null) {
+          _pickedImage = (await picker.getLostData()).file;
+        }
+        setState(() {
+          _image = _pickedImage;
+          _imageController.text = _image.path;
+        });
+      },
+      icon: Icon(
+        Icons.photo_library,
+        size: 24.0,
+        semanticLabel: 'Open library to pick service image',
+      ),
+    );
+    final imageTakerButton = IconButton(
+      onPressed: () async {
+        var _pickedImage = await picker.getImage(source: ImageSource.camera);
+        if (_pickedImage == null) {
+          _pickedImage = (await picker.getLostData()).file;
+        }
+        setState(() {
+          _image = _pickedImage;
+          _imageController.text = _image.path;
+        });
+      },
+      icon: Icon(
+        Icons.photo_camera,
+        size: 24.0,
+        semanticLabel: 'Open library to pick service image',
+      ),
+    );
+    final imageIconButtons = Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min, // added line
+      children: <Widget>[
+        imagePickerButton,
+        imageTakerButton,
+      ],
+    );
     final imageField = Padding(
         padding: EdgeInsets.only(bottom: 20.0),
         child: TextFormField(
           controller: _imageController,
           keyboardType: TextInputType.url,
           maxLines: 1,
-          decoration: getBlankDecoration(),
+          decoration: getBlankDecoration(imageIconButtons),
           style: TextStyle(color: colorText),
         ));
 
@@ -142,11 +192,32 @@ class _CreateServiceState extends State<CreateServicePage> {
           borderRadius: BorderRadius.circular(16),
         ),
         onPressed: () async {
+          // Host the image on imgur
+//          String clientId = await File('tokens.txt').readAsString().catchError((error) {
+//            Dialogue.showConfirmNoContent(context, "Failed to get token: ${error.toString()}", "Got it.");
+//          });
+          print("To upload");
+          print("Path: " + _imageController.text);
+          String accessToken = "afb3c53d9e25c53f6dcb40f2455b6dc482dea1b8";
+          final client =
+              imgur.Imgur(imgur.Authentication.fromToken(accessToken));
+          var image = await client.image
+              .uploadImage(
+                  imagePath: _imageController.text,
+                  title: 'service ${_nameController.text}',
+                  description: 'by ${User.name}')
+              .catchError((error) {
+            Dialogue.showConfirmNoContent(context,
+                "Failed to upload image: ${error.toString()}", "Got it.");
+          });
+
+          print("Image uploaded: ${image.link}");
+
           Service toCreate = new Service(
             name: _nameController.text,
             address: _addrController.text,
             introduction: _introController.text,
-            image: _imageController.text,
+            image: image.link,
             startTime: int.parse(_startTimeController.text),
             closeTime: int.parse(_closeTimeController.text),
             maxCapacity: int.parse(_maxCapController.text),
@@ -162,12 +233,14 @@ class _CreateServiceState extends State<CreateServicePage> {
           }).then((returnedService) {
             if (returnedService != null) {
               Navigator.of(context).pop();
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => new DetailsPage(service: returnedService)));
+//              Navigator.push(
+//                  context,
+//                  MaterialPageRoute(
+//                      builder: (context) =>
+//                          new DetailsPage(service: returnedService)));
             }
-            Dialogue.showBarrierDismissibleNoContent(context, "Service created: ${returnedService.name}");
+            Dialogue.showBarrierDismissibleNoContent(
+                context, "Service created: ${returnedService.name}");
           });
         },
         padding: EdgeInsets.all(12),
