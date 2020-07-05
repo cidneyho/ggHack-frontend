@@ -6,6 +6,7 @@ import 'package:path/path.dart';
 import 'package:imgur/imgur.dart' as imgur;
 import 'package:image_picker/image_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'DetailsPage.dart';
 import 'helpers/Constants.dart';
@@ -224,13 +225,16 @@ class _CreateServiceState extends State<CreateServicePage> {
             placeId: _placeIdController.text,
           );
 
+          ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+          await pr.show();
           await Requester()
               .createService(User.token, toCreate)
-              .catchError((exp) {
+              .catchError((exp) async {
             print("Error occurred in createService: $exp");
+            await pr.hide();
             Dialogue.showConfirmNoContent(context,
                 "Service creation failed: ${exp.toString()}", "Got it.");
-          }).then((returnedService) {
+          }).then((returnedService) async {
             if (returnedService != null) {
               Navigator.of(context).pop();
 //              Navigator.push(
@@ -239,9 +243,11 @@ class _CreateServiceState extends State<CreateServicePage> {
 //                      builder: (context) =>
 //                          new DetailsPage(service: returnedService)));
             }
+            await pr.hide();
             Dialogue.showBarrierDismissibleNoContent(
                 context, "Service created: ${returnedService.name}");
           });
+          await pr.hide();
         },
         padding: EdgeInsets.all(12),
         color: colorDark,

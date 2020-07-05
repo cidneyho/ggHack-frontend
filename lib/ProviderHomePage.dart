@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:sprintf/sprintf.dart';
 import 'helpers/Dialogue.dart';
 import 'helpers/Constants.dart';
@@ -39,6 +40,8 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
   }
 
   void _getReservations() async {
+    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    await pr.show();
     ReservationList reservations =
         await Requester().providerRenderReservationList(User.token);
 
@@ -49,6 +52,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
         this._reservations.reservations.add(reservation);
       }
     });
+    await pr.hide();
   }
 
   @override
@@ -126,13 +130,17 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
           onPressed: () async {
             var result = await BarcodeScanner.scan();
             if (result.type == ResultType.Barcode) {
+              ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+              await pr.show();
               int reservationId = int.parse(result.rawContent);
               await Requester()
                   .checkInReservation(User.token, reservationId)
-                  .catchError((error) {
+                  .catchError((error) async {
+                await pr.hide();
                 Dialogue.showConfirmNoContent(context,
                     "Failed to scan QR code: ${error.toString()}", "Got it");
-              }).then((_) {
+              }).then((_) async {
+                await pr.hide();
                 Dialogue.showBarrierDismissibleNoContent(
                     context, "Reservation checked in.");
                 setState(() {
@@ -278,19 +286,23 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                       ),
                       FlatButton(
                           onPressed: () async {
+                            ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+                            await pr.show();
                             await Requester()
                                 .noShowReservation(User.token, reservation.id)
                                 .then((value) {
                               if (value == 0) {
                                 Navigator.of(context).pop(true);
                               }
-                            }).catchError((onError) {
+                            }).catchError((onError) async {
+                              await pr.hide();
                               Navigator.of(context).pop(false);
                               Dialogue.showConfirmNoContent(
                                   context,
                                   "Mark no-show failed: ${onError.toString()}",
                                   "Got it.");
                             });
+                            await pr.hide();
                           },
                           child: const Text("Confirm")),
                     ],
@@ -324,16 +336,20 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
       child: Text("Confirm"),
       onPressed: () async {
         Navigator.pop(context);
+        ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+        await pr.show();
         await Requester()
             .checkInReservation(User.token, reservation.id)
-            .then((_) {
+            .then((_) async {
+          await pr.hide();
           Dialogue.showBarrierDismissibleNoContent(
               context, "Checked in ${reservation.customer}.");
           setState(() {
             this._reservations.changeStatus(reservation.id, "CP");
             this._reservations.sortReservationsByStatus();
           });
-        }).catchError((error) {
+        }).catchError((error) async {
+          await pr.hide();
           Dialogue.showConfirmNoContent(
               context, "Failed to check in: ${error.toString()}", "Got it.");
         });

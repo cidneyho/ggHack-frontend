@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gghack/helpers/Requester.dart';
 import 'package:gghack/helpers/Style.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'helpers/Constants.dart';
 import 'helpers/Dialogue.dart';
 
@@ -101,17 +102,22 @@ class CreateAccountPage extends StatelessWidget {
   }
 
   void _createAccountPressed(BuildContext context) async {
+    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    await pr.show();
     String response = await Requester().createAccount(
       _emailaddController.text,
       _usernameController.text,
       _passwordController.text,
       _pconfirmController.text
-    ).catchError((error) {
+    ).catchError((error) async {
+      await pr.hide();
       Dialogue.showConfirmNoContent(context, "Account creation failed: ${error.toString()}", "Got it.");
     });
+    await pr.hide();
 
     if (response != null) {
         Navigator.of(context).pushNamed(loginPageTag);
+        Dialogue.showBarrierDismissibleNoContent(context, "Account created.");
     }
   }
 }

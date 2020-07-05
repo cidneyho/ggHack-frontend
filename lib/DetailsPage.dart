@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_picker/flutter_picker.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 import 'helpers/Constants.dart';
 import 'helpers/Dialogue.dart';
@@ -322,12 +323,15 @@ class _DetailsPageState extends State<DetailsPage> {
         hideHeader: true,
         title: new Text(reservePopupText),
         onConfirm: (Picker picker, List value) async {
+          ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+          await pr.show();
           int bookDate = value[0];
           int bookTime = int.parse(picker.getSelectedValues()[1]);
           await Requester()
               .makeReservation(
                   User.token, widget.service.name, bookDate, bookTime)
-              .then((_) {
+              .then((_) async {
+            await pr.hide();
             Dialogue.showBarrierDismissibleNoContent(
               context,
               'Reservation succeeded.',
@@ -336,13 +340,15 @@ class _DetailsPageState extends State<DetailsPage> {
               widget.service.freeSlots[bookDate]
                   [bookTime - widget.service.startTime] -= 1;
             });
-          }).catchError((error) {
+          }).catchError((error) async {
+            await pr.hide();
             Dialogue.showConfirmNoContent(
               context,
               'Reservation failed:  ${error.toString()}',
               'Got it',
             );
           });
+          await pr.hide();
         }).showDialog(context);
   }
 }

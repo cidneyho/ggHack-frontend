@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -46,9 +47,12 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
   }
 
   void _getReservations() async {
+    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    await pr.show();
     ReservationList reservations = await Requester()
         .customerRenderReservationList(User.token)
-        .catchError((error) {
+        .catchError((error) async {
+      await pr.hide();
       Dialogue.showConfirmNoContent(context,
           "Failed to get reservations: ${error.toString()}", "Got it.");
     });
@@ -59,6 +63,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
         this._filteredReservations.reservations.add(reservation);
       }
     });
+    await pr.hide();
   }
 
   @override
@@ -261,10 +266,12 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                             ),
                             FlatButton(
                                 onPressed: () async {
+                                  ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+                                  await pr.show();
                                   await Requester()
                                       .cancelReservation(
                                           User.token, reservation.id)
-                                      .then((value) {
+                                      .then((value) async {
                                     if (value == 0) {
                                       Navigator.of(context).pop(true);
                                       setState(() {
@@ -274,17 +281,20 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                                             .removeWhere((element) =>
                                                 element.id == reservation.id);
                                       });
+                                      await pr.hide();
                                       Dialogue.showBarrierDismissibleNoContent(
                                           context,
-                                          "Reservation canceled: ${reservation.service.name} on Jul ${reservation.bookDate + 6}");
+                                          "Reservation canceled.");
                                     }
-                                  }).catchError((onError) {
+                                  }).catchError((onError) async {
+                                    await pr.hide();
                                     Navigator.of(context).pop(false);
                                     Dialogue.showConfirmNoContent(
                                         context,
                                         "Cancellation failed: ${onError.toString()}",
                                         "Got it.");
                                   });
+                                  await pr.hide();
                                 },
                                 child: const Text("Confirm")),
                           ],
