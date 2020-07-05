@@ -29,7 +29,11 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
 
   String _searchText = "";
   Icon _searchIcon = new Icon(Icons.search, color: Colors.white);
-  Widget _appBarTitle = new Text(rlistTitle, style: TextStyle(color: Colors.white));
+  Widget _appBarTitle =
+      new Text(rlistTitle, style: TextStyle(color: Colors.white));
+
+  Icon _sortIcon = new Icon(MdiIcons.history, color: Colors.white);
+  bool _sortByStatus = true; // false: sorted chronologically
 
   @override
   void initState() {
@@ -42,10 +46,12 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
   }
 
   void _getReservations() async {
-    ReservationList reservations =
-        await Requester().customerRenderReservationList(User.token).catchError((error) {
-          Dialogue.showConfirmNoContent(context, "Failed to get reservations: ${error.toString()}", "Got it.");
-        });
+    ReservationList reservations = await Requester()
+        .customerRenderReservationList(User.token)
+        .catchError((error) {
+      Dialogue.showConfirmNoContent(context,
+          "Failed to get reservations: ${error.toString()}", "Got it.");
+    });
     reservations.sortReservationsByStatus();
     setState(() {
       for (Reservation reservation in reservations.reservations) {
@@ -62,36 +68,56 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
       backgroundColor: Colors.white,
       body: _buildList(context),
       drawer: Drawer(
-        child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                child: RichText(
-                  text: TextSpan(
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                    children: <TextSpan>[
-                      TextSpan(text: "Menu\n", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-                      TextSpan(text: " \n", style: TextStyle(fontSize: 4.0)),
-                      TextSpan(text: "Hi, " + User.name, style: TextStyle(fontSize: 14.0)),
-                    ],
-                  ),
+        child: ListView(padding: EdgeInsets.zero, children: <Widget>[
+          DrawerHeader(
+            child: RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  color: Colors.black,
                 ),
-                decoration: getGradientBox(),
+                children: <TextSpan>[
+                  TextSpan(
+                      text: "Menu\n",
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                  TextSpan(text: " \n", style: TextStyle(fontSize: 4.0)),
+                  TextSpan(
+                      text: "Hi, " + User.name,
+                      style: TextStyle(fontSize: 14.0)),
+                ],
               ),
-              ListTile(
-                title: Text("Home"),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
-              ),
-            ]
-        ),
+            ),
+            decoration: getGradientBox(),
+          ),
+          ListTile(
+            title: Text("Home"),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+          ),
+        ]),
       ),
       resizeToAvoidBottomPadding: false,
     );
+  }
+
+  List<Widget> _buildAppBarIcons() {
+    var iconList = [
+      IconButton(
+        icon: _searchIcon,
+        onPressed: _searchPressed,
+      ),
+    ];
+    if(_searchIcon.icon == Icons.search) {
+      iconList.add(
+        IconButton(
+          icon: _sortIcon,
+          onPressed: _sortPressed,
+        )
+      );
+    }
+    return iconList;
   }
 
   Widget _buildBar(BuildContext context) {
@@ -102,12 +128,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
       flexibleSpace: Container(
         decoration: getGradientBox(),
       ),
-      actions: <Widget>[
-        new IconButton(
-          icon: _searchIcon,
-          onPressed: _searchPressed,
-        ),
-      ],
+      actions: _buildAppBarIcons(),
       iconTheme: IconThemeData(color: Colors.white),
     );
   }
@@ -142,7 +163,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
     return Slidable(
         actionPane: SlidableDrawerActionPane(),
         controller: slidableController,
-        actionExtentRatio: (reservation.status == "PD"? 0.25 : 0.0),
+        actionExtentRatio: (reservation.status == "PD" ? 0.25 : 0.0),
         child: Card(
           elevation: 0.2,
           margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
@@ -181,10 +202,10 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                         RichText(
                           text: TextSpan(
                             text: sprintf('07-%02d %02d:00 @ %s', [
-                                  reservation.bookDate + 6,
-                                  reservation.bookTime,
-                                  reservation.service.address,
-                                ]),
+                              reservation.bookDate + 6,
+                              reservation.bookTime,
+                              reservation.service.address,
+                            ]),
                             style: TextStyle(color: colorText),
                           ),
                           maxLines: 1,
@@ -197,17 +218,21 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     (reservation.status == "PD"
-                        ? Icon(Icons.receipt, size: 24.0) // Icons.local_activity // MdiIcons.qrcode
+                        ? Icon(Icons.receipt,
+                            size:
+                                24.0) // Icons.local_activity // MdiIcons.qrcode
                         : (reservation.status == "MS"
                             ? noShowIcon
                             : completedIcon))
                   ]),
-              onTap: reservation.status != "PD"? null : () {
-                showDialog(
-                  context: context,
-                  builder: (_) => QrCodeDialog(reservation: reservation),
-                );
-              },
+              onTap: reservation.status != "PD"
+                  ? null
+                  : () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => QrCodeDialog(reservation: reservation),
+                      );
+                    },
             ),
           ),
         ),
@@ -224,12 +249,11 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text("Cancel reservation?"),
-                          content: Text(
-                              sprintf('%s on Jul %d at %02d:00', [
-                                reservation.service.name,
-                                reservation.bookDate + 6,
-                                reservation.bookTime,
-                              ])),
+                          content: Text(sprintf('%s on Jul %d at %02d:00', [
+                            reservation.service.name,
+                            reservation.bookDate + 6,
+                            reservation.bookTime,
+                          ])),
                           actions: <Widget>[
                             FlatButton(
                               onPressed: () => Navigator.of(context).pop(false),
@@ -310,8 +334,26 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
         );
       } else {
         this._searchIcon = new Icon(Icons.search, color: Colors.white);
-        this._appBarTitle = new Text(rlistTitle, style: TextStyle(color: Colors.white));
+        this._sortIcon = new Icon((_sortByStatus? MdiIcons.history : MdiIcons.sortBoolAscending), color: Colors.white);
+        this._appBarTitle =
+            new Text(rlistTitle, style: TextStyle(color: Colors.white));
         _filter.clear();
+      }
+    });
+  }
+
+  void _sortPressed() {
+    setState(() {
+      if (this._sortByStatus == true) {
+        this._sortIcon = Icon(MdiIcons.sortBoolAscending, color: Colors.white);
+        this._sortByStatus = false;
+        this._reservations.sortReservationsChronologically();
+        this._filteredReservations.sortReservationsChronologically();
+      } else {
+        this._sortIcon = Icon(MdiIcons.history, color: Colors.white);
+        this._sortByStatus = true;
+        this._reservations.sortReservationsByStatus();
+        this._filteredReservations.sortReservationsByStatus();
       }
     });
   }
@@ -324,48 +366,48 @@ class QrCodeDialogState extends State<QrCodeDialog>
         padding: const EdgeInsets.all(16),
         decoration: getGradientBox(),
         width: 280,
-        child: Wrap(
-            children: <Widget>[ Column(
-              children: <Widget>[
-                SizedBox(height: 10),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(reservation.service.name,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.white)),
+        child: Wrap(children: <Widget>[
+          Column(
+            children: <Widget>[
+              SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(reservation.service.name,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Colors.white)),
+              ),
+              SizedBox(height: 5),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  sprintf("07-%02d %02d:00",
+                      [reservation.bookDate + 6, reservation.bookTime]),
+                  style: TextStyle(color: Colors.white, fontSize: 14),
                 ),
-                SizedBox(height: 5),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    sprintf("07-%02d %02d:00",[reservation.bookDate+6, reservation.bookTime]),
-                    style: TextStyle(color: Colors.white, fontSize: 14),
-                  ),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  reservation.service.address,
+                  maxLines: 3,
+                  style: TextStyle(color: Colors.white, fontSize: 14),
                 ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    reservation.service.address,
-                    maxLines: 3,
-                    style: TextStyle(color: Colors.white, fontSize: 14),
-                  ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                color: Colors.white,
+                child: QrImage(
+                  data: reservation.id.toString(),
+                  version: QrVersions.auto,
+                  size: 200,
                 ),
-                SizedBox(height: 20),
-                Container(
-                  color: Colors.white,
-                  child: QrImage(
-                    data: reservation.id.toString(),
-                    version: QrVersions.auto,
-                    size: 200,
-                  ),
-                ),
-                SizedBox(height: 10),
-              ],
-            )]
-        )
-    );
+              ),
+              SizedBox(height: 10),
+            ],
+          )
+        ]));
   }
 
   @override

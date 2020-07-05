@@ -24,6 +24,9 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
   // To keep only one slider open
   final SlidableController slidableController = SlidableController();
 
+  bool _sortByStatus = true;
+  Icon _sortIcon = new Icon(MdiIcons.history, color: Colors.white);
+
   ReservationList _reservations = new ReservationList(reservations: new List());
   Widget _appBarTitle =
       new Text(pappTitle, style: TextStyle(color: Colors.white));
@@ -134,7 +137,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                     context, "Reservation checked in.");
                 setState(() {
                   this._reservations.changeStatus(reservationId, "CP");
-                  this._reservations.sortReservations();
+                  this._reservations.sortReservationsByStatus();
                 });
               });
             } else if (result.type == ResultType.Error) {
@@ -143,6 +146,10 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
             }
           },
         ),
+        IconButton(
+          icon: this._sortIcon,
+          onPressed: _sortPressed,
+        )
       ],
       flexibleSpace: Container(
         decoration: BoxDecoration(
@@ -295,7 +302,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                     context, "Reservation marked as no-show.");
                 setState(() {
                   this._reservations.changeStatus(reservation.id, "MS");
-                  this._reservations.sortReservations();
+                  this._reservations.sortReservationsByStatus();
                 });
               }
             },
@@ -324,7 +331,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
               context, "Checked in ${reservation.customer}.");
           setState(() {
             this._reservations.changeStatus(reservation.id, "CP");
-            this._reservations.sortReservations();
+            this._reservations.sortReservationsByStatus();
           });
         }).catchError((error) {
           Dialogue.showConfirmNoContent(
@@ -350,5 +357,19 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
         return alert;
       },
     );
+  }
+
+  void _sortPressed() {
+    setState(() {
+      if (this._sortByStatus == true) {
+        this._sortIcon = Icon(MdiIcons.sortBoolAscending, color: Colors.white);
+        this._sortByStatus = false;
+        this._reservations.sortReservationsChronologically();
+      } else {
+        this._sortIcon = Icon(MdiIcons.history, color: Colors.white);
+        this._sortByStatus = true;
+        this._reservations.sortReservationsByStatus();
+      }
+    });
   }
 }

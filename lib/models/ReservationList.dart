@@ -17,30 +17,14 @@ class ReservationList {
     return counter;
   }
 
-  // Sort reservations by status (Pending > others) and chronologically
-  void sortReservations() {
-    reservations.sort((e1, e2) => ((e1.status != "PD" && e2.status == "PD") ||
-            ((e1.status == "PD" && e2.status == "PD") &&
-                Reservation.later(e1, e2)) ||
-            (e1.status != "PD" &&
-                e2.status != "PD" &&
-                Reservation.later(e1, e2)))
-        ? 1
-        : 0);
-  }
-
+  // Sort reservations from oldest to newest
   void sortReservationsChronologically() {
-    reservations.sort((e1, e2) => Reservation.later(e1, e2)
-        ? 1
-        : 0);
+    reservations.sort((e1, e2) => Reservation.later(e1, e2));
   }
 
+  // Sort reservations by status
   void sortReservationsByStatus() {
-    reservations.sort((e1, e2) => ((e1.status == e2.status && Reservation.later(e1, e2))
-        || e2.status == "PD"
-        || (e2.status == "CP" && e1.status == "MS"))
-        ? 1
-        : 0);
+    reservations.sort((e1, e2) => Reservation.higher(e1, e2));
   }
 
   factory ReservationList.fromJson(List<dynamic> parsedJson) {
