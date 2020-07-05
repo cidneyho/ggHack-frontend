@@ -15,7 +15,7 @@ class CreateAccountPage extends StatelessWidget {
 
     final username = TextFormField(
       controller: _usernameController,
-      keyboardType: TextInputType.phone,
+      keyboardType: TextInputType.text,
       maxLines: 1,
       decoration: getInputDecoration(usernameHintText),
       style: TextStyle(
@@ -27,7 +27,7 @@ class CreateAccountPage extends StatelessWidget {
       padding: EdgeInsets.only(top: 24.0),
       child: TextFormField(
         controller: _emailaddController,
-        keyboardType: TextInputType.phone,
+        keyboardType: TextInputType.emailAddress,
         maxLines: 1,
         decoration: getInputDecoration(emailaddHintText),
         style: TextStyle(
@@ -40,7 +40,7 @@ class CreateAccountPage extends StatelessWidget {
       padding: EdgeInsets.only(top: 24.0),
       child: TextFormField(
         controller: _passwordController,
-        keyboardType: TextInputType.phone,
+        keyboardType: TextInputType.text,
         maxLines: 1,
         obscureText: true,
         decoration: getInputDecoration(passwordHintText),
@@ -54,7 +54,7 @@ class CreateAccountPage extends StatelessWidget {
       padding: EdgeInsets.only(top: 24.0),
       child: TextFormField(
         controller: _pconfirmController,
-        keyboardType: TextInputType.phone,
+        keyboardType: TextInputType.text,
         maxLines: 1,
         obscureText: true,
         decoration: getInputDecoration(pconfirmHintText),
