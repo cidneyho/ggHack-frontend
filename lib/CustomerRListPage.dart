@@ -41,7 +41,9 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
 
   void _getReservations() async {
     ReservationList reservations =
-        await Requester().customerRenderReservationList(User.token);
+        await Requester().customerRenderReservationList(User.token).catchError((error) {
+          Dialogue.showConfirmNoContent(context, "Failed to get reservations: ${error.toString()}", "Got it.");
+        });
     // Sort reservations chronologically
     reservations.reservations.sort((e1, e2) => (e1.bookDate > e2.bookDate ||
             (e1.bookDate == e2.bookDate && e1.bookTime > e2.bookTime))

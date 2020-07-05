@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gghack/helpers/Requester.dart';
 import 'package:gghack/helpers/Style.dart';
 import 'helpers/Constants.dart';
+import 'helpers/Dialogue.dart';
 
 class CreateAccountPage extends StatelessWidget {
   // text edit controllers
@@ -105,7 +106,9 @@ class CreateAccountPage extends StatelessWidget {
       _usernameController.text,
       _passwordController.text,
       _pconfirmController.text
-    );
+    ).catchError((error) {
+      Dialogue.showConfirmNoContent(context, "Account creation failed: ${error.toString()}", "Got it.");
+    });
 
     if (response != null) {
         Navigator.of(context).pushNamed(loginPageTag);

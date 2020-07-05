@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'helpers/Dialogue.dart';
 import 'helpers/Style.dart';
 import 'helpers/Constants.dart';
 import 'helpers/Requester.dart';
@@ -45,7 +46,10 @@ class ProviderLoginPage extends StatelessWidget {
           User.name = _usernameController.text;
           User.token = await Requester().login(
               _usernameController.text, _passwordController.text).catchError(
-                  (exp) => print("Error occurred in loginButton: $exp"));
+                  (exp) {
+                print("Error occurred in loginButton: $exp");
+                Dialogue.showConfirmNoContent(context, "Failed to login: ${exp.toString()}", "Got it.");
+              });
           
           if (User.token != null) {
               Navigator.of(context).pushNamed(phomePageTag);

@@ -3,6 +3,7 @@ import 'package:gghack/helpers/Style.dart';
 import 'package:gghack/helpers/Requester.dart';
 import 'package:gghack/models/User.dart';
 import 'helpers/Constants.dart';
+import 'helpers/Dialogue.dart';
 
 class LoginPage extends StatelessWidget {
   final _usernameController = TextEditingController();
@@ -45,7 +46,10 @@ class LoginPage extends StatelessWidget {
           User.name = _usernameController.text;
           User.token = await Requester().login(
               _usernameController.text, _passwordController.text).catchError(
-                  (exp) => print("Error occurred in loginButton: $exp"));
+                  (exp) {
+                    print("Error occurred in loginButton: $exp");
+                    Dialogue.showConfirmNoContent(context, "Failed to login: ${exp.toString()}", "Got it.");
+                  });
           
           if (User.token != null) {
               Navigator.of(context).pushNamed(homePageTag);

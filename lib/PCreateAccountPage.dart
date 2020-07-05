@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'helpers/Constants.dart';
+import 'helpers/Dialogue.dart';
 import 'helpers/Requester.dart';
 import 'helpers/Style.dart';
 
@@ -105,7 +106,9 @@ class PCreateAccountPage extends StatelessWidget {
       _usernameController.text,
       _passwordController.text,
       _pconfirmController.text
-    );
+    ).catchError((error) {
+      Dialogue.showConfirmNoContent(context, "Create account failed: ${error.toString()}", "Got it.");
+    });
 
     if (response != null) {
         Navigator.of(context).pushNamed(ploginPageTag);

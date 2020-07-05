@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'helpers/Constants.dart';
+import 'helpers/Dialogue.dart';
 import 'helpers/Style.dart';
 import 'helpers/Requester.dart';
 import 'models/Service.dart';
@@ -144,7 +145,10 @@ class _CreateServiceState extends State<CreateServicePage> {
           );
 
           Service returned = await Requester().createService(User.token, toCreate)
-            .catchError((exp) => print("Error occurred in createService: $exp"));
+            .catchError((exp) {
+              print("Error occurred in createService: $exp");
+              Dialogue.showConfirmNoContent(context, "Service creation failed: ${exp.toString()}", "Got it.");
+            });
           
           if (returned != null) {
               Navigator.of(context).pushNamed(phomePageTag);
