@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'helpers/Constants.dart';
-import 'AppSelection.dart';
 import 'LoginPage.dart';
 import 'CreateAccountPage.dart';
-import 'PCreateAccountPage.dart';
-import 'ProviderLoginPage.dart';
 import 'ProviderHomePage.dart';
 import 'HomePage.dart';
 
@@ -14,13 +11,10 @@ void main() {
 
 class RossApp extends StatelessWidget {
   final routes = <String, WidgetBuilder>{
-    appSelectionTag: (context) => AppSelection(),
     loginPageTag: (context) => LoginPage(),
-    ploginPageTag: (context) => ProviderLoginPage(),
     homePageTag: (context) => HomePage(),
     phomePageTag: (context) => ProviderHomePage(),
     createAccountPageTag: (context) => CreateAccountPage(),
-    pcreateAccountPageTag: (context) => PCreateAccountPage(),
   };
 
   @override
@@ -31,7 +25,7 @@ class RossApp extends StatelessWidget {
       theme: new ThemeData(
         primaryColor: colorDark,
       ),
-      home: AppSelection(),
+      home: LoginPage(),
       routes: routes,
     );
   }
