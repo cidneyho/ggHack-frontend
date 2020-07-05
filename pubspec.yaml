@@ -51,7 +51,11 @@ dependencies:
   material_design_icons_flutter: ^4.0.5345
 
   # Pick image for service creation
-  image_picker: ^0.6.7
+  image_picker: ^0.6.7+3
+  imgur: ^1.1.1
+
+  # "Please wait" progress dialog
+  progress_dialog: ^1.2.4
 
 dev_dependencies:
   flutter_test:
