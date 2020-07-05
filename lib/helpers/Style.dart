@@ -1,26 +1,37 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'Constants.dart';
 
-Color getGradient(int value) {
-  Color color;
-  switch (value) {
-    case 0:
-      color = Colors.transparent;
-      break;
-    case 1:
-      color = colorTone1;
-      break;
-    case 2:
-      color = colorTone2;
-      break;
-    case 3:
-      color = colorTone3;
-      break;
-    default:
-      color = colorTone4;
-      break;
+List<List<Color>> getGradientColors(
+  List<List<int>> table, MaterialColor baseColor, int darknessLevel, [bool smallValues = false]) {
+
+  // return colors of diff darkness depneding on the value 
+
+  double minVal = smallValues? 0: table.map (
+          (e) => e.reduce(min)).toList().reduce(min).toDouble();
+  double maxVal = smallValues? 10: table.map (
+          (e) => e.reduce(max)).toList().reduce(max).toDouble();
+  
+  int row = table.length;
+  int col = table[0].length;
+
+  List<List<Color>> colors = List<List<Color>>.generate(row, (index) {
+    return List<Color>.generate(col, (index) => baseColor[0]);
+  });
+
+  for (int i = 0; i < row; ++i) {
+    for (int j = 0; j < col; ++j) {
+      // percentage, [0, 1]
+      double popularity = (table[i][j].toDouble() - minVal) / (maxVal - minVal);
+      int darkness = (popularity * darknessLevel.toDouble()).toInt() * 100;
+      if (darkness > 0) {
+        colors[i][j] = baseColor[darkness];
+      } else {
+        colors[i][j] = baseColor[50];
+      }
+    }
   }
-  return color;
+  return colors;
 }
 
 BoxDecoration getGradientBox() {

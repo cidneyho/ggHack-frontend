@@ -10,10 +10,8 @@ Color colorBackground = Colors.lightGreen[50]; // Colors.white;
 Color colorGrad1 = Color.fromRGBO(103, 178, 111, 1.0);
 Color colorGrad2 = Color.fromRGBO(76, 162, 205, 1.0);
 
-Color colorTone1 = Color.fromRGBO(140, 187, 224, 0.25);
-Color colorTone2 = Color.fromRGBO(140, 187, 224, 0.50);
-Color colorTone3 = Color.fromRGBO(140, 187, 224, 0.75);
-Color colorTone4 = Color.fromRGBO(140, 187, 224, 1.00);
+Color colorPopTime = Colors.teal;
+Color colorFreeSlot = Colors.blue;
 
 // Pages
 const loginPageTag = 'Login Page';
@@ -37,6 +35,7 @@ const loginButtonText = "Login";
 const searchBarHintText = "Search";
 const introductionText = "Introduction";
 const timeTableTitleText = "Available slots";
+const popularTimesTitleText = "Popular times";
 const reserveButtonText = "Reserve";
 const reservePopupText = "Select slot";
 const userVersionText = "User";
@@ -49,5 +48,6 @@ const createServiceButtonText = "Create Service";
 const max_width = 320.0;
 const days = ["", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-// frontend API
+// URLs
 const baseUrl = "gghack-2020.herokuapp.com";
+const placeIdFinderUrl = "https://developers-dot-devsite-v2-prod.appspot.com/maps/documentation/javascript/examples/full/places-placeid-finder";

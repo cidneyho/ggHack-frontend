@@ -13,7 +13,6 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() {
     return _HomePageState();
   }
-
 }
 
 class _HomePageState extends State<HomePage> {
@@ -48,7 +47,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold (
+    return Scaffold(
       appBar: _buildBar(context),
       backgroundColor: Colors.white,
       body: _buildList(context),
@@ -77,30 +76,30 @@ class _HomePageState extends State<HomePage> {
                   Navigator.pop(context);
                   Navigator.push(context, MaterialPageRoute(
                       builder: (context) => new CustomerRListPage()));
-                  // TODO but how do I pop this page (customerRListPage) out afterwards?
-                },
-              ), ]
-        ),
+              // TODO but how do I pop this page (customerRListPage) out afterwards?
+            },
+          ),
+        ]),
       ),
       resizeToAvoidBottomPadding: false,
     );
   }
 
   Widget _buildBar(BuildContext context) {
-    return new AppBar (
-        elevation: 0.2,
-        centerTitle: true,
-        title: _appBarTitle,
-        flexibleSpace: Container(
-          decoration: getGradientBox(),
+    return new AppBar(
+      elevation: 0.2,
+      centerTitle: true,
+      title: _appBarTitle,
+      flexibleSpace: Container(
+        decoration: getGradientBox(),
+      ),
+      actions: <Widget>[
+        new IconButton(
+          icon: _searchIcon,
+          onPressed: _searchPressed,
         ),
-        actions: <Widget>[
-          new IconButton(
-            icon: _searchIcon,
-            onPressed: _searchPressed,
-          ),
-        ],
-        iconTheme: IconThemeData(color: Colors.white),
+      ],
+      iconTheme: IconThemeData(color: Colors.white),
     );
   }
 
@@ -109,16 +108,24 @@ class _HomePageState extends State<HomePage> {
     if (_searchText.isNotEmpty) {
       _filteredServices.services = new List();
       for (int i = 0; i < _services.services.length; i++) {
-        if (_services.services[i].name.toLowerCase().contains(_searchText.toLowerCase())
-            || _services.services[i].address.toLowerCase().contains(_searchText.toLowerCase())) {
+        if (_services.services[i].name
+                .toLowerCase()
+                .contains(_searchText.toLowerCase()) ||
+            _services.services[i].address
+                .toLowerCase()
+                .contains(_searchText.toLowerCase())) {
           _filteredServices.services.add(_services.services[i]);
         }
       }
     }
 
-    return ListView (
+    return ListView(
       padding: const EdgeInsets.only(top: 16.0),
-      children: this._filteredServices.services.map((data) => _buildListItem(context, data)).toList(),
+      children: this
+          ._filteredServices
+          .services
+          .map((data) => _buildListItem(context, data))
+          .toList(),
     );
   }
 
@@ -131,22 +138,23 @@ class _HomePageState extends State<HomePage> {
         height: 100,
         decoration: BoxDecoration(color: colorBase),
         child: ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           leading: Container(
               padding: EdgeInsets.only(right: 12.0),
               decoration: new BoxDecoration(
                   border: new Border(
-                      right: new BorderSide(width: 1.0, color: Colors.white24))),
+                      right:
+                          new BorderSide(width: 1.0, color: Colors.white24))),
               child: Hero(
-                  tag: "avatar_" + service.name,
-                  child: new Image.network(
-                      service.image,
-                      height: 80,
-                      width: 80,
-                      fit: BoxFit.cover,
-                  ),
-              )
-          ),
+                tag: "avatar_" + service.id.toString(),
+                child: new Image.network(
+                  service.image,
+                  height: 80,
+                  width: 80,
+                  fit: BoxFit.cover,
+                ),
+              )),
           title: Row(
             children: <Widget>[
               new Flexible(
@@ -154,30 +162,29 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Container(
-                          padding: const EdgeInsets.only(bottom: 6.0),
-                          child: Text(service.name,
-                              style: TextStyle(fontWeight: FontWeight.bold))
-                        ),
-                        RichText(
-                          text: TextSpan(
-                            text: service.address,
-                            style: TextStyle(color: colorText),
-                          ),
-                          maxLines: 1,
-                          softWrap: true,
-                        )
-                      ]
-                  ))
-            ],),
-          trailing:
-          Column(
+                    Container(
+                        padding: const EdgeInsets.only(bottom: 6.0),
+                        child: Text(service.name,
+                            style: TextStyle(fontWeight: FontWeight.bold))),
+                    RichText(
+                      text: TextSpan(
+                        text: service.address,
+                        style: TextStyle(color: colorText),
+                      ),
+                      maxLines: 1,
+                      softWrap: true,
+                    )
+                  ]))
+            ],
+          ),
+          trailing: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.keyboard_arrow_right, size: 30.0)]),
+              children: <Widget>[Icon(Icons.keyboard_arrow_right, size: 30.0)]),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => new DetailsPage(service: service)));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => new DetailsPage(service: service)));
           },
         ),
       ),

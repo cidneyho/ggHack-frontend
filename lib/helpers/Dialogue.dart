@@ -9,7 +9,7 @@ class Dialogue {
         context: context,
         barrierDismissible: true,
         builder: (BuildContext context) {
-          Future.delayed(Duration(seconds: 1), () {
+          Future.delayed(Duration(milliseconds: 1500), () {
             Navigator.of(context, rootNavigator: true).pop(true);
           });
           return AlertDialog(
@@ -22,6 +22,25 @@ class Dialogue {
                   contentText,
                   style: TextStyle(color: colorText),
                 )
+            ),
+          );
+        }
+    );
+  }
+
+  static void showBarrierDismissibleNoContent(
+      BuildContext context, String titleText) {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          Future.delayed(Duration(milliseconds: 1500), () {
+            Navigator.of(context, rootNavigator: true).pop(true);
+          });
+          return AlertDialog(
+            content: Text(
+                titleText,
+                style: TextStyle(fontWeight: FontWeight.bold)
             ),
           );
         }
@@ -44,6 +63,30 @@ class Dialogue {
                   contentText,
                   style: TextStyle(color: colorText),
                 )
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(okText),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        }
+    );
+  }
+
+  static void showConfirmNoContent(
+      BuildContext context, String titleText, String okText) {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text(
+                titleText,
+                style: TextStyle(fontWeight: FontWeight.bold)
             ),
             actions: <Widget>[
               FlatButton(

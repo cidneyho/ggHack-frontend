@@ -42,6 +42,7 @@ class PCreateAccountPage extends StatelessWidget {
         controller: _passwordController,
         keyboardType: TextInputType.phone,
         maxLines: 1,
+        obscureText: true,
         decoration: getInputDecoration(passwordHintText),
         style: TextStyle(
           color: colorText,
@@ -55,6 +56,7 @@ class PCreateAccountPage extends StatelessWidget {
         controller: _pconfirmController,
         keyboardType: TextInputType.phone,
         maxLines: 1,
+        obscureText: true,
         decoration: getInputDecoration(pconfirmHintText),
         style: TextStyle(
           color: colorText,
@@ -80,7 +82,7 @@ class PCreateAccountPage extends StatelessWidget {
     );
 
     return Scaffold(
-      backgroundColor: colorDark,
+      backgroundColor: colorBackground,
       body: Center(
         child: ListView(
           shrinkWrap: true,
