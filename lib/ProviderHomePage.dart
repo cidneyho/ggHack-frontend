@@ -46,7 +46,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    
+
     Widget listitem;
 
     if (false) { // service exists
@@ -66,7 +66,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
         },
       );
     }
-    
+
     return Scaffold (
       appBar: _buildBar(context),
       backgroundColor: Colors.white,
@@ -153,28 +153,10 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[(reservation.status == "CP"?
-                  // Completed: CP
-                  Icon(
-                    Icons.done,
-                    color: Colors.green,
-                    size: 24.0,
-                    semanticLabel: 'Completed',
-                  ) : (reservation.status == "PD"?
-                  // Pending: PD
-                  Icon(
-                    Icons.hourglass_empty,
-                    color: Colors.amber,
-                    size: 24.0,
-                    semanticLabel: 'Pending',
-                  ) :
-                  // No-show: MS for miss
-                  Icon(
-                    Icons.close,
-                    color: Colors.red,
-                    size: 24.0,
-                    semanticLabel: 'No show',
-                  )))]
+                  children: <Widget>[(
+                      reservation.status == "CP"? completedIcon : (
+                      reservation.status == "PD"? pendingIcon :
+                      noShowIcon))]
               ),
             ),
             title: Row(
@@ -226,47 +208,50 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
 //        ),
 //      ],
       secondaryActions: <Widget>[
-        IconSlideAction(
-          caption: 'No show',
-          color: Colors.red,
-          icon: Icons.close,
-          onTap: () async {
-            bool response = await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text("Mark no-show reservation?"),
-                  content: Text("${reservation.customer} on 7/${(reservation.bookDate+2)%7+4} at ${reservation.bookTime}:00"),
-                  actions: <Widget>[
-                    FlatButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text("Not now"),
-                    ),
-                    FlatButton(
-                        onPressed: () async {
-                          await Requester().noShowReservation(User.token, reservation.id)
-                              .then((value) {
-                            if(value == 0) {
-                              Navigator.of(context).pop(true);
-                            }
-                          }).catchError((onError) {
-                            Navigator.of(context).pop(false);
-                            Dialogue.showConfirmNoContent(context, "Mark no-show failed: ${onError.toString()}", "Got it.");
-                          });
-                        },
-                        child: const Text("Confirm")
-                    ),
-                  ],
-                );
-              },
-            );
-            if(response) {
-              Dialogue.showBarrierDismissibleNoContent(context, "Reservation marked as no-show.");
-              setState(() {
-                this._reservations.changeStatus(reservation.id, "MS");
-              });
-            }
-          },
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6.4),
+          child: IconSlideAction(
+            caption: 'No show',
+            color: Colors.red[400],
+            icon: Icons.close,
+            onTap: () async {
+              bool response = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text("Mark no-show reservation?"),
+                    content: Text("${reservation.customer} on 7/${(reservation.bookDate+2)%7+4} at ${reservation.bookTime}:00"),
+                    actions: <Widget>[
+                      FlatButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text("Not now"),
+                      ),
+                      FlatButton(
+                          onPressed: () async {
+                            await Requester().noShowReservation(User.token, reservation.id)
+                                .then((value) {
+                              if(value == 0) {
+                                Navigator.of(context).pop(true);
+                              }
+                            }).catchError((onError) {
+                              Navigator.of(context).pop(false);
+                              Dialogue.showConfirmNoContent(context, "Mark no-show failed: ${onError.toString()}", "Got it.");
+                            });
+                          },
+                          child: const Text("Confirm")
+                      ),
+                    ],
+                  );
+                },
+              );
+              if(response) {
+                Dialogue.showBarrierDismissibleNoContent(context, "Reservation marked as no-show.");
+                setState(() {
+                  this._reservations.changeStatus(reservation.id, "MS");
+                });
+              }
+            },
+          ),
         ),
       ],
     );

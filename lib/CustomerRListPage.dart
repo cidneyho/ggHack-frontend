@@ -198,13 +198,12 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                     (reservation.status == "PD"
                         ? Icon(Icons.receipt, size: 24.0)
                         : (reservation.status == "MS"
-                            ? Icon(Icons.cancel, color: Colors.red, size: 24.0)
+                            ? noShowIcon
                             :
                             // Otherwise:
-                            Icon(Icons.check_circle,
-                                color: Colors.green, size: 24.0)))
+                            completedIcon))
                   ]),
-              onTap: () {
+              onTap: reservation.status != "PD"? null : () {
                 showDialog(
                   context: context,
                   builder: (_) => QrCodeDialog(reservation: reservation),
@@ -214,55 +213,58 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
           ),
         ),
         secondaryActions: <Widget>[
-          IconSlideAction(
-              caption: 'Cancel',
-              color: Colors.red,
-              icon: Icons.cancel,
-              onTap: () async {
-                bool response = await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text("Cancel reservation?"),
-                        content: Text(
-                            "${reservation.service.name} on 7/${(reservation.bookDate + 2) % 7 + 4} at ${reservation.bookTime}:00"),
-                        actions: <Widget>[
-                          FlatButton(
-                            onPressed: () => Navigator.of(context).pop(false),
-                            child: const Text("Not now"),
-                          ),
-                          FlatButton(
-                              onPressed: () async {
-                                await Requester()
-                                    .cancelReservation(
-                                        User.token, reservation.id)
-                                    .then((value) {
-                                  if (value == 0) {
-                                    Navigator.of(context).pop(true);
-                                    setState(() {
-                                      this
-                                          ._filteredReservations
-                                          .reservations
-                                          .removeWhere((element) =>
-                                              element.id == reservation.id);
-                                    });
-                                    Dialogue.showBarrierDismissibleNoContent(
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.4),
+            child: IconSlideAction(
+                caption: 'Cancel',
+                color: Colors.red[400],
+                icon: Icons.cancel,
+                onTap: () async {
+                  bool response = await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text("Cancel reservation?"),
+                          content: Text(
+                              "${reservation.service.name} on 7/${(reservation.bookDate + 2) % 7 + 4} at ${reservation.bookTime}:00"),
+                          actions: <Widget>[
+                            FlatButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: const Text("Not now"),
+                            ),
+                            FlatButton(
+                                onPressed: () async {
+                                  await Requester()
+                                      .cancelReservation(
+                                          User.token, reservation.id)
+                                      .then((value) {
+                                    if (value == 0) {
+                                      Navigator.of(context).pop(true);
+                                      setState(() {
+                                        this
+                                            ._filteredReservations
+                                            .reservations
+                                            .removeWhere((element) =>
+                                                element.id == reservation.id);
+                                      });
+                                      Dialogue.showBarrierDismissibleNoContent(
+                                          context,
+                                          "Reservation canceled: ${reservation.service.name} on 7/${(reservation.bookDate + 2) % 7 + 4}");
+                                    }
+                                  }).catchError((onError) {
+                                    Navigator.of(context).pop(false);
+                                    Dialogue.showConfirmNoContent(
                                         context,
-                                        "Reservation canceled: ${reservation.service.name} on 7/${(reservation.bookDate + 2) % 7 + 4}");
-                                  }
-                                }).catchError((onError) {
-                                  Navigator.of(context).pop(false);
-                                  Dialogue.showConfirmNoContent(
-                                      context,
-                                      "Cancellation failed: ${onError.toString()}",
-                                      "Got it.");
-                                });
-                              },
-                              child: const Text("Confirm")),
-                        ],
-                      );
-                    });
-              }),
+                                        "Cancellation failed: ${onError.toString()}",
+                                        "Got it.");
+                                  });
+                                },
+                                child: const Text("Confirm")),
+                          ],
+                        );
+                      });
+                }),
+          ),
         ]);
   }
 

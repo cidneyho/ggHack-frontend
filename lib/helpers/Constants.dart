@@ -46,9 +46,29 @@ const createServiceButtonText = "Create Service";
 
 // settings
 const max_width = 320.0;
-const days = ["", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const days = ["", "Jul 6 Mon", "Jul 7 Tue", "Jul 8 Wed", "Jul 9 Thu", "Jul 3 Fri", "Jul 4 Sat", "Jul 5 Sun"];
 
 // URLs
 const baseUrl = "gghack-2020.herokuapp.com";
 const placeIdFinderUrl = "https://developers-dot-devsite-v2-prod.appspot.com/maps/documentation/javascript/examples/full/places-placeid-finder";
 const dummyServiceImage = "https://lexcodigital.com/wp-content/uploads/2017/06/customer-service.jpg";
+
+// Icons
+Icon completedIcon = Icon(
+  Icons.check_circle,
+  color: Colors.green[400],
+  size: 24.0,
+  semanticLabel: 'Completed',
+);
+Icon noShowIcon = Icon(
+  Icons.cancel,
+  color: Colors.red[400],
+  size: 24.0,
+  semanticLabel: 'No show',
+);
+Icon pendingIcon = Icon(
+  Icons.hourglass_empty,
+  color: Colors.amber,
+  size: 24.0,
+  semanticLabel: 'Pending',
+);
