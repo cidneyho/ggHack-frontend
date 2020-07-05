@@ -44,5 +44,6 @@ const checkinButtonText = "Check-in";
 const max_width = 320.0;
 const days = ["", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-// frontend API
+// URLs
 const baseUrl = "gghack-2020.herokuapp.com";
+const placeIdFinderUrl = "https://developers-dot-devsite-v2-prod.appspot.com/maps/documentation/javascript/examples/full/places-placeid-finder";
