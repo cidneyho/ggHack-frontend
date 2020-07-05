@@ -51,3 +51,4 @@ const days = ["", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 // URLs
 const baseUrl = "gghack-2020.herokuapp.com";
 const placeIdFinderUrl = "https://developers-dot-devsite-v2-prod.appspot.com/maps/documentation/javascript/examples/full/places-placeid-finder";
+const dummyServiceImage = "https://lexcodigital.com/wp-content/uploads/2017/06/customer-service.jpg";

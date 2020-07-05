@@ -144,7 +144,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
     return Slidable(
         actionPane: SlidableDrawerActionPane(),
         controller: slidableController,
-        actionExtentRatio: 0.25,
+        actionExtentRatio: (reservation.status == "PD"? 0.25 : 0.0),
         child: Card(
           elevation: 0.2,
           margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
@@ -318,45 +318,49 @@ class QrCodeDialogState extends State<QrCodeDialog>
     return Container(
         padding: const EdgeInsets.all(16),
         decoration: getGradientBox(),
-        height: 330,
         width: 280,
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: 10),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(reservation.service.name,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: Colors.white)),
-            ),
-            SizedBox(height: 5),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                '07-0${(reservation.bookDate + 2) % 7 + 4} ${reservation.bookTime}:00',
-                style: TextStyle(color: Colors.white, fontSize: 14),
-              ),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                reservation.service.address,
-                style: TextStyle(color: Colors.white, fontSize: 14),
-              ),
-            ),
-            SizedBox(height: 20),
-            Container(
-              color: Colors.white,
-              child: QrImage(
-                data: reservation.id.toString(),
-                version: QrVersions.auto,
-                size: 200,
-              ),
-            ),
-          ],
-        ));
+        child: Wrap(
+            children: <Widget>[ Column(
+              children: <Widget>[
+                SizedBox(height: 10),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(reservation.service.name,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Colors.white)),
+                ),
+                SizedBox(height: 5),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '07-0${(reservation.bookDate + 2) % 7 + 4} ${reservation.bookTime}:00',
+                    style: TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    reservation.service.address,
+                    maxLines: 3,
+                    style: TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  color: Colors.white,
+                  child: QrImage(
+                    data: reservation.id.toString(),
+                    version: QrVersions.auto,
+                    size: 200,
+                  ),
+                ),
+                SizedBox(height: 10),
+              ],
+            )]
+        )
+    );
   }
 
   @override
