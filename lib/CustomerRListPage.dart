@@ -27,7 +27,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
 
   String _searchText = "";
   Icon _searchIcon = new Icon(Icons.search, color: Colors.white);
-  Widget _appBarTitle = new Text(appTitle);
+  Widget _appBarTitle = new Text(rlistTitle, style: TextStyle(color: Colors.white));
 
   @override
   void initState() {
@@ -62,19 +62,33 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
       backgroundColor: Colors.white,
       body: _buildList(context),
       drawer: Drawer(
-        child: ListView(padding: EdgeInsets.zero, children: <Widget>[
-          DrawerHeader(
-            child: Text("Menu"),
-            decoration: getGradientBox(),
-          ),
-          ListTile(
-            title: Text("Services"),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
-          ),
-        ]),
+        child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(text: "Menu\n", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      TextSpan(text: " \n", style: TextStyle(fontSize: 4.0)),
+                      TextSpan(text: "Hi, " + User.name, style: TextStyle(fontSize: 14.0)),
+                    ],
+                  ),
+                ),
+                decoration: getGradientBox(),
+              ),
+              ListTile(
+                title: Text("Home"),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+              ),
+            ]
+        ),
       ),
       resizeToAvoidBottomPadding: false,
     );
@@ -289,7 +303,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
         );
       } else {
         this._searchIcon = new Icon(Icons.search, color: Colors.white);
-        this._appBarTitle = new Text(appTitle);
+        this._appBarTitle = new Text(rlistTitle, style: TextStyle(color: Colors.white));
         _filter.clear();
       }
     });

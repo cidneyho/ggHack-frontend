@@ -24,6 +24,9 @@ const pcreateAccountPageTag = 'Provider Create Account Page';
 
 // strings
 const appTitle = "";
+const pappTitle = "";
+const rlistTitle = "Reservations";
+const createServiceTitle = "Create Service";
 const usernameHintText = "Username";
 const emailaddHintText = "Email Address";
 const passwordHintText = "Password";
@@ -37,8 +40,9 @@ const reserveButtonText = "Reserve";
 const reservePopupText = "Select slot";
 const userVersionText = "User";
 const providerVersionText = "Service Provider";
-const createButtonText = "Create Account";
+const createAccountButtonText = "Create Account";
 const checkinButtonText = "Check-in";
+const createServiceButtonText = "Create Service";
 
 // settings
 const max_width = 320.0;

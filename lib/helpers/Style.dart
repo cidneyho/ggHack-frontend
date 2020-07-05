@@ -65,3 +65,18 @@ InputDecoration getInputDecoration(String hintText) {
     )
   );
 }
+
+InputDecoration getBlankDecoration() {
+  return InputDecoration(
+    contentPadding: EdgeInsets.symmetric(horizontal: 4),
+    // border: InputBorder.none,
+    // focusedBorder: InputBorder.none,
+  );
+}
+
+Widget getFormTitle(String title) {
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: 2),
+    child: Text(title, style: TextStyle(color: colorText, fontWeight: FontWeight.bold))
+  );
+}
