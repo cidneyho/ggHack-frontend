@@ -122,6 +122,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
           onPressed: () async {
             var result = await BarcodeScanner.scan();
             if(result.type == ResultType.Barcode) {
+              Dialogue.showBarrierDismissibleNoContent(context, "QR code scanned.");
               int reservationId = int.parse(result.rawContent);
               await Requester().checkInReservation(User.token, reservationId).catchError((error) {
                 Dialogue.showConfirmNoContent(context, "Failed to scan QR code: ${error.toString()}", "Got it");
