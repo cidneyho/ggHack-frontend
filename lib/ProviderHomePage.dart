@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:sprintf/sprintf.dart';
 import 'helpers/Dialogue.dart';
 import 'helpers/Constants.dart';
 import 'helpers/Requester.dart';
@@ -112,6 +115,24 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
         centerTitle: true,
         title: _appBarTitle,
         iconTheme: IconThemeData(color: Colors.white),
+      actions: <Widget>[
+        IconButton(
+          padding: const EdgeInsets.only(right: 10.0),
+          icon: const Icon(MdiIcons.qrcodeScan),
+          onPressed: () async {
+            print("Scan QR code");
+            var result = await BarcodeScanner.scan();
+            print(result.type);
+            print(result.rawContent);
+            int reservationId = int.parse(result.rawContent);
+            await Requester().checkInReservation(User.token, reservationId).catchError((error) {
+              Dialogue.showConfirmNoContent(context, "Failed to scan QR code: ${error.toString()}", "Got it");
+            }).then((_) {
+              Dialogue.showBarrierDismissibleNoContent(context, "Reservation checked in.");
+            });
+          },
+        ),
+      ],
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -220,7 +241,9 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: const Text("Mark no-show reservation?"),
-                    content: Text("${reservation.customer} on 7/${(reservation.bookDate+2)%7+4} at ${reservation.bookTime}:00"),
+                    content: Text(
+                      sprintf("%s on 7/${(reservation.bookDate+2)%7+4} at ${reservation.bookTime}:00",[]),
+                    ),
                     actions: <Widget>[
                       FlatButton(
                         onPressed: () => Navigator.of(context).pop(false),

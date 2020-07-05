@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:sprintf/sprintf.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'helpers/Constants.dart';
 import 'helpers/Dialogue.dart';
@@ -182,8 +184,11 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                                 style: TextStyle(fontWeight: FontWeight.bold))),
                         RichText(
                           text: TextSpan(
-                            text:
-                                '07-0${(reservation.bookDate + 2) % 7 + 4} ${reservation.bookTime}:00 @ ${reservation.service.address}',
+                            text: sprintf('07-%02d %02d:00 @ %s', [
+                                  reservation.bookDate + 6,
+                                  reservation.bookTime,
+                                  reservation.service.address,
+                                ]),
                             style: TextStyle(color: colorText),
                           ),
                           maxLines: 1,
@@ -196,12 +201,10 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     (reservation.status == "PD"
-                        ? Icon(Icons.receipt, size: 24.0)
+                        ? Icon(Icons.receipt, size: 24.0) // Icons.local_activity // MdiIcons.qrcode
                         : (reservation.status == "MS"
                             ? noShowIcon
-                            :
-                            // Otherwise:
-                            completedIcon))
+                            : completedIcon))
                   ]),
               onTap: reservation.status != "PD"? null : () {
                 showDialog(
@@ -226,7 +229,11 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                         return AlertDialog(
                           title: const Text("Cancel reservation?"),
                           content: Text(
-                              "${reservation.service.name} on 7/${(reservation.bookDate + 2) % 7 + 4} at ${reservation.bookTime}:00"),
+                              sprintf('%s on Jul %d at %02d:00', [
+                                reservation.service.name,
+                                reservation.bookDate + 6,
+                                reservation.bookTime,
+                              ])),
                           actions: <Widget>[
                             FlatButton(
                               onPressed: () => Navigator.of(context).pop(false),
@@ -249,7 +256,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                                       });
                                       Dialogue.showBarrierDismissibleNoContent(
                                           context,
-                                          "Reservation canceled: ${reservation.service.name} on 7/${(reservation.bookDate + 2) % 7 + 4}");
+                                          "Reservation canceled: ${reservation.service.name} on Jul ${reservation.bookDate + 6}");
                                     }
                                   }).catchError((onError) {
                                     Navigator.of(context).pop(false);
@@ -337,7 +344,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '07-0${(reservation.bookDate + 2) % 7 + 4} ${reservation.bookTime}:00',
+                    sprintf("07-%02s %02s:00",[reservation.bookDate+6, reservation.bookTime]),
                     style: TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ),

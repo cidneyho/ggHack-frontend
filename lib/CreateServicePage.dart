@@ -160,6 +160,7 @@ class _CreateServiceState extends State<CreateServicePage> {
                 "Service creation failed: ${exp.toString()}", "Got it.");
           });
 
+          Dialogue.showBarrierDismissibleNoContent(context, "Service created: ${toCreate.name}");
           if (returned != null) {
             Navigator.of(context).pushNamed(phomePageTag);
           }
