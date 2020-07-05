@@ -108,63 +108,31 @@ class _CreateServiceState extends State<CreateServicePage> {
         ));
 
     final placeIdTitle = getFormTitle("Place ID");
+    final placeIdFinderButton = IconButton(
+      onPressed: () async {
+        final url = placeIdFinderUrl;
+        if (await canLaunch(url)) {
+          await launch(
+            url,
+            forceSafariVC: false,
+          );
+        }
+      },
+      icon: Icon(
+        Icons.map,
+        size: 24.0,
+        semanticLabel: 'Open Google map to get place ID',
+      ),
+    );
     final placeIdField = Padding(
         padding: EdgeInsets.only(bottom: 20.0),
         child: TextFormField(
           controller: _placeIdController,
           keyboardType: TextInputType.text,
           maxLines: 1,
-          decoration: getBlankDecoration(),
+          decoration: getBlankDecoration(placeIdFinderButton),
           style: TextStyle(color: colorText),
         ));
-    final placeIdFinder = Row(
-      children: <Widget>[
-        Padding(
-            padding: EdgeInsets.only(left: 10),
-            child: RaisedButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              onPressed: () async {
-                final url = placeIdFinderUrl;
-                if (await canLaunch(url)) {
-                  await launch(
-                    url,
-                    forceSafariVC: false,
-                  );
-                }
-              },
-              color: colorDark,
-              child: Icon(
-                Icons.map,
-                color: Colors.white,
-                size: 24.0,
-                semanticLabel: 'Text to announce in accessibility modes',
-              ),
-            )),
-        Padding(
-            padding: EdgeInsets.only(left: 10),
-            child: RaisedButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              onPressed: () async {
-                setState(() async {
-                  ClipboardData data =
-                      await Clipboard.getData(Clipboard.kTextPlain);
-                  _placeIdController.text = data.text;
-                });
-              },
-              color: colorDark,
-              child: Icon(
-                Icons.content_paste,
-                color: Colors.white,
-                size: 24.0,
-                semanticLabel: 'Text to announce in accessibility modes',
-              ),
-            )),
-      ],
-    );
 
     final createButton = Padding(
       padding: EdgeInsets.fromLTRB(64, 12, 64, 32),
@@ -225,7 +193,6 @@ class _CreateServiceState extends State<CreateServicePage> {
           maxCapTitle,
           maxCapField,
           placeIdTitle,
-          placeIdFinder,
           placeIdField,
           createButton,
         ],
