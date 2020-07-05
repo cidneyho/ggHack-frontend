@@ -20,7 +20,7 @@ class Service {
   List<List<int>> popularTimes;
 
   static String _convert(dynamic input) {
-    if(input is int) {
+    if (input is int) {
       // print("Type conversion: this owner is int");
       return input.toString();
     } else {
@@ -29,7 +29,7 @@ class Service {
     }
   }
 
-  Service ({
+  Service({
     this.id,
     this.owner,
     this.name,
@@ -48,8 +48,8 @@ class Service {
     this.popularTimes,
   });
 
-  factory Service.fromJson(Map<String, dynamic> json){
-    return new Service (
+  factory Service.fromJson(Map<String, dynamic> json) {
+    return new Service(
       id: json['id'],
       owner: _convert(json['owner']),
       name: json['name'],
@@ -59,17 +59,19 @@ class Service {
       longitude: json['longitude'],
       latitude: json['latitude'],
       rating: json['rating'],
-      image: json['image'] != null? json['image'] : dummyServiceImage,
+      image: json['image'] != null ? json['image'] : dummyServiceImage,
       maxCapacity: json['maxCapacity'],
       startTime: json['startTime'],
       closeTime: json['closeTime'],
       placeId: json['placeId'],
-      freeSlots: List<dynamic>.from(json['freeSlots']).map(
-              (list) => List<int>.from(list)
-      ).toList(),
-      popularTimes: List<dynamic>.from(json['popularTimes']).map(
-            (list) => List<int>.from(list)
-      ).toList(),
+      freeSlots: List<dynamic>.from(json['freeSlots'])
+          .map((list) => List<int>.from(list))
+          .toList(),
+      popularTimes: List.from(json['popularTimes']).length == 0
+          ? List()
+          : List<dynamic>.from(json['popularTimes'])
+              .map((list) => List<int>.from(list))
+              .toList(),
     );
   }
 }

@@ -46,11 +46,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
         await Requester().customerRenderReservationList(User.token).catchError((error) {
           Dialogue.showConfirmNoContent(context, "Failed to get reservations: ${error.toString()}", "Got it.");
         });
-    // Sort reservations chronologically
-    reservations.reservations.sort((e1, e2) => (e1.bookDate > e2.bookDate ||
-            (e1.bookDate == e2.bookDate && e1.bookTime > e2.bookTime))
-        ? 1
-        : 0);
+    reservations.sortReservationsByStatus();
     setState(() {
       for (Reservation reservation in reservations.reservations) {
         this._reservations.reservations.add(reservation);
@@ -344,7 +340,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    sprintf("07-%02s %02s:00",[reservation.bookDate+6, reservation.bookTime]),
+                    sprintf("07-%02d %02d:00",[reservation.bookDate+6, reservation.bookTime]),
                     style: TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ),

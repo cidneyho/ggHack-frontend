@@ -43,7 +43,7 @@ const createServiceButtonText = "Create Service";
 
 // settings
 const max_width = 320.0;
-const days = ["", "Jul 6 Mon", "Jul 7 Tue", "Jul 8 Wed", "Jul 9 Thu", "Jul 10 Fri", "Jul 11 Sat", "Jul 12 Sun"];
+const days = ["", "7/6 Mon", "7/7 Tue", "7/8 Wed", "7/9 Thu", "7/10 Fri", "7/11 Sat", "7/12 Sun"];
 
 // URLs
 const baseUrl = "gghack-2020.herokuapp.com";

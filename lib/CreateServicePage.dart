@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'DetailsPage.dart';
 import 'helpers/Constants.dart';
 import 'helpers/Dialogue.dart';
 import 'helpers/Style.dart';
@@ -152,18 +153,22 @@ class _CreateServiceState extends State<CreateServicePage> {
             placeId: _placeIdController.text,
           );
 
-          Service returned = await Requester()
+          await Requester()
               .createService(User.token, toCreate)
               .catchError((exp) {
             print("Error occurred in createService: $exp");
             Dialogue.showConfirmNoContent(context,
                 "Service creation failed: ${exp.toString()}", "Got it.");
+          }).then((returnedService) {
+            if (returnedService != null) {
+              Navigator.of(context).pop();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => new DetailsPage(service: returnedService)));
+            }
+            Dialogue.showBarrierDismissibleNoContent(context, "Service created: ${returnedService.name}");
           });
-
-          Dialogue.showBarrierDismissibleNoContent(context, "Service created: ${toCreate.name}");
-          if (returned != null) {
-            Navigator.of(context).pushNamed(phomePageTag);
-          }
         },
         padding: EdgeInsets.all(12),
         color: colorDark,

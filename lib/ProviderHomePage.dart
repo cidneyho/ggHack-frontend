@@ -12,12 +12,10 @@ import 'models/User.dart';
 import 'CreateServicePage.dart';
 
 class ProviderHomePage extends StatefulWidget {
-
   @override
   _ProviderHomePageState createState() {
     return _ProviderHomePageState();
   }
-
 }
 
 class _ProviderHomePageState extends State<ProviderHomePage> {
@@ -27,7 +25,8 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
   final SlidableController slidableController = SlidableController();
 
   ReservationList _reservations = new ReservationList(reservations: new List());
-  Widget _appBarTitle = new Text(pappTitle, style: TextStyle(color: Colors.white));
+  Widget _appBarTitle =
+      new Text(pappTitle, style: TextStyle(color: Colors.white));
 
   @override
   void initState() {
@@ -37,9 +36,11 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
   }
 
   void _getReservations() async {
-    ReservationList reservations = await Requester().providerRenderReservationList(User.token);
-    // Sort reservations chronologically
-   reservations.reservations.sort((e1, e2) => (e1.bookDate > e2.bookDate || (e1.bookDate == e2.bookDate && e1.bookTime > e2.bookTime))? 1: 0);
+    ReservationList reservations =
+        await Requester().providerRenderReservationList(User.token);
+
+    reservations.sortReservationsByStatus();
+
     setState(() {
       for (Reservation reservation in reservations.reservations) {
         this._reservations.reservations.add(reservation);
@@ -49,10 +50,10 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     Widget listitem;
 
-    if (false) { // service exists
+    if (false) {
+      // service exists
       listitem = ListTile(
         title: Text("Edit Service"),
         onTap: () {
@@ -64,96 +65,105 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
         title: Text("Create Service"),
         onTap: () {
           Navigator.pop(context);
-          Navigator.push(context, MaterialPageRoute(
-            builder: (context) => CreateServicePage()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => CreateServicePage()));
         },
       );
     }
 
-    return Scaffold (
+    return Scaffold(
       appBar: _buildBar(context),
       backgroundColor: Colors.white,
       body: _buildList(context),
       drawer: Drawer(
-        child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                child: RichText(
-                  text: TextSpan(
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                    children: <TextSpan>[
-                      TextSpan(text: "Menu\n", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-                      TextSpan(text: " \n", style: TextStyle(fontSize: 4.0)),
-                      TextSpan(text: "Hi, " + User.name, style: TextStyle(fontSize: 14.0)),
-                    ],
-                  ),
+        child: ListView(padding: EdgeInsets.zero, children: <Widget>[
+          DrawerHeader(
+            child: RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  color: Colors.black,
                 ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: <Color>[
-                      colorGrad1,
-                      colorGrad2
-                    ],),
-                ),
+                children: <TextSpan>[
+                  TextSpan(
+                      text: "Menu\n",
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                  TextSpan(text: " \n", style: TextStyle(fontSize: 4.0)),
+                  TextSpan(
+                      text: "Hi, " + User.name,
+                      style: TextStyle(fontSize: 14.0)),
+                ],
               ),
-              listitem,
-            ]
-        ),
+            ),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: <Color>[colorGrad1, colorGrad2],
+              ),
+            ),
+          ),
+          listitem,
+        ]),
       ),
       resizeToAvoidBottomPadding: false,
     );
   }
 
   Widget _buildBar(BuildContext context) {
-    return new AppBar (
-        elevation: 0.2,
-        centerTitle: true,
-        title: _appBarTitle,
-        iconTheme: IconThemeData(color: Colors.white),
+    return new AppBar(
+      elevation: 0.2,
+      centerTitle: true,
+      title: _appBarTitle,
+      iconTheme: IconThemeData(color: Colors.white),
       actions: <Widget>[
         IconButton(
           padding: const EdgeInsets.only(right: 10.0),
           icon: const Icon(MdiIcons.qrcodeScan),
           onPressed: () async {
             var result = await BarcodeScanner.scan();
-            if(result.type == ResultType.Barcode) {
-              Dialogue.showBarrierDismissibleNoContent(context, "QR code scanned.");
+            if (result.type == ResultType.Barcode) {
               int reservationId = int.parse(result.rawContent);
-              await Requester().checkInReservation(User.token, reservationId).catchError((error) {
-                Dialogue.showConfirmNoContent(context, "Failed to scan QR code: ${error.toString()}", "Got it");
+              await Requester()
+                  .checkInReservation(User.token, reservationId)
+                  .catchError((error) {
+                Dialogue.showConfirmNoContent(context,
+                    "Failed to scan QR code: ${error.toString()}", "Got it");
               }).then((_) {
-                Dialogue.showBarrierDismissibleNoContent(context, "Reservation checked in.");
+                Dialogue.showBarrierDismissibleNoContent(
+                    context, "Reservation checked in.");
+                setState(() {
+                  this._reservations.changeStatus(reservationId, "CP");
+                  this._reservations.sortReservations();
+                });
               });
             } else if (result.type == ResultType.Error) {
-              Dialogue.showConfirmNoContent(context, "Failed to scan QR code: ${result.toString()}", "Got it");
+              Dialogue.showConfirmNoContent(context,
+                  "Failed to scan QR code: ${result.toString()}", "Got it");
             }
           },
         ),
       ],
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: <Color>[
-                colorGrad1,
-                colorGrad2
-              ],
-            ),
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: <Color>[colorGrad1, colorGrad2],
           ),
         ),
+      ),
     );
   }
 
   Widget _buildList(BuildContext context) {
-    return ListView (
+    return ListView(
       padding: const EdgeInsets.only(top: 16.0),
-      children: this._reservations.reservations.map((data) => _buildListItem(context, data)).toList(),
+      children: this
+          ._reservations
+          .reservations
+          .map((data) => _buildListItem(context, data))
+          .toList(),
     );
   }
 
@@ -161,7 +171,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       controller: slidableController,
-      actionExtentRatio: (reservation.status == "PD"? 0.25 : 0.0),
+      actionExtentRatio: (reservation.status == "PD" ? 0.25 : 0.0),
       child: Card(
         elevation: 0.2,
         margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
@@ -169,18 +179,20 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
           height: 100,
           decoration: BoxDecoration(color: colorBase),
           child: ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             leading: Container(
-
               padding: EdgeInsets.only(right: 12.0),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[(
-                      reservation.status == "CP"? completedIcon : (
-                      reservation.status == "PD"? pendingIcon :
-                      noShowIcon))]
-              ),
+                  children: <Widget>[
+                    (reservation.status == "CP"
+                        ? completedIcon
+                        : (reservation.status == "PD"
+                            ? pendingIcon
+                            : noShowIcon))
+                  ]),
             ),
             title: Row(
               children: <Widget>[
@@ -189,34 +201,39 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Container(
-                              padding: const EdgeInsets.only(bottom: 6.0),
-                              child: Text(reservation.customer,
-                                  style: TextStyle(fontWeight: FontWeight.bold))
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              text: "2020-07-0${(reservation.bookDate+2)%7+4} ${reservation.bookTime}:00",
-                              style: TextStyle(color: colorText),
-                            ),
-                            maxLines: 1,
-                            softWrap: true,
-                          )
-                        ]
-                    ))
-              ],),
+                      Container(
+                          padding: const EdgeInsets.only(bottom: 6.0),
+                          child: Text(reservation.customer,
+                              style: TextStyle(fontWeight: FontWeight.bold))),
+                      RichText(
+                        text: TextSpan(
+                          text: sprintf('2020-07-%02d %02d:00', [
+                            reservation.bookDate + 6,
+                            reservation.bookTime,
+                          ]),
+                          style: TextStyle(color: colorText),
+                        ),
+                        maxLines: 1,
+                        softWrap: true,
+                      )
+                    ]))
+              ],
+            ),
             trailing: FlatButton(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              onPressed: (reservation.status != "PD"? null : () {
-                // confirm confirm
-                _showAlertDialog(context, reservation);
-              }),
+              onPressed: (reservation.status != "PD"
+                  ? null
+                  : () {
+                      // confirm confirm
+                      _showAlertDialog(context, reservation);
+                    }),
               padding: EdgeInsets.all(8),
               disabledColor: Colors.grey,
               color: colorDark,
-              child: Text(checkinButtonText, style: TextStyle(color: Colors.white, fontSize: 14)),
+              child: Text(checkinButtonText,
+                  style: TextStyle(color: Colors.white, fontSize: 14)),
             ),
           ),
         ),
@@ -244,7 +261,8 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                   return AlertDialog(
                     title: const Text("Mark no-show reservation?"),
                     content: Text(
-                      sprintf("%s on 7/${(reservation.bookDate+2)%7+4} at ${reservation.bookTime}:00",[]),
+                      sprintf("%s on Jul %02d at %02d:00",
+                          [reservation.customer, reservation.bookDate + 6, reservation.bookTime]),
                     ),
                     actions: <Widget>[
                       FlatButton(
@@ -253,26 +271,31 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                       ),
                       FlatButton(
                           onPressed: () async {
-                            await Requester().noShowReservation(User.token, reservation.id)
+                            await Requester()
+                                .noShowReservation(User.token, reservation.id)
                                 .then((value) {
-                              if(value == 0) {
+                              if (value == 0) {
                                 Navigator.of(context).pop(true);
                               }
                             }).catchError((onError) {
                               Navigator.of(context).pop(false);
-                              Dialogue.showConfirmNoContent(context, "Mark no-show failed: ${onError.toString()}", "Got it.");
+                              Dialogue.showConfirmNoContent(
+                                  context,
+                                  "Mark no-show failed: ${onError.toString()}",
+                                  "Got it.");
                             });
                           },
-                          child: const Text("Confirm")
-                      ),
+                          child: const Text("Confirm")),
                     ],
                   );
                 },
               );
-              if(response) {
-                Dialogue.showBarrierDismissibleNoContent(context, "Reservation marked as no-show.");
+              if (response) {
+                Dialogue.showBarrierDismissibleNoContent(
+                    context, "Reservation marked as no-show.");
                 setState(() {
                   this._reservations.changeStatus(reservation.id, "MS");
+                  this._reservations.sortReservations();
                 });
               }
             },
@@ -283,23 +306,29 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
   }
 
   _showAlertDialog(BuildContext context, Reservation reservation) {
-
     // set up the buttons
     Widget cancelButton = FlatButton(
       child: Text("Cancel"),
-      onPressed:  () { Navigator.pop(context); },
+      onPressed: () {
+        Navigator.pop(context);
+      },
     );
     Widget continueButton = FlatButton(
       child: Text("Confirm"),
-      onPressed:  () async {
+      onPressed: () async {
         Navigator.pop(context);
-        await Requester().checkInReservation(User.token, reservation.id).then((_) {
-          Dialogue.showBarrierDismissibleNoContent(context, "Checked in ${reservation.customer}.");
+        await Requester()
+            .checkInReservation(User.token, reservation.id)
+            .then((_) {
+          Dialogue.showBarrierDismissibleNoContent(
+              context, "Checked in ${reservation.customer}.");
           setState(() {
             this._reservations.changeStatus(reservation.id, "CP");
+            this._reservations.sortReservations();
           });
         }).catchError((error) {
-          Dialogue.showConfirmNoContent(context, "Failed to check in: ${error.toString()}", "Got it.");
+          Dialogue.showConfirmNoContent(
+              context, "Failed to check in: ${error.toString()}", "Got it.");
         });
       },
     );
