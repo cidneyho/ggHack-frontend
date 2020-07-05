@@ -34,14 +34,21 @@ dependencies:
   # To fetch data via http. From https://flutter.dev/docs/cookbook/networking/fetch-data
   http: ^0.12.1
 
-  # QR code API from https://pub.dev/packages/qr_flutter
+  # QR code APIs
   qr_flutter: ^3.1.0
+  barcode_scan: ^3.0.1
 
   # Swipe to no-show or cancel reservation
   flutter_slidable: ^0.5.4
 
   # Launch URL to find PlaceID
   url_launcher: ^5.4.11
+
+  # Format date time to string
+  sprintf: ^4.0.0
+
+  # For more icons
+  material_design_icons_flutter: 4.0.5345
 
 dev_dependencies:
   flutter_test:

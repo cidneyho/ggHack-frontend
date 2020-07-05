@@ -21,7 +21,7 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
-  int _showWhichTable = 1; // 1 for freeSlots; 2 for PopularTimes
+  int _showWhichTable = 0; // 0 for freeSlots; 1 for PopularTimes
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +88,47 @@ class _DetailsPageState extends State<DetailsPage> {
       ]),
     ));
 
+    // freeSlots and popularTimes table's titles
+    final timeTableTitles = Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            ToggleButtons(
+              color: Colors.black12,
+              selectedColor: Colors.black,
+              borderColor: Colors.transparent,
+              selectedBorderColor: Colors.transparent,
+              fillColor: Colors.transparent,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Text(timeTableTitleText,
+                    style: new TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(popularTimesTitleText,
+                      style: new TextStyle(
+                        fontWeight: FontWeight.bold,
+                      )
+                  ),
+                ),
+              ],
+              onPressed: (int index) {
+                setState(() {
+                  _showWhichTable = index == 1? 1 : 0;
+                });
+              },
+              isSelected: [_showWhichTable == 0, _showWhichTable == 1],
+            )
+          ],
+        )
+    );
+
     // freeSlots table's title
     final freeSlotsTableTitle = new Container(
       padding: const EdgeInsets.only(
@@ -153,63 +194,73 @@ class _DetailsPageState extends State<DetailsPage> {
       ]),
     );
 
-    List<List<Color>> popularTimeColors =
-        getGradientColors(popularTimes, colorPopTime, 4);
+    List<List<Color>> popularTimeColors = popularTimes.length == 0
+        ? List()
+        : getGradientColors(popularTimes, colorPopTime, 4);
     // popularTimes table
-    final popularTimesTable = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: Table(
-          border: TableBorder.all(
-              color: Colors.black12, width: 1, style: BorderStyle.solid),
-          children: [
-            TableRow(children: [
-              for (var day in days)
-                TableCell(
-                    child: Container(
-                        padding: const EdgeInsets.all(3.0),
-                        child: Center(child: Text(day))))
-            ]),
-            for (int t = startTime; t < closeTime; t++)
-              TableRow(children: [
-                TableCell(
-                    child: Container(
-                        padding: const EdgeInsets.all(3.0),
-                        child: Center(child: Text(t.toString())))),
-                for (int d = 0; d < 7; d++)
-                  TableCell(
-                      child: Container(
-                          color: popularTimeColors[d][t],
-                          padding: const EdgeInsets.all(3.0),
-                          child: Center(
-                              child: Text(popularTimes[d][t].toString()))))
-              ])
-          ]),
-    );
+    final popularTimesTable = popularTimes.length == 0
+        ? null
+        : Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Table(
+                border: TableBorder.all(
+                    color: Colors.black12, width: 1, style: BorderStyle.solid),
+                children: [
+                  TableRow(children: [
+                    for (var day in days)
+                      TableCell(
+                          child: Container(
+                              padding: const EdgeInsets.all(3.0),
+                              child: Center(child: Text(day))))
+                  ]),
+                  for (int t = startTime; t < closeTime; t++)
+                    TableRow(children: [
+                      TableCell(
+                          child: Container(
+                              padding: const EdgeInsets.all(3.0),
+                              child: Center(child: Text(t.toString())))),
+                      for (int d = 0; d < 7; d++)
+                        TableCell(
+                            child: Container(
+                                color: popularTimeColors[d][t],
+                                padding: const EdgeInsets.all(3.0),
+                                child: Center(
+                                    child:
+                                        Text(popularTimes[d][t].toString()))))
+                    ])
+                ]),
+          );
 
-    var timeSlotsTables = GestureDetector(
-      onTap: () {
-        setState(() {
-          if (_showWhichTable == 1) {
-            _showWhichTable = 0;
-          } else {
-            _showWhichTable = 1;
-          }
-        });
-      },
-      child: IndexedStack(
-        index: _showWhichTable,
-        children: <Widget>[
-          Column(children: <Widget>[
+    var timeSlotsTables = popularTimes.length == 0
+        ? Column(children: <Widget>[
             freeSlotsTableTitle,
             freeSlotsTable,
-          ]),
-          Column(children: <Widget>[
-            popularTimesTableTitle,
-            popularTimesTable,
-          ]),
-        ],
-      ),
-    );
+          ])
+        : Column(
+          children: <Widget>[
+            timeTableTitles,
+            GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _showWhichTable = _showWhichTable == 1? 0 : 1;
+                  });
+                },
+                child: IndexedStack(
+                  index: _showWhichTable,
+                  children: <Widget>[
+                    Column(children: <Widget>[
+                      //freeSlotsTableTitle,
+                      freeSlotsTable,
+                    ]),
+                    Column(children: <Widget>[
+                      //popularTimesTableTitle,
+                      popularTimesTable,
+                    ]),
+                  ],
+                ),
+              ),
+          ],
+        );
 
     // "reserve" button
     final reserveButton = Padding(

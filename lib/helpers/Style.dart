@@ -66,11 +66,12 @@ InputDecoration getInputDecoration(String hintText) {
   );
 }
 
-InputDecoration getBlankDecoration() {
+InputDecoration getBlankDecoration([IconButton suffixIcon]) {
   return InputDecoration(
     contentPadding: EdgeInsets.symmetric(horizontal: 4),
     // border: InputBorder.none,
     // focusedBorder: InputBorder.none,
+    suffixIcon: suffixIcon,
   );
 }
 

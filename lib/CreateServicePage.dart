@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'DetailsPage.dart';
 import 'helpers/Constants.dart';
+import 'helpers/Dialogue.dart';
 import 'helpers/Style.dart';
 import 'helpers/Requester.dart';
 import 'models/Service.dart';
@@ -10,12 +14,11 @@ class CreateServicePage extends StatefulWidget {
   _CreateServiceState createState() {
     return _CreateServiceState();
   }
-
 }
 
 class _CreateServiceState extends State<CreateServicePage> {
-
-  Widget _appBarTitle = new Text(createServiceTitle, style: TextStyle(color: Colors.white));
+  Widget _appBarTitle =
+      new Text(createServiceTitle, style: TextStyle(color: Colors.white));
 
   final _nameController = TextEditingController();
   final _addrController = TextEditingController();
@@ -28,102 +31,109 @@ class _CreateServiceState extends State<CreateServicePage> {
 
   @override
   Widget build(BuildContext context) {
-
     final nameTitle = getFormTitle("Name");
     final nameField = Padding(
-      padding: EdgeInsets.only(bottom: 20.0),
-      child: TextFormField(
-        controller: _nameController,
-        keyboardType: TextInputType.text,
-        maxLines: 1,
-        decoration: getBlankDecoration(),
-        style: TextStyle(color: colorText),
-      )
-    );
+        padding: EdgeInsets.only(bottom: 20.0),
+        child: TextFormField(
+          controller: _nameController,
+          keyboardType: TextInputType.text,
+          maxLines: 1,
+          decoration: getBlankDecoration(),
+          style: TextStyle(color: colorText),
+        ));
 
     final addrTitle = getFormTitle("Address");
     final addrField = Padding(
-      padding: EdgeInsets.only(bottom: 20.0),
-      child: TextFormField(
-        controller: _addrController,
-        keyboardType: TextInputType.text,
-        maxLines: 1,
-        decoration: getBlankDecoration(),
-        style: TextStyle(color: colorText),
-      )
-    );
-    
+        padding: EdgeInsets.only(bottom: 20.0),
+        child: TextFormField(
+          controller: _addrController,
+          keyboardType: TextInputType.text,
+          maxLines: 1,
+          decoration: getBlankDecoration(),
+          style: TextStyle(color: colorText),
+        ));
+
     final introTitle = getFormTitle("Introduction");
     final introField = Padding(
-      padding: EdgeInsets.only(bottom: 20.0),
-      child: TextFormField(
-        controller: _introController,
-        keyboardType: TextInputType.text,
-        maxLines: 1,
-        decoration: getBlankDecoration(),
-        style: TextStyle(color: colorText),
-      )
-    );
+        padding: EdgeInsets.only(bottom: 20.0),
+        child: TextFormField(
+          controller: _introController,
+          keyboardType: TextInputType.text,
+          maxLines: 1,
+          decoration: getBlankDecoration(),
+          style: TextStyle(color: colorText),
+        ));
 
     final imageTitle = getFormTitle("Image URL");
     final imageField = Padding(
-      padding: EdgeInsets.only(bottom: 20.0),
-      child: TextFormField(
-        controller: _imageController,
-        keyboardType: TextInputType.url,
-        maxLines: 1,
-        decoration: getBlankDecoration(),
-        style: TextStyle(color: colorText),
-      )
-    );
+        padding: EdgeInsets.only(bottom: 20.0),
+        child: TextFormField(
+          controller: _imageController,
+          keyboardType: TextInputType.url,
+          maxLines: 1,
+          decoration: getBlankDecoration(),
+          style: TextStyle(color: colorText),
+        ));
 
     final startTimeTitle = getFormTitle("Start Time");
     final startTimeField = Padding(
-      padding: EdgeInsets.only(bottom: 20.0),
-      child: TextFormField(
-        controller: _startTimeController,
-        keyboardType: TextInputType.phone,
-        maxLines: 1,
-        decoration: getBlankDecoration(),
-        style: TextStyle(color: colorText),
-      )
-    );
+        padding: EdgeInsets.only(bottom: 20.0),
+        child: TextFormField(
+          controller: _startTimeController,
+          keyboardType: TextInputType.phone,
+          maxLines: 1,
+          decoration: getBlankDecoration(),
+          style: TextStyle(color: colorText),
+        ));
 
     final closeTimeTitle = getFormTitle("Close Time");
     final closeTimeField = Padding(
-      padding: EdgeInsets.only(bottom: 20.0),
-      child: TextFormField(
-        controller: _closeTimeController,
-        keyboardType: TextInputType.phone,
-        maxLines: 1,
-        decoration: getBlankDecoration(),
-        style: TextStyle(color: colorText),
-      )
-    );
+        padding: EdgeInsets.only(bottom: 20.0),
+        child: TextFormField(
+          controller: _closeTimeController,
+          keyboardType: TextInputType.phone,
+          maxLines: 1,
+          decoration: getBlankDecoration(),
+          style: TextStyle(color: colorText),
+        ));
 
     final maxCapTitle = getFormTitle("Maximum Capacity");
     final maxCapField = Padding(
-      padding: EdgeInsets.only(bottom: 20.0),
-      child: TextFormField(
-        controller: _maxCapController,
-        keyboardType: TextInputType.phone,
-        maxLines: 1,
-        decoration: getBlankDecoration(),
-        style: TextStyle(color: colorText),
-      )
-    );
+        padding: EdgeInsets.only(bottom: 20.0),
+        child: TextFormField(
+          controller: _maxCapController,
+          keyboardType: TextInputType.phone,
+          maxLines: 1,
+          decoration: getBlankDecoration(),
+          style: TextStyle(color: colorText),
+        ));
 
     final placeIdTitle = getFormTitle("Place ID");
-    final placeIdField = Padding(
-      padding: EdgeInsets.only(bottom: 20.0),
-      child: TextFormField(
-        controller: _placeIdController,
-        keyboardType: TextInputType.text,
-        maxLines: 1,
-        decoration: getBlankDecoration(),
-        style: TextStyle(color: colorText),
-      )
+    final placeIdFinderButton = IconButton(
+      onPressed: () async {
+        final url = placeIdFinderUrl;
+        if (await canLaunch(url)) {
+          await launch(
+            url,
+            forceSafariVC: false,
+          );
+        }
+      },
+      icon: Icon(
+        Icons.map,
+        size: 24.0,
+        semanticLabel: 'Open Google map to get place ID',
+      ),
     );
+    final placeIdField = Padding(
+        padding: EdgeInsets.only(bottom: 20.0),
+        child: TextFormField(
+          controller: _placeIdController,
+          keyboardType: TextInputType.text,
+          maxLines: 1,
+          decoration: getBlankDecoration(placeIdFinderButton),
+          style: TextStyle(color: colorText),
+        ));
 
     final createButton = Padding(
       padding: EdgeInsets.fromLTRB(64, 12, 64, 32),
@@ -132,7 +142,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           borderRadius: BorderRadius.circular(16),
         ),
         onPressed: () async {
-          Service toCreate = new Service (
+          Service toCreate = new Service(
             name: _nameController.text,
             address: _addrController.text,
             introduction: _introController.text,
@@ -143,12 +153,22 @@ class _CreateServiceState extends State<CreateServicePage> {
             placeId: _placeIdController.text,
           );
 
-          Service returned = await Requester().createService(User.token, toCreate)
-            .catchError((exp) => print("Error occurred in createService: $exp"));
-          
-          if (returned != null) {
-              Navigator.of(context).pushNamed(phomePageTag);
-          }
+          await Requester()
+              .createService(User.token, toCreate)
+              .catchError((exp) {
+            print("Error occurred in createService: $exp");
+            Dialogue.showConfirmNoContent(context,
+                "Service creation failed: ${exp.toString()}", "Got it.");
+          }).then((returnedService) {
+            if (returnedService != null) {
+              Navigator.of(context).pop();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => new DetailsPage(service: returnedService)));
+            }
+            Dialogue.showBarrierDismissibleNoContent(context, "Service created: ${returnedService.name}");
+          });
         },
         padding: EdgeInsets.all(12),
         color: colorDark,
@@ -157,7 +177,7 @@ class _CreateServiceState extends State<CreateServicePage> {
       ),
     );
 
-    return Scaffold (
+    return Scaffold(
       appBar: _buildBar(context),
       backgroundColor: Colors.white,
       body: ListView(
@@ -187,14 +207,14 @@ class _CreateServiceState extends State<CreateServicePage> {
   }
 
   Widget _buildBar(BuildContext context) {
-    return new AppBar (
-        elevation: 0.2,
-        centerTitle: true,
-        title: _appBarTitle,
-        flexibleSpace: Container(
-          decoration: getGradientBox(),
-        ),
-        iconTheme: IconThemeData(color: Colors.white),
+    return new AppBar(
+      elevation: 0.2,
+      centerTitle: true,
+      title: _appBarTitle,
+      flexibleSpace: Container(
+        decoration: getGradientBox(),
+      ),
+      iconTheme: IconThemeData(color: Colors.white),
     );
   }
 }

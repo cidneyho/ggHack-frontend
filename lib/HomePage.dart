@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gghack/CustomerRListPage.dart';
 import 'helpers/Constants.dart';
+import 'helpers/Dialogue.dart';
 import 'helpers/Style.dart';
 import 'helpers/Requester.dart';
 import 'models/Service.dart';
@@ -36,7 +37,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _getServices() async {
-    ServiceList services = await Requester().renderServiceList();
+    ServiceList services = await Requester().renderServiceList().catchError((error) {
+      Dialogue.showConfirmNoContent(context, "Failed to get services: ${error.toString()}", "Got it.");
+    });
     setState(() {
       for (Service service in services.services) {
         this._services.services.add(service);

@@ -15,17 +15,14 @@ Color colorFreeSlot = Colors.blue;
 
 // Pages
 const loginPageTag = 'Login Page';
-const ploginPageTag = 'Provider Login Page';
 const homePageTag = 'Home Page';
 const phomePageTag = 'Provider Home Page';
-const appSelectionTag = 'App Selection';
 const createAccountPageTag = 'Create Account Page';
-const pcreateAccountPageTag = 'Provider Create Account Page';
 
 // strings
 const appTitle = "";
 const pappTitle = "";
-const rlistTitle = "Reservations";
+const rlistTitle = "";
 const createServiceTitle = "Create Service";
 const usernameHintText = "Username";
 const emailaddHintText = "Email Address";
@@ -46,8 +43,29 @@ const createServiceButtonText = "Create Service";
 
 // settings
 const max_width = 320.0;
-const days = ["", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const days = ["", "7/6 Mon", "7/7 Tue", "7/8 Wed", "7/9 Thu", "7/10 Fri", "7/11 Sat", "7/12 Sun"];
 
 // URLs
 const baseUrl = "gghack-2020.herokuapp.com";
 const placeIdFinderUrl = "https://developers-dot-devsite-v2-prod.appspot.com/maps/documentation/javascript/examples/full/places-placeid-finder";
+const dummyServiceImage = "https://lexcodigital.com/wp-content/uploads/2017/06/customer-service.jpg";
+
+// Icons
+Icon completedIcon = Icon(
+  Icons.check_circle,
+  color: Colors.green[400],
+  size: 24.0,
+  semanticLabel: 'Completed',
+);
+Icon noShowIcon = Icon(
+  Icons.cancel,
+  color: Colors.red[400],
+  size: 24.0,
+  semanticLabel: 'No show',
+);
+Icon pendingIcon = Icon(
+  Icons.hourglass_full,
+  color: Colors.amber[400],
+  size: 24.0,
+  semanticLabel: 'Pending',
+);
