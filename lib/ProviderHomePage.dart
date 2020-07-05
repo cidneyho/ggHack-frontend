@@ -138,7 +138,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       controller: slidableController,
-      actionExtentRatio: 0.25,
+      actionExtentRatio: (reservation.status == "PD"? 0.25 : 0.0),
       child: Card(
         elevation: 0.2,
         margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
@@ -204,11 +204,12 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              onPressed: () {
+              onPressed: (reservation.status != "PD"? null : () {
                 // confirm confirm
                 _showAlertDialog(context, reservation);
-              },
+              }),
               padding: EdgeInsets.all(8),
+              disabledColor: Colors.grey,
               color: colorDark,
               child: Text(checkinButtonText, style: TextStyle(color: Colors.white, fontSize: 14)),
             ),
