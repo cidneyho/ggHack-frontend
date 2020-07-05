@@ -74,7 +74,7 @@ class PCreateAccountPage extends StatelessWidget {
           _createAccountPressed(context);
         },
         padding: EdgeInsets.all(12),
-        color: colorDarker,
+        color: colorDark,
         child: Text(createAccountButtonText,
             style: TextStyle(color: Colors.white, fontSize: 16)
         ),
