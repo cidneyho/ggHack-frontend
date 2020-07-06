@@ -346,7 +346,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
         this._searchIcon = new Icon(Icons.search, color: Colors.white);
         this._sortIcon = new Icon((_sortByStatus? MdiIcons.history : MdiIcons.sortBoolAscending), color: Colors.white);
         this._appBarTitle =
-            new Text(rlistTitle, style: TextStyle(color: Colors.white));
+            new Text(rlistTitle, style: TextStyle(color: Colors.white, fontSize: 18));
         _filter.clear();
       }
     });

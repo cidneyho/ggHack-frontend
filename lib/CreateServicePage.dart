@@ -45,7 +45,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           controller: _nameController,
           keyboardType: TextInputType.text,
           maxLines: 1,
-          decoration: getBlankDecoration(),
+          decoration: getBlankDecoration(hintText: "What is your service's display name?"),
           style: TextStyle(color: colorText),
         ));
 
@@ -56,7 +56,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           controller: _addrController,
           keyboardType: TextInputType.text,
           maxLines: 1,
-          decoration: getBlankDecoration(),
+          decoration: getBlankDecoration(hintText: "Where can people find your service?"),
           style: TextStyle(color: colorText),
         ));
 
@@ -67,7 +67,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           controller: _introController,
           keyboardType: TextInputType.text,
           maxLines: 1,
-          decoration: getBlankDecoration(),
+          decoration: getBlankDecoration(hintText: "Briefly introduce your service."),
           style: TextStyle(color: colorText),
         ));
 
@@ -122,7 +122,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           controller: _imageController,
           keyboardType: TextInputType.url,
           maxLines: 1,
-          decoration: getBlankDecoration(imageIconButtons),
+          decoration: getBlankDecoration(suffixIcon: imageIconButtons, hintText: 'Take a photo or choose one from library'),
           style: TextStyle(color: colorText),
         ));
 
@@ -133,7 +133,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           controller: _startTimeController,
           keyboardType: TextInputType.phone,
           maxLines: 1,
-          decoration: getBlankDecoration(),
+          decoration: getBlankDecoration(hintText: 'Enter 13 for 13:00'),
           style: TextStyle(color: colorText),
         ));
 
@@ -144,7 +144,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           controller: _closeTimeController,
           keyboardType: TextInputType.phone,
           maxLines: 1,
-          decoration: getBlankDecoration(),
+          decoration: getBlankDecoration(hintText: 'Enter 20 for 20:00'),
           style: TextStyle(color: colorText),
         ));
 
@@ -155,7 +155,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           controller: _maxCapController,
           keyboardType: TextInputType.phone,
           maxLines: 1,
-          decoration: getBlankDecoration(),
+          decoration: getBlankDecoration(hintText: 'Enter 3 if at most 3 people can visit concurrently'),
           style: TextStyle(color: colorText),
         ));
 
@@ -182,7 +182,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           controller: _placeIdController,
           keyboardType: TextInputType.text,
           maxLines: 1,
-          decoration: getBlankDecoration(placeIdFinderButton),
+          decoration: getBlankDecoration(suffixIcon: placeIdFinderButton, hintText: 'Click to search; paste it here'),
           style: TextStyle(color: colorText),
         ));
 
