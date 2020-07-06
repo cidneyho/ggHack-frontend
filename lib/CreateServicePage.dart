@@ -6,6 +6,7 @@ import 'package:path/path.dart';
 import 'package:imgur/imgur.dart' as imgur;
 import 'package:image_picker/image_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'DetailsPage.dart';
 import 'helpers/Constants.dart';
@@ -44,7 +45,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           controller: _nameController,
           keyboardType: TextInputType.text,
           maxLines: 1,
-          decoration: getBlankDecoration(),
+          decoration: getBlankDecoration(hintText: "What is your service's display name?"),
           style: TextStyle(color: colorText),
         ));
 
@@ -55,7 +56,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           controller: _addrController,
           keyboardType: TextInputType.text,
           maxLines: 1,
-          decoration: getBlankDecoration(),
+          decoration: getBlankDecoration(hintText: "Where can people find your service?"),
           style: TextStyle(color: colorText),
         ));
 
@@ -66,7 +67,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           controller: _introController,
           keyboardType: TextInputType.text,
           maxLines: 1,
-          decoration: getBlankDecoration(),
+          decoration: getBlankDecoration(hintText: "Briefly introduce your service."),
           style: TextStyle(color: colorText),
         ));
 
@@ -121,7 +122,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           controller: _imageController,
           keyboardType: TextInputType.url,
           maxLines: 1,
-          decoration: getBlankDecoration(imageIconButtons),
+          decoration: getBlankDecoration(suffixIcon: imageIconButtons, hintText: 'Take a photo or choose one from library'),
           style: TextStyle(color: colorText),
         ));
 
@@ -132,7 +133,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           controller: _startTimeController,
           keyboardType: TextInputType.phone,
           maxLines: 1,
-          decoration: getBlankDecoration(),
+          decoration: getBlankDecoration(hintText: 'Enter 13 for 13:00'),
           style: TextStyle(color: colorText),
         ));
 
@@ -143,7 +144,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           controller: _closeTimeController,
           keyboardType: TextInputType.phone,
           maxLines: 1,
-          decoration: getBlankDecoration(),
+          decoration: getBlankDecoration(hintText: 'Enter 20 for 20:00'),
           style: TextStyle(color: colorText),
         ));
 
@@ -154,7 +155,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           controller: _maxCapController,
           keyboardType: TextInputType.phone,
           maxLines: 1,
-          decoration: getBlankDecoration(),
+          decoration: getBlankDecoration(hintText: 'Enter 3 if at most 3 people can visit concurrently'),
           style: TextStyle(color: colorText),
         ));
 
@@ -181,7 +182,7 @@ class _CreateServiceState extends State<CreateServicePage> {
           controller: _placeIdController,
           keyboardType: TextInputType.text,
           maxLines: 1,
-          decoration: getBlankDecoration(placeIdFinderButton),
+          decoration: getBlankDecoration(suffixIcon: placeIdFinderButton, hintText: 'Click to search; paste it here'),
           style: TextStyle(color: colorText),
         ));
 
@@ -224,13 +225,16 @@ class _CreateServiceState extends State<CreateServicePage> {
             placeId: _placeIdController.text,
           );
 
+          ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+          await pr.show();
           await Requester()
               .createService(User.token, toCreate)
-              .catchError((exp) {
+              .catchError((exp) async {
             print("Error occurred in createService: $exp");
+            await pr.hide();
             Dialogue.showConfirmNoContent(context,
                 "Service creation failed: ${exp.toString()}", "Got it.");
-          }).then((returnedService) {
+          }).then((returnedService) async {
             if (returnedService != null) {
               Navigator.of(context).pop();
 //              Navigator.push(
@@ -239,9 +243,11 @@ class _CreateServiceState extends State<CreateServicePage> {
 //                      builder: (context) =>
 //                          new DetailsPage(service: returnedService)));
             }
+            await pr.hide();
             Dialogue.showBarrierDismissibleNoContent(
                 context, "Service created: ${returnedService.name}");
           });
+          await pr.hide();
         },
         padding: EdgeInsets.all(12),
         color: colorDark,

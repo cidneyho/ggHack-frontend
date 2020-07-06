@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'Constants.dart';
 
+Color backgroundColor = Colors.white;
+
 class Dialogue {
   static void showBarrierDismissible(
       BuildContext context, String titleText, String contentText) {
@@ -13,6 +15,7 @@ class Dialogue {
             Navigator.of(context, rootNavigator: true).pop(true);
           });
           return AlertDialog(
+            backgroundColor: backgroundColor,
             title: Text(
                 titleText,
                 style: TextStyle(fontWeight: FontWeight.bold)
@@ -38,6 +41,7 @@ class Dialogue {
             Navigator.of(context, rootNavigator: true).pop(true);
           });
           return AlertDialog(
+            backgroundColor: backgroundColor,
             content: Text(
                 titleText,
                 style: TextStyle(fontWeight: FontWeight.bold)
@@ -54,6 +58,7 @@ class Dialogue {
         barrierDismissible: true,
         builder: (BuildContext context) {
           return AlertDialog(
+            backgroundColor: backgroundColor,
             title: Text(
                 titleText,
                 style: TextStyle(fontWeight: FontWeight.bold)
@@ -84,6 +89,7 @@ class Dialogue {
         barrierDismissible: true,
         builder: (BuildContext context) {
           return AlertDialog(
+            backgroundColor: backgroundColor,
             content: Text(
                 titleText,
                 style: TextStyle(fontWeight: FontWeight.bold)
@@ -123,6 +129,7 @@ class Dialogue {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
+      backgroundColor: backgroundColor,
       title: Text(titleText),
       actions: [
         cancelButton,

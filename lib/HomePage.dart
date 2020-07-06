@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gghack/CustomerRListPage.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'helpers/Constants.dart';
 import 'helpers/Dialogue.dart';
 import 'helpers/Style.dart';
@@ -37,7 +38,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _getServices() async {
-    ServiceList services = await Requester().renderServiceList().catchError((error) {
+    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    await pr.show();
+    ServiceList services = await Requester().renderServiceList().catchError((error) async {
+      await pr.hide();
       Dialogue.showConfirmNoContent(context, "Failed to get services: ${error.toString()}", "Got it.");
     });
     setState(() {
@@ -46,6 +50,7 @@ class _HomePageState extends State<HomePage> {
         this._filteredServices.services.add(service);
       }
     });
+    await pr.hide();
   }
 
   @override

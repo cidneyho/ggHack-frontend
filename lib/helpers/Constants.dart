@@ -22,7 +22,7 @@ const createAccountPageTag = 'Create Account Page';
 // strings
 const appTitle = "";
 const pappTitle = "";
-const rlistTitle = "";
+const rlistTitle = "Reservations";
 const createServiceTitle = "Create Service";
 const usernameHintText = "Username";
 const emailaddHintText = "Email Address";
