@@ -1,19 +1,18 @@
-## gghack-frontend
+## ggHack Frontend
 
-### setup
-+ install [Flutter](https://flutter.dev/docs/get-started/install)
-+ run **flutter doctor** to check what you need
-```cmd
-$ flutter doctor
+### Setup
+1. install Flutter [here](https://flutter.dev/docs/get-started/install)
+2. run **flutter doctor** to check for any missing dependecies
+```
+flutter doctor
 ```
 
-### class structure
-```dart
-class Service {
-  String name;
-  String address;
-  String introduction;
-  String photo;
-  List<int> time;
-  List<List<int>> slots;
+### Run the app
+```
+cd ggHack-frontend
+flutter run
+```
+- to launch an iOS simulator on Mac
+```
+open -a Simulator
 ```
