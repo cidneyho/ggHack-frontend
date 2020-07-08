@@ -72,8 +72,10 @@ class _LoginPageState extends State<LoginPage> {
 
           if (User.token != null) {
             if (isSelected[0] == true) {
+              User.role = "customer";
               Navigator.of(context).pushNamed(homePageTag);
             } else {
+              User.role = "provider";
               Navigator.of(context).pushNamed(phomePageTag);
             }
           }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gghack/PServiceList.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:barcode_scan/barcode_scan.dart';
@@ -111,6 +112,16 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
             ),
           ),
           listitem,
+          ListTile(
+            title: Text("My services"),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => new PServiceListPage()));
+            },
+          ),
           ListTile(
             title: Text("Log out"),
             onTap: () {

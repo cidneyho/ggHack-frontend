@@ -180,21 +180,6 @@ class _DetailsPageState extends State<DetailsPage> {
           ]),
     );
 
-    // popularTimes table's title
-    final popularTimesTableTitle = new Container(
-      padding: const EdgeInsets.only(
-          left: 20.0, top: 20.0, right: 20.0, bottom: 14.0),
-      child: new Row(children: [
-        new Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          new Container(
-              child: new Text(popularTimesTitleText,
-                  style: new TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ))),
-        ]),
-      ]),
-    );
-
     List<List<Color>> popularTimeColors = popularTimes.length == 0
         ? List()
         : getGradientColors(popularTimes, colorPopTime, 4);
@@ -295,7 +280,7 @@ class _DetailsPageState extends State<DetailsPage> {
           basicInfo,
           introText,
           timeSlotsTables,
-          reserveButton,
+          if(User.role == "customer") reserveButton,
         ]));
   }
 
