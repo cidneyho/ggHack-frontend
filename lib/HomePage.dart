@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gghack/CustomerRListPage.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:sprintf/sprintf.dart';
 import 'helpers/Constants.dart';
 import 'helpers/Dialogue.dart';
 import 'helpers/Style.dart';
@@ -27,6 +29,8 @@ class _HomePageState extends State<HomePage> {
   Icon _searchIcon = new Icon(Icons.search, color: Colors.white);
   Widget _appBarTitle = new Text(appTitle, style: TextStyle(color: Colors.white));
 
+  Position _currentPosition;
+
   @override
   void initState() {
     super.initState();
@@ -38,23 +42,27 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _getServices() async {
-    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
-    await pr.show();
+    await _getCurrentLocation();
+
     ServiceList services = await Requester().renderServiceList().catchError((error) async {
-      await pr.hide();
       Dialogue.showConfirmNoContent(context, "Failed to get services: ${error.toString()}", "Got it.");
     });
+    if (_currentPosition != null) {
+      await services.sortByDistance(_currentPosition);
+    }
     setState(() {
       for (Service service in services.services) {
         this._services.services.add(service);
         this._filteredServices.services.add(service);
       }
     });
-    await pr.hide();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_currentPosition != null) {
+      print("LAT: ${_currentPosition.latitude}, LNG: ${_currentPosition.longitude}");
+    }
     return Scaffold(
       appBar: _buildBar(context),
       backgroundColor: Colors.white,
@@ -129,7 +137,9 @@ class _HomePageState extends State<HomePage> {
 
     return ListView(
       padding: const EdgeInsets.only(top: 16.0),
-      children: this
+      children: _filteredServices.services.length == 0
+          ? [Text("Please wait while we are loading services for you...", style: TextStyle(color: colorText))]
+          : this
           ._filteredServices
           .services
           .map((data) => _buildListItem(context, data))
@@ -181,7 +191,16 @@ class _HomePageState extends State<HomePage> {
                       ),
                       maxLines: 1,
                       softWrap: true,
-                    )
+                    ),
+                        if(service.distance != null)
+                        RichText(
+                          text: TextSpan(
+                            text: sprintf("%.1f km", [service.distance / 1000.0]),
+                            style: TextStyle(color: colorText),
+                          ),
+                          maxLines: 1,
+                          softWrap: true,
+                        )
                   ]))
             ],
           ),
@@ -242,5 +261,20 @@ class _HomePageState extends State<HomePage> {
         _filter.clear();
       }
     });
+  }
+
+  Future<Position> _getCurrentLocation() async {
+    final Geolocator geolocator = Geolocator();
+
+    await geolocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() {
+        _currentPosition = position;
+      });
+    }).catchError((e) {
+      print(e);
+    });
+    return _currentPosition;
   }
 }

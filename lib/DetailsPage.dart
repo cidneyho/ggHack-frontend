@@ -299,15 +299,15 @@ class _DetailsPageState extends State<DetailsPage> {
         ]));
   }
 
-  List<Map<String, List<int>>> _fillPickerData() {
-    var pickerData = new List<Map<String, List<int>>>();
+  List<Map<String, List<String>>> _fillPickerData() {
+    var pickerData = new List<Map<String, List<String>>>();
     for (var d = 0; d < widget.service.freeSlots.length; ++d) {
-      var dayList = new List<int>();
+      var dayList = new List<String>();
       for (var t = widget.service.startTime;
           t < widget.service.closeTime;
           ++t) {
         if (widget.service.freeSlots[d][t - widget.service.startTime] > 0) {
-          dayList.add(t);
+          dayList.add("${t <= 12? t : t-12} " + (t < 12? "am" : "pm"));
         }
       }
       pickerData.add({days[d + 1]: dayList});
