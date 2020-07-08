@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gghack/PServiceList.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:barcode_scan/barcode_scan.dart';
@@ -40,7 +41,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
   }
 
   void _getReservations() async {
-    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
     await pr.show();
     ReservationList reservations =
         await Requester().providerRenderReservationList(User.token);
@@ -111,6 +112,23 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
             ),
           ),
           listitem,
+          ListTile(
+            title: Text("My services"),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => new PServiceListPage()));
+            },
+          ),
+          ListTile(
+            title: Text("Log out"),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+          ),
         ]),
       ),
       resizeToAvoidBottomPadding: false,
@@ -130,7 +148,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
           onPressed: () async {
             var result = await BarcodeScanner.scan();
             if (result.type == ResultType.Barcode) {
-              ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+              ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
               await pr.show();
               int reservationId = int.parse(result.rawContent);
               await Requester()
@@ -174,7 +192,12 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
   Widget _buildList(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.only(top: 16.0),
-      children: this
+      children: _reservations.reservations.length == 0
+          ? [
+        Text("Please wait while we are loading reservations for you...",
+            style: TextStyle(color: colorText))
+      ]
+          : this
           ._reservations
           .reservations
           .map((data) => _buildListItem(context, data))
@@ -286,7 +309,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                       ),
                       FlatButton(
                           onPressed: () async {
-                            ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+                            ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
                             await pr.show();
                             await Requester()
                                 .noShowReservation(User.token, reservation.id)
@@ -336,7 +359,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
       child: Text("Confirm"),
       onPressed: () async {
         Navigator.pop(context);
-        ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+        ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
         await pr.show();
         await Requester()
             .checkInReservation(User.token, reservation.id)

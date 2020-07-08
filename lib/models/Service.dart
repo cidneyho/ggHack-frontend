@@ -18,6 +18,7 @@ class Service {
   String placeId;
   List<List<int>> freeSlots;
   List<List<int>> popularTimes;
+  double distance; // compared to user's current location.
 
   static String _convert(dynamic input) {
     if (input is int) {
@@ -28,6 +29,10 @@ class Service {
       return input;
     }
   }
+
+  @override
+  int compareTo(Service other) =>
+      distance.compareTo(other.distance);
 
   Service({
     this.id,
@@ -46,6 +51,7 @@ class Service {
     this.placeId,
     this.freeSlots,
     this.popularTimes,
+    this.distance = 0.0,
   });
 
   factory Service.fromJson(Map<String, dynamic> json) {
@@ -72,6 +78,7 @@ class Service {
           : List<dynamic>.from(json['popularTimes'])
               .map((list) => List<int>.from(list))
               .toList(),
+      distance: 0.0,
     );
   }
 }

@@ -3,4 +3,5 @@
 class User {
   static String name;
   static String token;
+  static String role; // "provider", "customer"
 }

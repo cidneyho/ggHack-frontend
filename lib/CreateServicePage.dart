@@ -13,6 +13,7 @@ import 'helpers/Constants.dart';
 import 'helpers/Dialogue.dart';
 import 'helpers/Style.dart';
 import 'helpers/Requester.dart';
+import 'helpers/Tokens.dart';
 import 'models/Service.dart';
 import 'models/User.dart';
 
@@ -194,12 +195,9 @@ class _CreateServiceState extends State<CreateServicePage> {
         ),
         onPressed: () async {
           // Host the image on imgur
-//          String clientId = await File('tokens.txt').readAsString().catchError((error) {
-//            Dialogue.showConfirmNoContent(context, "Failed to get token: ${error.toString()}", "Got it.");
-//          });
           print("To upload");
           print("Path: " + _imageController.text);
-          String accessToken = "afb3c53d9e25c53f6dcb40f2455b6dc482dea1b8";
+          String accessToken = Token.imgur;
           final client =
               imgur.Imgur(imgur.Authentication.fromToken(accessToken));
           var image = await client.image
@@ -225,7 +223,7 @@ class _CreateServiceState extends State<CreateServicePage> {
             placeId: _placeIdController.text,
           );
 
-          ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+          ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
           await pr.show();
           await Requester()
               .createService(User.token, toCreate)
@@ -240,8 +238,7 @@ class _CreateServiceState extends State<CreateServicePage> {
 //              Navigator.push(
 //                  context,
 //                  MaterialPageRoute(
-//                      builder: (context) =>
-//                          new DetailsPage(service: returnedService)));
+//                      builder: (context) => new DetailsPage(service: returnedService)));
             }
             await pr.hide();
             Dialogue.showBarrierDismissibleNoContent(
@@ -290,6 +287,7 @@ class _CreateServiceState extends State<CreateServicePage> {
       elevation: 0.2,
       centerTitle: true,
       title: _appBarTitle,
+      leading: BackButton(color: Colors.white),
       flexibleSpace: Container(
         decoration: getGradientBox(),
       ),

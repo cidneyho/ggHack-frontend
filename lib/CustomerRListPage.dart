@@ -47,7 +47,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
   }
 
   void _getReservations() async {
-    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
     await pr.show();
     ReservationList reservations = await Requester()
         .customerRenderReservationList(User.token)
@@ -97,6 +97,14 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
           ListTile(
             title: Text("Home"),
             onTap: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            title: Text("Log out"),
+            onTap: () {
+              Navigator.pop(context);
               Navigator.pop(context);
               Navigator.pop(context);
             },
@@ -156,7 +164,12 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
 
     return ListView(
       padding: const EdgeInsets.only(top: 16.0),
-      children: this
+      children: _filteredReservations.reservations.length == 0
+          ? [
+        Text("Please wait while we are loading reservations for you...",
+            style: TextStyle(color: colorText))
+      ]
+          : this
           ._filteredReservations
           .reservations
           .map((data) => _buildListItem(context, data))
@@ -266,7 +279,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                             ),
                             FlatButton(
                                 onPressed: () async {
-                                  ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+                                  ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
                                   await pr.show();
                                   await Requester()
                                       .cancelReservation(

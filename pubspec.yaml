@@ -57,6 +57,12 @@ dependencies:
   # "Please wait" progress dialog
   progress_dialog: ^1.2.4
 
+  # To sort service by distance
+  geolocator: ^5.3.2+2
+
+  # Maps
+  google_maps_flutter: ^0.5.28+1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

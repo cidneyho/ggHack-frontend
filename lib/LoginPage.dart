@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
           borderRadius: BorderRadius.circular(16),
         ),
         onPressed: () async {
-          ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+          ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
           await pr.show();
           User.name = _usernameController.text;
           User.token = await Requester().login(
@@ -72,8 +72,10 @@ class _LoginPageState extends State<LoginPage> {
 
           if (User.token != null) {
             if (isSelected[0] == true) {
+              User.role = "customer";
               Navigator.of(context).pushNamed(homePageTag);
             } else {
+              User.role = "provider";
               Navigator.of(context).pushNamed(phomePageTag);
             }
           }

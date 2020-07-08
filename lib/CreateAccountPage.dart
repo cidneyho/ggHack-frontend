@@ -84,6 +84,15 @@ class CreateAccountPage extends StatelessWidget {
     );
 
     return Scaffold(
+      appBar: new AppBar(
+        elevation: 0.2,
+        title: Text("Create Account", style: TextStyle(color: Colors.white)),
+        leading: BackButton(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: getGradientBox(),
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
+      ),
       backgroundColor: colorBackground,
       body: Center(
         child: ListView(
@@ -102,7 +111,7 @@ class CreateAccountPage extends StatelessWidget {
   }
 
   void _createAccountPressed(BuildContext context) async {
-    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
     await pr.show();
     String response = await Requester().createAccount(
       _emailaddController.text,

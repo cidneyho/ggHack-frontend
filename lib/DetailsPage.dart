@@ -180,21 +180,6 @@ class _DetailsPageState extends State<DetailsPage> {
           ]),
     );
 
-    // popularTimes table's title
-    final popularTimesTableTitle = new Container(
-      padding: const EdgeInsets.only(
-          left: 20.0, top: 20.0, right: 20.0, bottom: 14.0),
-      child: new Row(children: [
-        new Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          new Container(
-              child: new Text(popularTimesTitleText,
-                  style: new TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ))),
-        ]),
-      ]),
-    );
-
     List<List<Color>> popularTimeColors = popularTimes.length == 0
         ? List()
         : getGradientColors(popularTimes, colorPopTime, 4);
@@ -295,19 +280,19 @@ class _DetailsPageState extends State<DetailsPage> {
           basicInfo,
           introText,
           timeSlotsTables,
-          reserveButton,
+          if(User.role == "customer") reserveButton,
         ]));
   }
 
-  List<Map<String, List<int>>> _fillPickerData() {
-    var pickerData = new List<Map<String, List<int>>>();
+  List<Map<String, List<String>>> _fillPickerData() {
+    var pickerData = new List<Map<String, List<String>>>();
     for (var d = 0; d < widget.service.freeSlots.length; ++d) {
-      var dayList = new List<int>();
+      var dayList = new List<String>();
       for (var t = widget.service.startTime;
           t < widget.service.closeTime;
           ++t) {
         if (widget.service.freeSlots[d][t - widget.service.startTime] > 0) {
-          dayList.add(t);
+          dayList.add("${t <= 12? t : t-12} " + (t < 12? "am" : "pm"));
         }
       }
       pickerData.add({days[d + 1]: dayList});
@@ -323,7 +308,7 @@ class _DetailsPageState extends State<DetailsPage> {
         hideHeader: true,
         title: new Text(reservePopupText),
         onConfirm: (Picker picker, List value) async {
-          ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+          ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
           await pr.show();
           int bookDate = value[0];
           int bookTime = int.parse(picker.getSelectedValues()[1]);
