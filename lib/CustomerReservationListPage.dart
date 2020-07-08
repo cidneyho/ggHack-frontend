@@ -147,7 +147,6 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
   }
 
   Widget _buildList(BuildContext context) {
-    // TODO: search implementation
     if (_searchText.isNotEmpty) {
       _filteredReservations.reservations = new List();
       for (int i = 0; i < _reservations.reservations.length; i++) {

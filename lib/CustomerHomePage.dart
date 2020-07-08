@@ -102,7 +102,6 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => new CustomerRListPage()));
-              // TODO but how do I pop this page (customerRListPage) out afterwards?
             },
           ),
           ListTile(
@@ -155,7 +154,6 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
   }
 
   Widget _buildList(BuildContext context) {
-    // TODO: search implementation
     if (_searchText.isNotEmpty) {
       _filteredServices.services = new List();
       for (int i = 0; i < _services.services.length; i++) {

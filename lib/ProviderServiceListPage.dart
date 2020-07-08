@@ -129,7 +129,6 @@ class _PServiceListPageState extends State<PServiceListPage> {
   }
 
   Widget _buildList(BuildContext context) {
-    // TODO: search implementation
     if (_searchText.isNotEmpty) {
       _filteredServices.services = new List();
       for (int i = 0; i < _services.services.length; i++) {
