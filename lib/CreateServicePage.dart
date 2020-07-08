@@ -225,7 +225,7 @@ class _CreateServiceState extends State<CreateServicePage> {
             placeId: _placeIdController.text,
           );
 
-          ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+          ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
           await pr.show();
           await Requester()
               .createService(User.token, toCreate)
@@ -290,6 +290,7 @@ class _CreateServiceState extends State<CreateServicePage> {
       elevation: 0.2,
       centerTitle: true,
       title: _appBarTitle,
+      leading: BackButton(color: Colors.white),
       flexibleSpace: Container(
         decoration: getGradientBox(),
       ),

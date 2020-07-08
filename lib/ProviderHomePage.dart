@@ -40,7 +40,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
   }
 
   void _getReservations() async {
-    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
     await pr.show();
     ReservationList reservations =
         await Requester().providerRenderReservationList(User.token);
@@ -130,7 +130,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
           onPressed: () async {
             var result = await BarcodeScanner.scan();
             if (result.type == ResultType.Barcode) {
-              ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+              ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
               await pr.show();
               int reservationId = int.parse(result.rawContent);
               await Requester()
@@ -286,7 +286,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                       ),
                       FlatButton(
                           onPressed: () async {
-                            ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+                            ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
                             await pr.show();
                             await Requester()
                                 .noShowReservation(User.token, reservation.id)
@@ -336,7 +336,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
       child: Text("Confirm"),
       onPressed: () async {
         Navigator.pop(context);
-        ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+        ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
         await pr.show();
         await Requester()
             .checkInReservation(User.token, reservation.id)

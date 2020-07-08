@@ -27,7 +27,8 @@ class _HomePageState extends State<HomePage> {
 
   String _searchText = "";
   Icon _searchIcon = new Icon(Icons.search, color: Colors.white);
-  Widget _appBarTitle = new Text(appTitle, style: TextStyle(color: Colors.white));
+  Widget _appBarTitle =
+      new Text(appTitle, style: TextStyle(color: Colors.white));
 
   Position _currentPosition;
 
@@ -42,10 +43,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _getServices() async {
-    await _getCurrentLocation();
+    if(_currentPosition == null) {
+      await _getCurrentLocation();
+    }
 
-    ServiceList services = await Requester().renderServiceList().catchError((error) async {
-      Dialogue.showConfirmNoContent(context, "Failed to get services: ${error.toString()}", "Got it.");
+    ServiceList services =
+        await Requester().renderServiceList().catchError((error) async {
+      Dialogue.showConfirmNoContent(
+          context, "Failed to get services: ${error.toString()}", "Got it.");
     });
     if (_currentPosition != null) {
       await services.sortByDistance(_currentPosition);
@@ -61,36 +66,42 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     if (_currentPosition != null) {
-      print("LAT: ${_currentPosition.latitude}, LNG: ${_currentPosition.longitude}");
+      print(
+          "LAT: ${_currentPosition.latitude}, LNG: ${_currentPosition.longitude}");
     }
     return Scaffold(
       appBar: _buildBar(context),
       backgroundColor: Colors.white,
       body: _buildList(context),
       drawer: Drawer(
-        child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                child: RichText(
-                  text: TextSpan(
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                    children: <TextSpan>[
-                      TextSpan(text: "Menu\n", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-                      TextSpan(text: " \n", style: TextStyle(fontSize: 4.0)),
-                      TextSpan(text: "Hi, " + User.name, style: TextStyle(fontSize: 14.0)),
-                    ],
-                  ),
+        child: ListView(padding: EdgeInsets.zero, children: <Widget>[
+          DrawerHeader(
+            child: RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  color: Colors.black,
                 ),
-                decoration: getGradientBox(),
+                children: <TextSpan>[
+                  TextSpan(
+                      text: "Menu\n",
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold)),
+                  TextSpan(text: " \n", style: TextStyle(fontSize: 4.0)),
+                  TextSpan(
+                      text: "Hi, " + User.name,
+                      style: TextStyle(fontSize: 14.0)),
+                ],
               ),
-              ListTile(
-                title: Text("Reservations"),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(context, MaterialPageRoute(
+            ),
+            decoration: getGradientBox(),
+          ),
+          ListTile(
+            title: Text("Reservations"),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
                       builder: (context) => new CustomerRListPage()));
               // TODO but how do I pop this page (customerRListPage) out afterwards?
             },
@@ -138,12 +149,15 @@ class _HomePageState extends State<HomePage> {
     return ListView(
       padding: const EdgeInsets.only(top: 16.0),
       children: _filteredServices.services.length == 0
-          ? [Text("Please wait while we are loading services for you...", style: TextStyle(color: colorText))]
+          ? [
+              Text("Please wait while we are loading services for you...",
+                  style: TextStyle(color: colorText))
+            ]
           : this
-          ._filteredServices
-          .services
-          .map((data) => _buildListItem(context, data))
-          .toList(),
+              ._filteredServices
+              .services
+              .map((data) => _buildListItem(context, data))
+              .toList(),
     );
   }
 
@@ -192,15 +206,15 @@ class _HomePageState extends State<HomePage> {
                       maxLines: 1,
                       softWrap: true,
                     ),
-                        if(service.distance != null)
-                        RichText(
-                          text: TextSpan(
-                            text: sprintf("%.1f km", [service.distance / 1000.0]),
-                            style: TextStyle(color: colorText),
-                          ),
-                          maxLines: 1,
-                          softWrap: true,
-                        )
+                    if (service.distance != null)
+                      RichText(
+                        text: TextSpan(
+                          text: sprintf("%.1f km", [service.distance / 1000.0]),
+                          style: TextStyle(color: colorText),
+                        ),
+                        maxLines: 1,
+                        softWrap: true,
+                      )
                   ]))
             ],
           ),

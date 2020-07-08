@@ -323,7 +323,7 @@ class _DetailsPageState extends State<DetailsPage> {
         hideHeader: true,
         title: new Text(reservePopupText),
         onConfirm: (Picker picker, List value) async {
-          ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+          ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
           await pr.show();
           int bookDate = value[0];
           int bookTime = int.parse(picker.getSelectedValues()[1]);

@@ -47,7 +47,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
   }
 
   void _getReservations() async {
-    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
     await pr.show();
     ReservationList reservations = await Requester()
         .customerRenderReservationList(User.token)
@@ -266,7 +266,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                             ),
                             FlatButton(
                                 onPressed: () async {
-                                  ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+                                  ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
                                   await pr.show();
                                   await Requester()
                                       .cancelReservation(
