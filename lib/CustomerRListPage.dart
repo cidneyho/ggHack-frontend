@@ -101,6 +101,14 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
               Navigator.pop(context);
             },
           ),
+          ListTile(
+            title: Text("Log out"),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+          ),
         ]),
       ),
       resizeToAvoidBottomPadding: false,

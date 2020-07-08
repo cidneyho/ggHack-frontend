@@ -106,6 +106,13 @@ class _HomePageState extends State<HomePage> {
               // TODO but how do I pop this page (customerRListPage) out afterwards?
             },
           ),
+          ListTile(
+            title: Text("Log out"),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+          ),
         ]),
       ),
       resizeToAvoidBottomPadding: false,

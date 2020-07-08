@@ -111,6 +111,13 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
             ),
           ),
           listitem,
+          ListTile(
+            title: Text("Log out"),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+          ),
         ]),
       ),
       resizeToAvoidBottomPadding: false,
