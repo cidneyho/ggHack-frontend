@@ -3,7 +3,7 @@ import 'helpers/Constants.dart';
 import 'LoginPage.dart';
 import 'CreateAccountPage.dart';
 import 'ProviderHomePage.dart';
-import 'HomePage.dart';
+import 'CustomerHomePage.dart';
 
 void main() {
   runApp(RossApp());
@@ -12,8 +12,8 @@ void main() {
 class RossApp extends StatelessWidget {
   final routes = <String, WidgetBuilder>{
     loginPageTag: (context) => LoginPage(),
-    homePageTag: (context) => HomePage(),
-    phomePageTag: (context) => ProviderHomePage(),
+    customerHomePageTag: (context) => CustomerHomePage(),
+    providerHomePageTag: (context) => ProviderHomePage(),
     createAccountPageTag: (context) => CreateAccountPage(),
   };
 

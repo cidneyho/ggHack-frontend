@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gghack/PServiceList.dart';
+import 'package:gghack/ProviderServiceListPage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:barcode_scan/barcode_scan.dart';
@@ -317,6 +317,10 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                               if (value == 0) {
                                 Navigator.of(context).pop(true);
                               }
+                              setState(() {
+                                this._reservations.changeStatus(reservation.id, "MS");
+                                this._reservations.sortReservationsByStatus();
+                              });
                             }).catchError((onError) async {
                               await pr.hide();
                               Navigator.of(context).pop(false);

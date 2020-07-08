@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'DetailsPage.dart';
+import 'ServiceDetailsPage.dart';
 import 'helpers/Constants.dart';
 import 'helpers/Dialogue.dart';
 import 'helpers/Style.dart';
@@ -238,7 +238,7 @@ class _CreateServiceState extends State<CreateServicePage> {
 //              Navigator.push(
 //                  context,
 //                  MaterialPageRoute(
-//                      builder: (context) => new DetailsPage(service: returnedService)));
+//                      builder: (context) => new ServiceDetailsPage(service: returnedService)));
             }
             await pr.hide();
             Dialogue.showBarrierDismissibleNoContent(
