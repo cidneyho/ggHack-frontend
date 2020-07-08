@@ -164,7 +164,12 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
 
     return ListView(
       padding: const EdgeInsets.only(top: 16.0),
-      children: this
+      children: _filteredReservations.reservations.length == 0
+          ? [
+        Text("Please wait while we are loading reservations for you...",
+            style: TextStyle(color: colorText))
+      ]
+          : this
           ._filteredReservations
           .reservations
           .map((data) => _buildListItem(context, data))

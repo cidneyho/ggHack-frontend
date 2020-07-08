@@ -181,7 +181,12 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
   Widget _buildList(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.only(top: 16.0),
-      children: this
+      children: _reservations.reservations.length == 0
+          ? [
+        Text("Please wait while we are loading reservations for you...",
+            style: TextStyle(color: colorText))
+      ]
+          : this
           ._reservations
           .reservations
           .map((data) => _buildListItem(context, data))
