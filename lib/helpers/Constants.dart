@@ -15,8 +15,8 @@ Color colorFreeSlot = Colors.blue;
 
 // Pages
 const loginPageTag = 'Login Page';
-const homePageTag = 'Home Page';
-const phomePageTag = 'Provider Home Page';
+const customerHomePageTag = 'Home Page';
+const providerHomePageTag = 'Provider Home Page';
 const createAccountPageTag = 'Create Account Page';
 
 // strings

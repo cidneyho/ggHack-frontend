@@ -10,18 +10,18 @@ import 'helpers/Style.dart';
 import 'models/Service.dart';
 import 'models/User.dart';
 
-class DetailsPage extends StatefulWidget {
+class ServiceDetailsPage extends StatefulWidget {
   final Service service;
 
-  DetailsPage({Key key, this.service}) : super(key: key);
+  ServiceDetailsPage({Key key, this.service}) : super(key: key);
 
   @override
-  _DetailsPageState createState() {
-    return _DetailsPageState();
+  _ServiceDetailsPageState createState() {
+    return _ServiceDetailsPageState();
   }
 }
 
-class _DetailsPageState extends State<DetailsPage> {
+class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
   int _showWhichTable = 0; // 0 for freeSlots; 1 for PopularTimes
 
   @override
@@ -284,15 +284,16 @@ class _DetailsPageState extends State<DetailsPage> {
         ]));
   }
 
-  List<Map<String, List<String>>> _fillPickerData() {
-    var pickerData = new List<Map<String, List<String>>>();
+  List<Map<String, List<int>>> _fillPickerData() {
+    var pickerData = new List<Map<String, List<int>>>();
     for (var d = 0; d < widget.service.freeSlots.length; ++d) {
-      var dayList = new List<String>();
+      var dayList = new List<int>();
       for (var t = widget.service.startTime;
           t < widget.service.closeTime;
           ++t) {
         if (widget.service.freeSlots[d][t - widget.service.startTime] > 0) {
-          dayList.add("${t <= 12? t : t-12} " + (t < 12? "am" : "pm"));
+//          dayList.add("${t <= 12? t : t-12} " + (t < 12? "am" : "pm"));
+          dayList.add(t);
         }
       }
       pickerData.add({days[d + 1]: dayList});
