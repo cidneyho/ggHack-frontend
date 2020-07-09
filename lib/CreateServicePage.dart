@@ -7,6 +7,7 @@ import 'package:imgur/imgur.dart' as imgur;
 import 'package:image_picker/image_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 import 'ServiceDetailsPage.dart';
 import 'helpers/Constants.dart';
@@ -194,6 +195,9 @@ class _CreateServiceState extends State<CreateServicePage> {
           borderRadius: BorderRadius.circular(16),
         ),
         onPressed: () async {
+          var pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
+          await pr.show();
+
           // Host the image on imgur
           print("To upload");
           print("Path: " + _imageController.text);
@@ -205,34 +209,47 @@ class _CreateServiceState extends State<CreateServicePage> {
                   imagePath: _imageController.text,
                   title: 'service ${_nameController.text}',
                   description: 'by ${User.name}')
-              .catchError((error) {
+              .catchError((error) async {
+            pr.hide();
             Dialogue.showConfirmNoContent(context,
-                "Failed to upload image: ${error.toString()}", "Got it.");
+                "Failed to upload image. Please take a photo or choose one from your library.", "Got it.");
+            return;
           });
 
           print("Image uploaded: ${image.link}");
 
-          Service toCreate = new Service(
-            name: _nameController.text,
-            address: _addrController.text,
-            introduction: _introController.text,
-            image: image.link,
-            startTime: int.parse(_startTimeController.text),
-            closeTime: int.parse(_closeTimeController.text),
-            maxCapacity: int.parse(_maxCapController.text),
-            placeId: _placeIdController.text,
-          );
-
-          ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
-          await pr.show();
-          await Requester()
-              .createService(User.token, toCreate)
-              .catchError((exp) async {
-            print("Error occurred in createService: $exp");
-            await pr.hide();
+          Service toCreate;
+          try {
+            toCreate = new Service(
+              name: _nameController.text,
+              address: _addrController.text,
+              introduction: _introController.text,
+              image: image.link,
+              startTime: int.tryParse(_startTimeController.text),
+              closeTime: int.tryParse(_closeTimeController.text),
+              maxCapacity: int.tryParse(_maxCapController.text),
+              placeId: _placeIdController.text,
+            );
+            if (toCreate.startTime < 0 || toCreate.closeTime > 24) {
+              throw Exception("Start Time should be an integer from 0 to 24.");
+            }
+            if (toCreate.closeTime <= toCreate.startTime || toCreate.closeTime > 24) {
+              throw Exception("Close Time should be an integer >= Start Time and <= 24.");
+            }
+            if (toCreate.maxCapacity <= 0) {
+              throw Exception("Please enter a valid Maximum Capacity.");
+            }
+          } catch (exp) {
+            pr.hide();
             Dialogue.showConfirmNoContent(context,
                 "Service creation failed: ${exp.toString()}", "Got it.");
-          }).then((returnedService) async {
+            return;
+          }
+
+
+          await Requester(context)
+              .createService(User.token, toCreate)
+              .then((returnedService) async {
             if (returnedService != null) {
               Navigator.of(context).pop();
 //              Navigator.push(
@@ -240,11 +257,14 @@ class _CreateServiceState extends State<CreateServicePage> {
 //                  MaterialPageRoute(
 //                      builder: (context) => new ServiceDetailsPage(service: returnedService)));
             }
-            await pr.hide();
             Dialogue.showBarrierDismissibleNoContent(
                 context, "Service created: ${returnedService.name}");
+          })
+              .catchError((exp) async {
+            print("Error occurred in createService: $exp");
+            Dialogue.showConfirmNoContent(context,
+                "Service creation failed: ${exp.toString()}", "Got it.");
           });
-          await pr.hide();
         },
         padding: EdgeInsets.all(12),
         color: colorDark,

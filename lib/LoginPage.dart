@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gghack/helpers/Style.dart';
 import 'package:gghack/helpers/Requester.dart';
 import 'package:gghack/models/User.dart';
-import 'package:progress_dialog/progress_dialog.dart';
+
 import 'helpers/Constants.dart';
 import 'helpers/Dialogue.dart';
 
@@ -58,17 +58,13 @@ class _LoginPageState extends State<LoginPage> {
           borderRadius: BorderRadius.circular(16),
         ),
         onPressed: () async {
-          ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
-          await pr.show();
           User.name = _usernameController.text;
-          User.token = await Requester().login(
+          User.token = await Requester(context).login(
               _usernameController.text, _passwordController.text).catchError(
                   (exp) async {
                     print("Error occurred in loginButton: $exp");
-                    await pr.hide();
                     Dialogue.showConfirmNoContent(context, "Failed to login: ${exp.toString()}", "Got it.");
                   });
-          await pr.hide();
 
           if (User.token != null) {
             if (isSelected[0] == true) {

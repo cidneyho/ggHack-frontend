@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:sprintf/sprintf.dart';
+import 'CreateServicePage.dart';
 import 'helpers/Constants.dart';
 import 'helpers/Dialogue.dart';
 import 'helpers/Style.dart';
@@ -26,7 +27,7 @@ class _PServiceListPageState extends State<PServiceListPage> {
   String _searchText = "";
   Icon _searchIcon = new Icon(Icons.search, color: Colors.white);
   Widget _appBarTitle =
-  new Text(appTitle, style: TextStyle(color: Colors.white));
+      new Text(providerServiceListTitle, style: TextStyle(color: Colors.white));
 
   Position _currentPosition;
 
@@ -34,19 +35,17 @@ class _PServiceListPageState extends State<PServiceListPage> {
   void initState() {
     super.initState();
 
-    _services.services = new List();
-    _filteredServices.services = new List();
-
     _getServices();
   }
 
   void _getServices() async {
-    if(_currentPosition == null) {
+    if (_currentPosition == null) {
       await _getCurrentLocation();
     }
 
-    ServiceList services =
-    await Requester().providerRenderServiceList(User.token).catchError((error) async {
+    ServiceList services = await Requester(context)
+        .providerRenderServiceList(User.token)
+        .catchError((error) async {
       Dialogue.showConfirmNoContent(
           context, "Failed to get services: ${error.toString()}", "Got it.");
     });
@@ -54,6 +53,8 @@ class _PServiceListPageState extends State<PServiceListPage> {
       await services.sortByDistance(_currentPosition);
     }
     setState(() {
+      _services.services = new List();
+      _filteredServices.services = new List();
       for (Service service in services.services) {
         this._services.services.add(service);
         this._filteredServices.services.add(service);
@@ -97,6 +98,14 @@ class _PServiceListPageState extends State<PServiceListPage> {
             },
           ),
           ListTile(
+            title: Text("Create Service"),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CreateServicePage()));
+            },
+          ),
+          ListTile(
             title: Text("Log out"),
             onTap: () {
               Navigator.pop(context);
@@ -133,8 +142,8 @@ class _PServiceListPageState extends State<PServiceListPage> {
       _filteredServices.services = new List();
       for (int i = 0; i < _services.services.length; i++) {
         if (_services.services[i].name
-            .toLowerCase()
-            .contains(_searchText.toLowerCase()) ||
+                .toLowerCase()
+                .contains(_searchText.toLowerCase()) ||
             _services.services[i].address
                 .toLowerCase()
                 .contains(_searchText.toLowerCase())) {
@@ -145,16 +154,15 @@ class _PServiceListPageState extends State<PServiceListPage> {
 
     return ListView(
       padding: const EdgeInsets.only(top: 16.0),
-      children: _filteredServices.services.length == 0
-          ? [
-        Text("Please wait while we are loading services for you...",
-            style: TextStyle(color: colorText))
-      ]
-          : this
-          ._filteredServices
-          .services
-          .map((data) => _buildListItem(context, data))
-          .toList(),
+      children: _filteredServices.services == null
+          ? [waitText("services")]
+          : _filteredServices.services.length == 0
+              ? [emptyText("services")]
+              : this
+                  ._filteredServices
+                  .services
+                  .map((data) => _buildListItem(context, data))
+                  .toList(),
     );
   }
 
@@ -168,13 +176,13 @@ class _PServiceListPageState extends State<PServiceListPage> {
         decoration: BoxDecoration(color: colorBase),
         child: ListTile(
           contentPadding:
-          EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           leading: Container(
               padding: EdgeInsets.only(right: 12.0),
               decoration: new BoxDecoration(
                   border: new Border(
                       right:
-                      new BorderSide(width: 1.0, color: Colors.white24))),
+                          new BorderSide(width: 1.0, color: Colors.white24))),
               child: Hero(
                 tag: "avatar_" + service.id.toString(),
                 child: new Image.network(
@@ -191,28 +199,28 @@ class _PServiceListPageState extends State<PServiceListPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Container(
-                            padding: const EdgeInsets.only(bottom: 6.0),
-                            child: Text(service.name,
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        RichText(
-                          text: TextSpan(
-                            text: service.address,
-                            style: TextStyle(color: colorText),
-                          ),
-                          maxLines: 1,
-                          softWrap: true,
+                    Container(
+                        padding: const EdgeInsets.only(bottom: 6.0),
+                        child: Text(service.name,
+                            style: TextStyle(fontWeight: FontWeight.bold))),
+                    RichText(
+                      text: TextSpan(
+                        text: service.address,
+                        style: TextStyle(color: colorText),
+                      ),
+                      maxLines: 1,
+                      softWrap: true,
+                    ),
+                    if (service.distance != null)
+                      RichText(
+                        text: TextSpan(
+                          text: sprintf("%.1f km", [service.distance / 1000.0]),
+                          style: TextStyle(color: colorText),
                         ),
-                        if (service.distance != null)
-                          RichText(
-                            text: TextSpan(
-                              text: sprintf("%.1f km", [service.distance / 1000.0]),
-                              style: TextStyle(color: colorText),
-                            ),
-                            maxLines: 1,
-                            softWrap: true,
-                          )
-                      ]))
+                        maxLines: 1,
+                        softWrap: true,
+                      )
+                  ]))
             ],
           ),
           trailing: Column(
@@ -222,7 +230,8 @@ class _PServiceListPageState extends State<PServiceListPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => new ServiceDetailsPage(service: service)));
+                    builder: (context) =>
+                        new ServiceDetailsPage(service: service)));
           },
         ),
       ),
@@ -268,7 +277,8 @@ class _PServiceListPageState extends State<PServiceListPage> {
         );
       } else {
         this._searchIcon = new Icon(Icons.search, color: Colors.white);
-        this._appBarTitle = new Text(appTitle);
+        this._appBarTitle = new Text(providerServiceListTitle,
+            style: TextStyle(color: Colors.white));
         _filter.clear();
       }
     });
