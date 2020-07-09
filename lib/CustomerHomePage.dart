@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gghack/CustomerReservationListPage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:progress_dialog/progress_dialog.dart';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:sprintf/sprintf.dart';
 import 'helpers/Constants.dart';
@@ -39,19 +39,16 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
   void initState() {
     super.initState();
 
-    _services.services = new List();
-    _filteredServices.services = new List();
-
     _getServices();
   }
 
   void _getServices() async {
-    if(_currentPosition == null) {
+    if (_currentPosition == null) {
       await _getCurrentLocation();
     }
 
     ServiceList services =
-        await Requester().renderServiceList().catchError((error) async {
+        await Requester(context).renderServiceList().catchError((error) async {
       Dialogue.showConfirmNoContent(
           context, "Failed to get services: ${error.toString()}", "Got it.");
     });
@@ -59,6 +56,8 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
       await services.sortByDistance(_currentPosition);
     }
     setState(() {
+      _services.services = new List();
+      _filteredServices.services = new List();
       for (Service service in services.services) {
         this._services.services.add(service);
         this._filteredServices.services.add(service);
@@ -95,7 +94,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
             decoration: getGradientBox(),
           ),
           ListTile(
-            title: Text("Reservations"),
+            title: Text("My Reservations"),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(
@@ -170,16 +169,15 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
 
     return ListView(
       padding: const EdgeInsets.only(top: 16.0),
-      children: _filteredServices.services.length == 0
-          ? [
-              Text("Please wait while we are loading services for you...",
-                  style: TextStyle(color: colorText))
-            ]
-          : this
-              ._filteredServices
-              .services
-              .map((data) => _buildListItem(context, data))
-              .toList(),
+      children: _filteredServices.services == null
+          ? [waitText("services")]
+          : _filteredServices.services.length == 0
+              ? [emptyText("services")]
+              : this
+                  ._filteredServices
+                  .services
+                  .map((data) => _buildListItem(context, data))
+                  .toList(),
     );
   }
 
@@ -247,7 +245,8 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => new ServiceDetailsPage(service: service)));
+                    builder: (context) =>
+                        new ServiceDetailsPage(service: service)));
           },
         ),
       ),
@@ -298,7 +297,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
       }
     });
   }
-  
+
 //  void _mapPressed() {
 //    Navigator.push(
 //        context,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -40,30 +39,25 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
   void initState() {
     super.initState();
 
-    _reservations.reservations = new List();
-    _filteredReservations.reservations = new List();
-
     _getReservations();
   }
 
   void _getReservations() async {
-    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
-    await pr.show();
-    ReservationList reservations = await Requester()
+    ReservationList reservations = await Requester(context)
         .customerRenderReservationList(User.token)
         .catchError((error) async {
-      await pr.hide();
       Dialogue.showConfirmNoContent(context,
           "Failed to get reservations: ${error.toString()}", "Got it.");
     });
     reservations.sortReservationsByStatus();
     setState(() {
+      _reservations.reservations = new List();
+      _filteredReservations.reservations = new List();
       for (Reservation reservation in reservations.reservations) {
         this._reservations.reservations.add(reservation);
         this._filteredReservations.reservations.add(reservation);
       }
     });
-    await pr.hide();
   }
 
   @override
@@ -122,13 +116,11 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
         onPressed: _searchPressed,
       ),
     ];
-    if(_searchIcon.icon == Icons.search) {
-      iconList.add(
-        IconButton(
-          icon: _sortIcon,
-          onPressed: _sortPressed,
-        )
-      );
+    if (_searchIcon.icon == Icons.search) {
+      iconList.add(IconButton(
+        icon: _sortIcon,
+        onPressed: _sortPressed,
+      ));
     }
     return iconList;
   }
@@ -163,16 +155,15 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
 
     return ListView(
       padding: const EdgeInsets.only(top: 16.0),
-      children: _filteredReservations.reservations.length == 0
-          ? [
-        Text("Please wait while we are loading reservations for you...",
-            style: TextStyle(color: colorText))
-      ]
-          : this
-          ._filteredReservations
-          .reservations
-          .map((data) => _buildListItem(context, data))
-          .toList(),
+      children: _filteredReservations.reservations == null
+          ? [waitText("reservations")]
+          : _filteredReservations.reservations.length == 0
+              ? [emptyText("reservations")]
+              : this
+                  ._filteredReservations
+                  .reservations
+                  .map((data) => _buildListItem(context, data))
+                  .toList(),
     );
   }
 
@@ -278,9 +269,7 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                             ),
                             FlatButton(
                                 onPressed: () async {
-                                  ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
-                                  await pr.show();
-                                  await Requester()
+                                  await Requester(context)
                                       .cancelReservation(
                                           User.token, reservation.id)
                                       .then((value) async {
@@ -293,20 +282,16 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
                                             .removeWhere((element) =>
                                                 element.id == reservation.id);
                                       });
-                                      await pr.hide();
                                       Dialogue.showBarrierDismissibleNoContent(
-                                          context,
-                                          "Reservation canceled.");
+                                          context, "Reservation canceled.");
                                     }
                                   }).catchError((onError) async {
-                                    await pr.hide();
                                     Navigator.of(context).pop(false);
                                     Dialogue.showConfirmNoContent(
                                         context,
                                         "Cancellation failed: ${onError.toString()}",
                                         "Got it.");
                                   });
-                                  await pr.hide();
                                 },
                                 child: const Text("Confirm")),
                           ],
@@ -356,9 +341,11 @@ class _CustomerRListPageState extends State<CustomerRListPage> {
         );
       } else {
         this._searchIcon = new Icon(Icons.search, color: Colors.white);
-        this._sortIcon = new Icon((_sortByStatus? MdiIcons.history : MdiIcons.sortBoolAscending), color: Colors.white);
-        this._appBarTitle =
-            new Text(rlistTitle, style: TextStyle(color: Colors.white, fontSize: 18));
+        this._sortIcon = new Icon(
+            (_sortByStatus ? MdiIcons.history : MdiIcons.sortBoolAscending),
+            color: Colors.white);
+        this._appBarTitle = new Text(rlistTitle,
+            style: TextStyle(color: Colors.white, fontSize: 18));
         _filter.clear();
       }
     });

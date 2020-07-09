@@ -3,7 +3,7 @@ import 'package:gghack/ProviderServiceListPage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:barcode_scan/barcode_scan.dart';
-import 'package:progress_dialog/progress_dialog.dart';
+
 import 'package:sprintf/sprintf.dart';
 import 'helpers/Dialogue.dart';
 import 'helpers/Constants.dart';
@@ -29,7 +29,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
   bool _sortByStatus = true;
   Icon _sortIcon = new Icon(MdiIcons.history, color: Colors.white);
 
-  ReservationList _reservations = new ReservationList(reservations: new List());
+  ReservationList _reservations = new ReservationList();
   Widget _appBarTitle =
       new Text(pappTitle, style: TextStyle(color: Colors.white));
 
@@ -41,19 +41,17 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
   }
 
   void _getReservations() async {
-    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
-    await pr.show();
     ReservationList reservations =
-        await Requester().providerRenderReservationList(User.token);
+        await Requester(context).providerRenderReservationList(User.token);
 
     reservations.sortReservationsByStatus();
 
     setState(() {
+      this._reservations.reservations = new List<Reservation>();
       for (Reservation reservation in reservations.reservations) {
         this._reservations.reservations.add(reservation);
       }
     });
-    await pr.hide();
   }
 
   @override
@@ -111,9 +109,8 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
               ),
             ),
           ),
-          listitem,
           ListTile(
-            title: Text("My services"),
+            title: Text("My Services"),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(
@@ -122,6 +119,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                       builder: (context) => new PServiceListPage()));
             },
           ),
+          listitem,
           ListTile(
             title: Text("Log out"),
             onTap: () {
@@ -148,23 +146,19 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
           onPressed: () async {
             var result = await BarcodeScanner.scan();
             if (result.type == ResultType.Barcode) {
-              ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
-              await pr.show();
-              int reservationId = int.parse(result.rawContent);
-              await Requester()
+              int reservationId = int.tryParse(result.rawContent);
+              await Requester(context)
                   .checkInReservation(User.token, reservationId)
-                  .catchError((error) async {
-                await pr.hide();
-                Dialogue.showConfirmNoContent(context,
-                    "Failed to scan QR code: ${error.toString()}", "Got it");
-              }).then((_) async {
-                await pr.hide();
+                  .then((_) async {
                 Dialogue.showBarrierDismissibleNoContent(
                     context, "Reservation checked in.");
                 setState(() {
                   this._reservations.changeStatus(reservationId, "CP");
                   this._reservations.sortReservationsByStatus();
                 });
+              }).catchError((error) async {
+                Dialogue.showConfirmNoContent(context,
+                    "Failed to scan QR code: ${error.toString()}", "Got it");
               });
             } else if (result.type == ResultType.Error) {
               Dialogue.showConfirmNoContent(context,
@@ -192,16 +186,15 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
   Widget _buildList(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.only(top: 16.0),
-      children: _reservations.reservations.length == 0
-          ? [
-        Text("Please wait while we are loading reservations for you...",
-            style: TextStyle(color: colorText))
-      ]
-          : this
-          ._reservations
-          .reservations
-          .map((data) => _buildListItem(context, data))
-          .toList(),
+      children: _reservations.reservations == null
+          ? [waitText("reservations")]
+          : _reservations.reservations.length == 0
+              ? [emptyText("reservations")]
+              : this
+                  ._reservations
+                  .reservations
+                  .map((data) => _buildListItem(context, data))
+                  .toList(),
     );
   }
 
@@ -299,8 +292,11 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                   return AlertDialog(
                     title: const Text("Mark no-show reservation?"),
                     content: Text(
-                      sprintf("%s on Jul %02d at %02d:00",
-                          [reservation.customer, reservation.bookDate + 6, reservation.bookTime]),
+                      sprintf("%s on Jul %02d at %02d:00", [
+                        reservation.customer,
+                        reservation.bookDate + 6,
+                        reservation.bookTime
+                      ]),
                     ),
                     actions: <Widget>[
                       FlatButton(
@@ -309,27 +305,25 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
                       ),
                       FlatButton(
                           onPressed: () async {
-                            ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
-                            await pr.show();
-                            await Requester()
+                            await Requester(context)
                                 .noShowReservation(User.token, reservation.id)
                                 .then((value) {
                               if (value == 0) {
                                 Navigator.of(context).pop(true);
                               }
                               setState(() {
-                                this._reservations.changeStatus(reservation.id, "MS");
+                                this
+                                    ._reservations
+                                    .changeStatus(reservation.id, "MS");
                                 this._reservations.sortReservationsByStatus();
                               });
                             }).catchError((onError) async {
-                              await pr.hide();
                               Navigator.of(context).pop(false);
                               Dialogue.showConfirmNoContent(
                                   context,
                                   "Mark no-show failed: ${onError.toString()}",
                                   "Got it.");
                             });
-                            await pr.hide();
                           },
                           child: const Text("Confirm")),
                     ],
@@ -363,12 +357,9 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
       child: Text("Confirm"),
       onPressed: () async {
         Navigator.pop(context);
-        ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
-        await pr.show();
-        await Requester()
+        await Requester(context)
             .checkInReservation(User.token, reservation.id)
             .then((_) async {
-          await pr.hide();
           Dialogue.showBarrierDismissibleNoContent(
               context, "Checked in ${reservation.customer}.");
           setState(() {
@@ -376,7 +367,6 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
             this._reservations.sortReservationsByStatus();
           });
         }).catchError((error) async {
-          await pr.hide();
           Dialogue.showConfirmNoContent(
               context, "Failed to check in: ${error.toString()}", "Got it.");
         });

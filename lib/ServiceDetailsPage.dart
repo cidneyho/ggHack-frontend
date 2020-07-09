@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_picker/flutter_picker.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 
 import 'helpers/Constants.dart';
 import 'helpers/Dialogue.dart';
@@ -104,7 +103,8 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(right: 8.0),
-                  child: Text(timeTableTitleText,
+                  child: Text(
+                    timeTableTitleText,
                     style: new TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -115,20 +115,18 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                   child: Text(popularTimesTitleText,
                       style: new TextStyle(
                         fontWeight: FontWeight.bold,
-                      )
-                  ),
+                      )),
                 ),
               ],
               onPressed: (int index) {
                 setState(() {
-                  _showWhichTable = index == 1? 1 : 0;
+                  _showWhichTable = index == 1 ? 1 : 0;
                 });
               },
               isSelected: [_showWhichTable == 0, _showWhichTable == 1],
             )
           ],
-        )
-    );
+        ));
 
     // freeSlots table's title
     final freeSlotsTableTitle = new Container(
@@ -146,8 +144,8 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     );
 
     // freeSlots table
-    List<List<Color>> freeSlotsColors =
-        getGradientColors(freeSlots, colorFreeSlot, 4, true);
+    List<List<Color>> freeSlotsColors = getGradientColors(
+        freeSlots, colorFreeSlot, 4, widget.service.maxCapacity);
 
     final freeSlotsTable = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -175,7 +173,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                           padding: const EdgeInsets.all(3.0),
                           child: Center(
                               child: Text(
-                                  freeSlots[d][t - startTime].toString()))))
+                                  freeSlots[d][t - startTime].toString(),
+                                  style: TextStyle(
+                                      color:
+                                          Colors.blue[900].withOpacity(0.6))))))
               ])
           ]),
     );
@@ -211,8 +212,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                 color: popularTimeColors[d][t],
                                 padding: const EdgeInsets.all(3.0),
                                 child: Center(
-                                    child:
-                                        Text(popularTimes[d][t].toString()))))
+                                    child: Text(popularTimes[d][t].toString(),
+                                        style: TextStyle(
+                                            color: Colors.teal[900]
+                                                .withOpacity(0.6))))))
                     ])
                 ]),
           );
@@ -223,12 +226,12 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
             freeSlotsTable,
           ])
         : Column(
-          children: <Widget>[
-            timeTableTitles,
-            GestureDetector(
+            children: <Widget>[
+              timeTableTitles,
+              GestureDetector(
                 onTap: () {
                   setState(() {
-                    _showWhichTable = _showWhichTable == 1? 0 : 1;
+                    _showWhichTable = _showWhichTable == 1 ? 0 : 1;
                   });
                 },
                 child: IndexedStack(
@@ -245,8 +248,8 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                   ],
                 ),
               ),
-          ],
-        );
+            ],
+          );
 
     // "reserve" button
     final reserveButton = Padding(
@@ -255,11 +258,14 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        onPressed: () {
-          _reservePressed(context);
-        },
+        onPressed: User.role == "customer"
+            ? () {
+                _reservePressed(context);
+              }
+            : null,
         padding: EdgeInsets.all(12),
         color: colorDark,
+        disabledColor: Colors.grey,
         child: Text(reserveButtonText,
             style: TextStyle(color: Colors.white, fontSize: 16)),
       ),
@@ -280,7 +286,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           basicInfo,
           introText,
           timeSlotsTables,
-          if(User.role == "customer") reserveButton,
+          reserveButton,
         ]));
   }
 
@@ -309,15 +315,12 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         hideHeader: true,
         title: new Text(reservePopupText),
         onConfirm: (Picker picker, List value) async {
-          ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
-          await pr.show();
           int bookDate = value[0];
           int bookTime = int.parse(picker.getSelectedValues()[1]);
-          await Requester()
+          await Requester(context)
               .makeReservation(
                   User.token, widget.service.name, bookDate, bookTime)
               .then((_) async {
-            await pr.hide();
             Dialogue.showBarrierDismissibleNoContent(
               context,
               'Reservation succeeded.',
@@ -327,14 +330,12 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                   [bookTime - widget.service.startTime] -= 1;
             });
           }).catchError((error) async {
-            await pr.hide();
             Dialogue.showConfirmNoContent(
               context,
               'Reservation failed:  ${error.toString()}',
               'Got it',
             );
           });
-          await pr.hide();
         }).showDialog(context);
   }
 }

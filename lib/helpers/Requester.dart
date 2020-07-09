@@ -7,14 +7,25 @@
 /// there may be a url mismatch. Check the slashes at the end of each API function...
 import 'dart:convert';
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:gghack/models/ServiceList.dart';
 import 'package:gghack/models/Service.dart';
 import 'package:gghack/models/Reservation.dart';
 import 'package:gghack/models/ReservationList.dart';
 import 'package:gghack/helpers/Constants.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class Requester {
+
+  BuildContext context;
+  ProgressDialog pr;
+
+  Requester([BuildContext context]) {
+    pr = (context == null? null : ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: false));
+    if (pr != null) pr.show();
+  }
+
   //////////////////////////////////////////////////////////////////////////////
   //                    Shared among Customer and Provider                    //
   //////////////////////////////////////////////////////////////////////////////
@@ -39,11 +50,17 @@ class Requester {
         'password2': password2,
       }),
     );
+    if (pr != null) pr.hide();
     if (response.statusCode == 201) {
       print("createAccount returned ok: username=$username");
       return json.decode(response.body)['key'];
+    } else if (response.statusCode ~/ 100 == 4){
+      String errorMessage = "";
+      Map<String, dynamic> res = json.decode(response.body);
+      res.forEach((key, value) { errorMessage += "$key - ${value[0]} "; });
+      throw Exception('Please modify your input. ' + errorMessage);
     } else {
-      throw Exception('Failed to createAccount: statusCode ${response.statusCode}');
+      throw Exception('statusCode ${response.statusCode}');
     }
   }
 
@@ -66,11 +83,17 @@ class Requester {
         'password': password,
       }),
     );
+    if (pr != null) pr.hide();
     if (response.statusCode == 200) {
       print("login returned ok: username=$username");
       return json.decode(response.body)['key'];
+    } else if (response.statusCode == 400){
+      String errorMessage = "";
+      Map<String, dynamic> res = json.decode(response.body);
+      res.forEach((key, value) { errorMessage += "$key - ${value[0]} "; });
+      throw Exception('Please modify your input. ' + errorMessage);
     } else {
-      throw Exception('Failed to customerLogin: statusCode ${response.statusCode}');
+      throw Exception('Failed to login: statusCode ${response.statusCode}');
     }
   }
 
@@ -83,6 +106,7 @@ class Requester {
     var uri = Uri.https(baseUrl, '/customer/services');
 
     final response = await http.get(uri);
+    if (pr != null) pr.hide();
     if (response.statusCode == 200) {
       print("renderServiceList returned ok");
       return ServiceList.fromJson(json.decode(response.body));
@@ -102,6 +126,7 @@ class Requester {
 //    var uri = Uri.https(baseUrl, '/customer/services', { 'q' : query });
 //
 //    final response = await http.get(uri);
+//    if (pr != null) pr.hide();
 //    if (response.statusCode == 200) {
 //      return ServiceList.fromJson(json.decode(response.body));
 //    } else {
@@ -122,6 +147,7 @@ class Requester {
     var uri = Uri.https(baseUrl, '/customer/services/$serviceId');
 
     final response = await http.get(uri);
+    if (pr != null) pr.hide();
     if (response.statusCode == 200) {
       print("customerRenderService returned ok: id=$serviceId");
       return Service.fromJson(json.decode(response.body));
@@ -154,6 +180,7 @@ class Requester {
       },
       body: map,
     );
+    if (pr != null) pr.hide();
     if (response.statusCode == 201) {
       print("makeReservation returned ok: serviceName=$serviceName");
       return new Reservation.fromJson(json.decode(response.body));
@@ -176,6 +203,7 @@ class Requester {
         'Authorization' : 'Token $token'
       },
     );
+    if (pr != null) pr.hide();
     if (response.statusCode == 204) {
       print("cancelReservation returned ok: reservationId=$reservationId");
       return 0;
@@ -198,6 +226,7 @@ class Requester {
         "Accept": "application/json",
       },
     );
+    if (pr != null) pr.hide();
     if (response.statusCode == 200) {
       print("customerRenderReservationList returned ok");
       return ReservationList.fromJson(json.decode(response.body));
@@ -221,6 +250,7 @@ class Requester {
         "Accept": "application/json",
       },
     );
+    if (pr != null) pr.hide();
     if (response.statusCode == 200) {
       print("renderSpecificReservation returned ok: reservationId=$reservationId");
       return Reservation.fromJson(json.decode(response.body));
@@ -264,10 +294,16 @@ class Requester {
       body: map,
     );
 
+    if (pr != null) pr.hide();
     if (response.statusCode == 201) {
       print("createService returned ok: name=${service.name}");
       service = Service.fromJson(json.decode(response.body));
       return service;
+    } else if (response.statusCode == 400){
+      String errorMessage = "";
+      Map<String, dynamic> res = json.decode(response.body);
+      res.forEach((key, value) { errorMessage += "$key - ${value[0]} "; });
+      throw Exception('Please modify your input. ' + errorMessage);
     } else {
       throw Exception('Failed to createService: statusCode ${response.statusCode}');
     }
@@ -297,6 +333,7 @@ class Requester {
         "Accept": "application/json",
       },
     );
+    if (pr != null) pr.hide();
     if (response.statusCode == 200) {
       print("providerRenderServiceList returned ok");
       return ServiceList.fromJson(json.decode(response.body));
@@ -320,6 +357,7 @@ class Requester {
         "Accept": "application/json",
       },
     );
+    if (pr != null) pr.hide();
     if (response.statusCode == 200) {
       print("providerRenderReservationList returned ok");
       return ReservationList.fromJson(json.decode(response.body));
@@ -346,9 +384,12 @@ class Requester {
       },
       body: map,
     );
+    if (pr != null) pr.hide();
     if (response.statusCode == 200) {
       print("checkInReservation returned ok: reservationId=$reservationId");
       return 0;
+    } else if (response.statusCode == 404){
+      throw Exception('Reservation not found!');
     } else {
       throw Exception('Failed to checkInReservation: statusCode ${response.statusCode}');
     }
@@ -382,6 +423,7 @@ class Requester {
         },
       body: map,
     );
+    if (pr != null) pr.hide();
     if (response.statusCode == 200) {
       print("noShowReservation returned ok: reservationId=$reservationId");
       return 0;

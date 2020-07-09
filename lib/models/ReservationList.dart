@@ -1,7 +1,7 @@
 import 'Reservation.dart';
 
 class ReservationList {
-  List<Reservation> reservations = new List();
+  List<Reservation> reservations;
 
   ReservationList({this.reservations});
 

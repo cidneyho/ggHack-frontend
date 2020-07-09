@@ -22,7 +22,8 @@ const createAccountPageTag = 'Create Account Page';
 // strings
 const appTitle = "";
 const pappTitle = "";
-const rlistTitle = "Reservations";
+const rlistTitle = "My Reservations";
+const providerServiceListTitle = "My Services";
 const createServiceTitle = "Create Service";
 const usernameHintText = "Username";
 const emailaddHintText = "Email Address";
@@ -43,12 +44,23 @@ const createServiceButtonText = "Create Service";
 
 // settings
 const max_width = 320.0;
-const days = ["", "7/6 Mon", "7/7 Tue", "7/8 Wed", "7/9 Thu", "7/10 Fri", "7/11 Sat", "7/12 Sun"];
+const days = [
+  "",
+  "7/6 Mon",
+  "7/7 Tue",
+  "7/8 Wed",
+  "7/9 Thu",
+  "7/10 Fri",
+  "7/11 Sat",
+  "7/12 Sun"
+];
 
 // URLs
 const baseUrl = "gghack-2020.herokuapp.com";
-const placeIdFinderUrl = "https://developers-dot-devsite-v2-prod.appspot.com/maps/documentation/javascript/examples/full/places-placeid-finder";
-const dummyServiceImage = "https://lexcodigital.com/wp-content/uploads/2017/06/customer-service.jpg";
+const placeIdFinderUrl =
+    "https://developers-dot-devsite-v2-prod.appspot.com/maps/documentation/javascript/examples/full/places-placeid-finder";
+const dummyServiceImage =
+    "https://lexcodigital.com/wp-content/uploads/2017/06/customer-service.jpg";
 
 // Icons
 Icon completedIcon = Icon(
@@ -69,3 +81,22 @@ Icon pendingIcon = Icon(
   size: 24.0,
   semanticLabel: 'Pending',
 );
+
+// Messages
+Widget waitText(String thingToWait) {
+  return Padding(
+    padding: const EdgeInsets.all(10.0),
+    child: Text(
+        "If there should be some $thingToWait here, we may still be loading them for you...",
+        style: TextStyle(color: colorText)),
+  );
+}
+
+Widget emptyText(String thingToShow) {
+  return Padding(
+    padding: const EdgeInsets.all(10.0),
+    child: Text(
+        "There are no $thingToShow to show.",
+        style: TextStyle(color: colorText)),
+  );
+}
